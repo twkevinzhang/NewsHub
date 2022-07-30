@@ -1,0 +1,22 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation "org.jsoup:jsoup:$versions.jsoup"
+    implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
+    implementation "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.junit"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$versions.junit"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.junit"
+}
