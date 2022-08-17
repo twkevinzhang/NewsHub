@@ -7,11 +7,11 @@ import self.nesl.komica_api.model.KPost
 import self.nesl.komica_api.model.KPostBuilder
 import self.nesl.komica_api.model.Paragraph
 import self.nesl.komica_api.model.ParagraphType
-import self.nesl.komica_api.parser.PostHeadParser
 import self.nesl.komica_api.parser.Parser
+import self.nesl.komica_api.parser.PostHeadParser
 import self.nesl.komica_api.parser.UrlParser
 import java.util.*
-import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class _2catPostParser(
     private val urlParser: UrlParser,
@@ -36,14 +36,18 @@ class _2catPostParser(
     }
 
     private fun setContent(source: Element) {
-        val list: MutableList<Paragraph> = ArrayList()
-        for (child in source.selectFirst(".quote").childNodes()) {
-            if (child is TextNode) {
-                val text = child.text()
-//                list.addAll(parseLinkedArticle(text))
+        val contents = source.selectFirst(".quote").childNodes()
+            .filterIsInstance<TextNode>()
+            .flatMap {
+                resolveLink(it.text()) { link ->
+                    if (IMAGE_URL_PATTERN.matcher(link).find()) {
+                        Paragraph(link, ParagraphType.IMAGE)
+                    } else {
+                        Paragraph(link, ParagraphType.LINK)
+                    }
+                }
             }
-        }
-        builder.setContent(list)
+        builder.setContent(contents)
     }
 
     private fun setPicture(source: Element, url: HttpUrl) {
@@ -60,26 +64,29 @@ class _2catPostParser(
     }
 
     /**
-     * 解析「包含連結的文章」
-     * @param linkedArticle 包含連結的文章內容
+     * 解析文章，裡面可能包含連結
+     * @param article 文章
      */
-//    private fun parseLinkedArticle(linkedArticle: String): List<Paragraph>? {
-//        val list: MutableList<Paragraph> = ArrayList()
-//        val m: Matcher = android.util.Patterns.WEB_URL.matcher(linkedArticle)
-//        var index = 0
-//        while (m.find()) {
-//            val url = m.group()
-//            val preParagraph = linkedArticle.substring(index, m.start())
-//            list.add(Paragraph(preParagraph, ParagraphType.String))
-//            if (_2catPostParser.IMAGE_LINK_PATTERN.matcher(url).find()) {
-//                list.add(Paragraph(url, ParagraphType.IMAGE))
-//            } else {
-//                list.add(Paragraph(url, ParagraphType.LINK))
-//            }
-//            index = m.end()
-//        }
-//        val lastParagraph = linkedArticle.substring(index)
-//        list.add(Paragraph(lastParagraph, ParagraphType.String))
-//        return list
-//    }
+    private fun resolveLink(article: String, callback: (String) -> Paragraph = {
+        Paragraph(it, ParagraphType.LINK)
+    }): List<Paragraph> {
+        val m = WEB_URL_PATTERN.matcher(article)
+        val list: MutableList<Paragraph> = ArrayList()
+        var index = 0
+        while (m.find()) {
+            val url = m.group()
+            val preParagraph = article.substring(index, m.start())
+            list.add(Paragraph(preParagraph, ParagraphType.TEXT))
+            list.add(callback(url))
+            index = m.end()
+        }
+        val lastParagraph = article.substring(index)
+        list.add(Paragraph(lastParagraph, ParagraphType.TEXT))
+        return list
+    }
+
+    companion object {
+        private val WEB_URL_PATTERN = Pattern.compile("((http?|https|ftp|file)://)?((W|w){3}.)?[a-zA-Z0-9]+\\.[a-zA-Z]+")
+        private val IMAGE_URL_PATTERN = Pattern.compile("(http(s?):/)(/[^/]+)+\\.(?:jpg|gif|png|webm)")
+    }
 }
