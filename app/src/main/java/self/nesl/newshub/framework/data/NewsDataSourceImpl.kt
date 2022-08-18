@@ -1,4 +1,4 @@
-package self.nesl.local_news_receiver.framework.data
+package self.nesl.newshub.framework.data
 
 import android.content.Context
 import self.nesl.core.data.NewsDataSource

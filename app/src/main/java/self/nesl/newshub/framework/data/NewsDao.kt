@@ -1,8 +1,6 @@
-package self.nesl.local_news_receiver.framework.data
+package self.nesl.newshub.framework.data
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import self.nesl.core.domain.News
 

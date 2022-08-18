@@ -1,4 +1,4 @@
-package self.nesl.local_news_receiver.framework.data
+package self.nesl.newshub.framework.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

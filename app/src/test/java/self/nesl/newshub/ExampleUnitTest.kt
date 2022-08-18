@@ -1,4 +1,4 @@
-package self.nesl.local_news_receiver
+package self.nesl.newshub
 
 import org.junit.Test
 

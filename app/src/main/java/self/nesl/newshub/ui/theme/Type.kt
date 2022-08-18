@@ -1,4 +1,4 @@
-package self.nesl.local_news_receiver.ui.theme
+package self.nesl.newshub.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

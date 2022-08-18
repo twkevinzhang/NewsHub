@@ -1,4 +1,4 @@
-package self.nesl.local_news_receiver
+package self.nesl.newshub
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

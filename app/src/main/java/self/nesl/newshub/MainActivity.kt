@@ -1,4 +1,4 @@
-package self.nesl.local_news_receiver
+package self.nesl.newshub
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import self.nesl.local_news_receiver.ui.theme.LocalnewsreceiverTheme
+import self.nesl.newshub.ui.theme.LocalnewsreceiverTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
