@@ -1,7 +1,14 @@
 buildscript {
     ext {
-        compose_version = '1.1.0-beta01'
         kotlin_version = '1.7.0'
+        versions = [
+            compose: '1.2.1',
+            coroutines: '1.6.4',
+            kotlin: '1.7.0',
+            okhttp: '3.9.1',
+            jsoup: '1.12.1',
+            junit: '5.3.1',
+        ]
     }
 
     repositories {
@@ -19,12 +26,3 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-ext.versions = [
-    compose: '1.1.0-beta01',
-    coroutines: '1.6.4',
-    kotlin: '1.7.0',
-    okhttp: '3.9.1',
-    jsoup: '1.12.1',
-    junit: '5.3.1',
-]
