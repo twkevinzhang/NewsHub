@@ -18,19 +18,7 @@ import self.nesl.komica_api.model.Paragraph
 )
 abstract class AppDatabase: RoomDatabase() {
     companion object {
-        private const val DATABASE_NAME = "app.db"
-
-        private var instance: AppDatabase? = null
         private val gson = Gson()
-
-        private fun create(context: Context): AppDatabase =
-            Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
-                .fallbackToDestructiveMigration()
-                .build()
-
-
-        fun getInstance(context: Context): AppDatabase =
-            (instance ?: create(context)).also { instance = it }
     }
 
     object ParagraphListConverter {
