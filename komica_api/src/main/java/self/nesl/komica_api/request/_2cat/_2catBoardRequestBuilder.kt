@@ -1,10 +1,8 @@
 package self.nesl.komica_api.request._2cat
 
-import com.sun.jndi.toolkit.url.Uri
 import okhttp3.HttpUrl
 import okhttp3.Request
 import self.nesl.komica_api.request.RequestBuilder
-import java.net.URL
 
 class _2catBoardRequestBuilder: RequestBuilder {
     private lateinit var url: HttpUrl
@@ -38,7 +36,7 @@ class _2catBoardRequestBuilder: RequestBuilder {
     }
 
     private fun hasPageReq(): Boolean {
-        return url.queryParameter("page").isNullOrEmpty()
+        return url.queryParameter("page").isNullOrEmpty().not()
     }
 
     override fun build(): Request {
