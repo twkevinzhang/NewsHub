@@ -9,12 +9,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
-import self.nesl.core.data.NewsDataSource
-import self.nesl.core.data.NewsRepository
-import self.nesl.core.data.NewsRepositoryImpl
-import self.nesl.newshub.framework.data.AppDatabase
-import self.nesl.newshub.framework.data.NewsDao
-import self.nesl.newshub.framework.data.NewsDataSourceImpl
+import self.nesl.newshub.data.*
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)

@@ -1,6 +1,6 @@
-package self.nesl.core.interactor
+package self.nesl.newshub.interactor
 
-import self.nesl.core.data.NewsRepository
+import self.nesl.newshub.data.NewsRepository
 
 class GetNews(private val newsRepository: NewsRepository) {
     suspend operator fun invoke(newsId: String) = newsRepository.getNews(newsId)

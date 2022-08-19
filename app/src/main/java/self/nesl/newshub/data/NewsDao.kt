@@ -1,8 +1,7 @@
-package self.nesl.newshub.framework.data
+package self.nesl.newshub.data
 
 import androidx.room.Dao
 import androidx.room.Query
-import self.nesl.core.domain.News
 
 @Dao
 interface NewsDao {

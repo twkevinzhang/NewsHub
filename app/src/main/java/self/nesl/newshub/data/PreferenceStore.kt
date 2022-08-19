@@ -1,4 +1,4 @@
-package self.nesl.newshub.framework.data
+package self.nesl.newshub.data
 
 import android.content.Context
 import androidx.datastore.preferences.core.Preferences

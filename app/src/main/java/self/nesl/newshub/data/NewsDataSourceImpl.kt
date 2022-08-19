@@ -1,9 +1,7 @@
-package self.nesl.newshub.framework.data
+package self.nesl.newshub.data
 
-import android.content.Context
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import self.nesl.core.data.NewsDataSource
 import javax.inject.Inject
 
 class NewsDataSourceImpl @Inject constructor(

@@ -1,6 +1,4 @@
-package self.nesl.core.data
-
-import self.nesl.core.domain.News
+package self.nesl.newshub.data
 
 interface NewsRepository {
     suspend fun getNews(newsId: String): News

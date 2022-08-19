@@ -1,6 +1,5 @@
-package self.nesl.newshub.framework.data
+package self.nesl.newshub.data
 
-import android.content.Context
 import androidx.room.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

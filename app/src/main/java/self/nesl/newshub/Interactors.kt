@@ -1,8 +1,8 @@
 package self.nesl.newshub
 
-import self.nesl.core.interactor.GetAllNews
-import self.nesl.core.interactor.GetAllNewsNearby
-import self.nesl.core.interactor.GetNews
+import self.nesl.newshub.interactor.GetAllNews
+import self.nesl.newshub.interactor.GetAllNewsNearby
+import self.nesl.newshub.interactor.GetNews
 import javax.inject.Singleton
 
 @Singleton

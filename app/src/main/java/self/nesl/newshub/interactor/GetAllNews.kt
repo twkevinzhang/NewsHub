@@ -1,7 +1,7 @@
-package self.nesl.core.interactor
+package self.nesl.newshub.interactor
 
-import self.nesl.core.data.NewsRepository
-import self.nesl.core.domain.News
+import self.nesl.newshub.data.News
+import self.nesl.newshub.data.NewsRepository
 
 class GetAllNews(private val newsRepository: NewsRepository) {
     suspend operator fun invoke(page: Int): List<News> {

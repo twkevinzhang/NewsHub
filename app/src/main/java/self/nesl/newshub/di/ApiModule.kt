@@ -1,18 +1,14 @@
 package self.nesl.newshub.di
 
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import self.nesl.core.data.NewsDataSource
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import self.nesl.komica_api.interactor.GetAllThreadHead
 import self.nesl.newshub.BuildConfig
-import self.nesl.newshub.framework.data.NewsDataSourceImpl
 
 @InstallIn(SingletonComponent::class)
 @Module

@@ -1,4 +1,4 @@
-package self.nesl.core.data
+package self.nesl.newshub.data
 
 class NewsRepositoryImpl(
     private val newsDataSource: NewsDataSource,
