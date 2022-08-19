@@ -27,7 +27,7 @@ class GetThread(
             is Board._2cat ->
                 _2catThreadParser(_2catPostParser(_2catUrlParser(), _2catPostHeadParser(_2catUrlParser())))
             else ->
-                throw NotImplementedError("BoardParser of $board not implemented yet")
+                throw NotImplementedError("ThreadParser of $board not implemented yet")
         }.parse(Jsoup.parse(response.toString()), board.url)
     }
 }

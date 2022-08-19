@@ -45,7 +45,7 @@ class GetAllThreadHead(
             is Board._2cat ->
                 _2catBoardRequestBuilder()
             else ->
-                throw NotImplementedError("BoardParser of $board not implemented yet")
+                throw NotImplementedError("BoardRequestBuilder of $board not implemented yet")
         }.setPageReq(page).build()
     }
 }
