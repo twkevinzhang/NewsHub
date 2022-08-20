@@ -35,8 +35,9 @@ class SoraBoardRequestBuilder: RequestBuilder {
     }
 
     override fun build(): Request {
+        val _url = if (url.last() == '/') url else "$url/"
         return Request.Builder()
-            .url(url)
+            .url(_url)
             .build()
     }
 }
