@@ -1,10 +1,10 @@
 package self.nesl.komica_api.model
 
-class Paragraph(
+class KParagraph(
     val content: String,
-    val type: ParagraphType
+    val type: KParagraphType
 )
 
-enum class ParagraphType {
+enum class KParagraphType {
     QUOTE, REPLY_TO, TEXT, IMAGE, LINK
 }

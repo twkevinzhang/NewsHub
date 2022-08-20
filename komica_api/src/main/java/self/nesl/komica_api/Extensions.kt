@@ -1,7 +1,9 @@
 package self.nesl.komica_api
 
+import okhttp3.HttpUrl
 import org.jsoup.nodes.Element
 import self.nesl.komica_api.model.KPost
+import self.nesl.komica_api.model.boards
 import self.nesl.komica_api.model.replyTo
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -112,3 +114,9 @@ fun List<KPost>.replyFor(threadId: String?): List<KPost> {
     else
         this.filter { it.replyTo().contains(threadId) }
 }
+
+fun String.isKomica() =
+    boards().map { it.url }.contains(HttpUrl.parse(this)!!.host())
+
+fun String.toKomicaBoard() =
+    boards().first { this.contains(it.url) }

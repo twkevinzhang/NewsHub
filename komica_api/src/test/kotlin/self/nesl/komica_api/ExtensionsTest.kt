@@ -2,10 +2,9 @@ package self.nesl.komica_api
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import self.nesl.komica_api.model.KPost
 import self.nesl.komica_api.model.KPostBuilder
-import self.nesl.komica_api.model.Paragraph
-import self.nesl.komica_api.model.ParagraphType
+import self.nesl.komica_api.model.KParagraph
+import self.nesl.komica_api.model.KParagraphType
 
 internal class ExtensionsTest {
 
@@ -32,18 +31,18 @@ internal class ExtensionsTest {
     @Test
     fun `Test replyFor extension expect successful`() {
         val post1 = KPostBuilder().setContent(listOf(
-            Paragraph("A", ParagraphType.REPLY_TO),
-            Paragraph("B", ParagraphType.REPLY_TO),
-            Paragraph("C", ParagraphType.REPLY_TO),
+            KParagraph("A", KParagraphType.REPLY_TO),
+            KParagraph("B", KParagraphType.REPLY_TO),
+            KParagraph("C", KParagraphType.REPLY_TO),
         )).build()
 
         val post2 = KPostBuilder().setContent(listOf(
-            Paragraph("A", ParagraphType.REPLY_TO),
-            Paragraph("B", ParagraphType.REPLY_TO),
+            KParagraph("A", KParagraphType.REPLY_TO),
+            KParagraph("B", KParagraphType.REPLY_TO),
         )).build()
 
         val post3 = KPostBuilder().setContent(listOf(
-            Paragraph("A", ParagraphType.REPLY_TO),
+            KParagraph("A", KParagraphType.REPLY_TO),
         )).build()
 
         assertEquals(2, listOf(post1, post2, post3).replyFor("B").size)

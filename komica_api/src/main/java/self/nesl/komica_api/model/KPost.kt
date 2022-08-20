@@ -9,12 +9,12 @@ data class KPost (
     val visits: Int,
     var replies: Int,
     val readAt: Int,
-    val content: List<Paragraph>,
+    val content: List<KParagraph>,
 )
 
 fun KPost.replyTo(): List<String> {
     return content
-        .filter { paragraph -> paragraph.type == ParagraphType.REPLY_TO }
+        .filter { paragraph -> paragraph.type == KParagraphType.REPLY_TO }
         .map { paragraph -> paragraph.content }
 }
 
@@ -27,7 +27,7 @@ class KPostBuilder {
     private var visits: Int= 0
     private var replies: Int= 0
     private var readAt: Int= 0
-    private var content: List<Paragraph> = emptyList()
+    private var content: List<KParagraph> = emptyList()
 
     fun setTitle(title: String): KPostBuilder {
         this.title = title
@@ -44,12 +44,12 @@ class KPostBuilder {
         return this
     }
 
-    fun setContent(content: List<Paragraph>): KPostBuilder {
+    fun setContent(content: List<KParagraph>): KPostBuilder {
         this.content = content
         return this
     }
 
-    fun addContent(content: Paragraph): KPostBuilder {
+    fun addContent(content: KParagraph): KPostBuilder {
         this.content = this.content.plus(content)
         return this
     }

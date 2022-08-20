@@ -5,8 +5,8 @@ import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 import self.nesl.komica_api.model.KPost
 import self.nesl.komica_api.model.KPostBuilder
-import self.nesl.komica_api.model.Paragraph
-import self.nesl.komica_api.model.ParagraphType
+import self.nesl.komica_api.model.KParagraph
+import self.nesl.komica_api.model.KParagraphType
 import self.nesl.komica_api.parser.PostHeadParser
 import self.nesl.komica_api.parser.Parser
 import self.nesl.komica_api.parser.UrlParser
@@ -48,25 +48,25 @@ class SoraPostParser(
     }
 
     private fun setContent(source: Element) {
-        val list: MutableList<Paragraph> = ArrayList<Paragraph>()
+        val list: MutableList<KParagraph> = ArrayList<KParagraph>()
         val parent = source.selectFirst(".quote")
         for (child in parent.childNodes()) {
             if (child is TextNode) {
-                list.add(Paragraph(child.text(), ParagraphType.TEXT))
+                list.add(KParagraph(child.text(), KParagraphType.TEXT))
             }
             if (child is Element) {
                 if (child.`is`("span.resquote")) {
                     val qlink = child.selectFirst("a.qlink")
                     if (qlink != null) {
                         val replyTo = qlink.text().replace(">".toRegex(), "")
-                        list.add(Paragraph(replyTo, ParagraphType.REPLY_TO))
+                        list.add(KParagraph(replyTo, KParagraphType.REPLY_TO))
                     } else {
                         val quote = child.ownText().replace(">".toRegex(), "")
-                        list.add(Paragraph(quote, ParagraphType.QUOTE))
+                        list.add(KParagraph(quote, KParagraphType.QUOTE))
                     }
                 }
                 if (child.`is`("a[href^=\"http://\"], a[href^=\"https://\"]")) {
-                    list.add(Paragraph(child.ownText(), ParagraphType.LINK))
+                    list.add(KParagraph(child.ownText(), KParagraphType.LINK))
                 }
             }
         }
@@ -77,9 +77,9 @@ class SoraPostParser(
         source.selectFirst("img")?.let { thumbImg ->
             val originalUrl = thumbImg.parent().attr("href")
             builder.addContent(
-                Paragraph(
+                KParagraph(
                     originalUrl.withProtocol(),
-                    ParagraphType.IMAGE
+                    KParagraphType.IMAGE
                 )
             )
         }
