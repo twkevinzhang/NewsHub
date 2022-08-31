@@ -8,15 +8,31 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Qualifier
 
+@Retention(AnnotationRetention.BINARY)
 @Qualifier
-@Retention(AnnotationRetention.RUNTIME)
+annotation class DefaultDispatcher
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
 annotation class IoDispatcher
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class MainDispatcher
 
 @InstallIn(SingletonComponent::class)
 @Module
-object CoroutinesModule {
+object DispatcherModule {
 
+    @DefaultDispatcher
     @Provides
+    fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+
     @IoDispatcher
+    @Provides
     fun providesIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @MainDispatcher
+    @Provides
+    fun providesMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }

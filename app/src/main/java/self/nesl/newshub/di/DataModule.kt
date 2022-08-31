@@ -8,8 +8,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineDispatcher
 import self.nesl.newshub.data.*
+import self.nesl.newshub.data.news.NewsRepository
+import self.nesl.newshub.data.news.NewsRepositoryImpl
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -28,15 +29,17 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideNewsDataSource(
-        database: AppDatabase,
-        @IoDispatcher ioDispatcher: CoroutineDispatcher
-    ): NewsDataSource = NewsDataSourceImpl(database.newsDao(), ioDispatcher)
+    fun provideNewsDao(database: AppDatabase) = database.newsDao()
+
+    @Singleton
+    @Provides
+    fun provideNewsKeysDao(database: AppDatabase) = database.newsKeysDao()
 
     @InstallIn(SingletonComponent::class)
     @Module
     abstract class RepositoryBinder {
+
         @Binds
-        abstract fun bindNewsRepository(newsRepositoryImpl: NewsRepositoryImpl): NewsRepository
+        abstract fun bindNewsRepository(impl: NewsRepositoryImpl): NewsRepository
     }
 }

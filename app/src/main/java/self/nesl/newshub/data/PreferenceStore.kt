@@ -2,7 +2,6 @@ package self.nesl.newshub.data
 
 import android.content.Context
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -19,22 +18,14 @@ private val Context.dataStore by preferencesDataStore("preference_store")
 @Singleton
 class PreferenceStore @Inject constructor(
     @ApplicationContext appContext: Context
-)  {
+) {
     private object Keys {
-        val KEY_ID_TOKEN = stringPreferencesKey("KEY_ID_TOKEN")
+        val KEY_OF_DEFAULT_HOST = stringPreferencesKey("default_host")
     }
 
     private val dataStore = appContext.dataStore
 
-    suspend fun saveToken(
-        idToken: String,
-    ) {
-        dataStore.edit { preferences ->
-            preferences[Keys.KEY_ID_TOKEN] = idToken
-        }
-    }
-
-    val observeTokens = dataStore.data
+    val observable = dataStore.data
         .catch { exception ->
             // dataStore.data throws an IOException when an error is encountered when reading data
             if (exception is IOException) {
@@ -43,16 +34,16 @@ class PreferenceStore @Inject constructor(
                 throw exception
             }
         }.map { preferences ->
-            mapTokensPreferences(preferences)
+            mapPreference(preferences)
         }
 
-    private fun mapTokensPreferences(preferences: Preferences): Tokens {
-        return Tokens(
-            preferences[Keys.KEY_ID_TOKEN] ?: "",
+    private fun mapPreference(preferences: Preferences): Preference {
+        return Preference(
+            preferences[Keys.KEY_OF_DEFAULT_HOST] ?: "",
         )
     }
 
-    data class Tokens(
-        val idToken: String,
+    data class Preference(
+        val defaultHost: String,
     )
 }
