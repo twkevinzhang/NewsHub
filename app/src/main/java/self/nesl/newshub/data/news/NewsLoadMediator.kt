@@ -7,6 +7,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import java.io.IOException
+import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 class NewsLoadMediator (

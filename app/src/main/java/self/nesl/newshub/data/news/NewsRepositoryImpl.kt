@@ -4,19 +4,14 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import kotlinx.coroutines.CoroutineDispatcher
-import self.nesl.komica_api.KomicaApi
-import self.nesl.newshub.data.AppDatabase
 import self.nesl.newshub.di.IoDispatcher
-import self.nesl.newshub.di.TransactionProvider
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 class NewsRepositoryImpl @Inject constructor(
     private val newsDao: NewsDao,
-    private val newsKeysDao: NewsKeysDao,
-    private val transactionProvider: TransactionProvider,
-    private val api: KomicaApi,
+    private val newsLoadMediatorBuilder: NewsLoadMediatorBuilder,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ): NewsRepository {
     companion object {
@@ -26,16 +21,9 @@ class NewsRepositoryImpl @Inject constructor(
     override fun getAllNews(topicNavItems: TopicNavItems) =
         Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
-            remoteMediator = NewsLoadMediator(
-                topicNavItems = topicNavItems,
-                newsKeysDao = newsKeysDao,
-                komicaNewsLoadMediator = KomicaNewsLoadMediator(
-                    transactionProvider = transactionProvider,
-                    newsDao = newsDao,
-                    newsKeysDao = newsKeysDao,
-                    api = api,
-                ),
-            ),
+            remoteMediator = newsLoadMediatorBuilder
+                .topic(topicNavItems)
+                .build(),
             pagingSourceFactory = {
                 newsDao.readAll()
             },

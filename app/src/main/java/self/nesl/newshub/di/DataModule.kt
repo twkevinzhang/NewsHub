@@ -9,12 +9,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import self.nesl.newshub.data.*
-import self.nesl.newshub.data.news.NewsRepository
-import self.nesl.newshub.data.news.NewsRepositoryImpl
+import self.nesl.newshub.data.news.*
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
-@Module(includes = [DataModule.RepositoryBinder::class])
+@Module(includes = [
+    DataModule.RepositoryBinder::class,
+    DataModule.MediatorBinder::class,
+])
 object DataModule {
 
     @Singleton
@@ -45,5 +47,16 @@ object DataModule {
 
         @Binds
         abstract fun bindNewsRepository(impl: NewsRepositoryImpl): NewsRepository
+    }
+
+    @InstallIn(SingletonComponent::class)
+    @Module
+    abstract class MediatorBinder {
+
+        @Binds
+        abstract fun bindNewsLoadMediatorBuilder(impl: NewsLoadMediatorBuilderImpl): NewsLoadMediatorBuilder
+
+        @Binds
+        abstract fun bindKomicaNewsLoadMediator(impl: KomicaNewsLoadMediatorImpl): KomicaNewsLoadMediator
     }
 }
