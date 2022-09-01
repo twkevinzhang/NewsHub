@@ -9,7 +9,7 @@ import self.nesl.komica_api.model.KBoard
 class KomicaApi (
     private val client: OkHttpClient,
 ) {
-    fun getAllBoard() =
+    suspend fun getAllBoard() =
         GetAllBoard().invoke()
 
     suspend fun getAllThreadHead(board: KBoard, page: Int?= null) =

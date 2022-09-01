@@ -1,5 +1,7 @@
 package self.nesl.komica_api.interactor
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jsoup.Jsoup
@@ -20,11 +22,11 @@ import self.nesl.komica_api.request.sora.SoraBoardRequestBuilder
 class GetAllThreadHead(
     private val client: OkHttpClient,
 ) {
-    suspend operator fun invoke(board: KBoard, page: Int?= null): List<KPost> {
+    suspend operator fun invoke(board: KBoard, page: Int?= null): List<KPost> = withContext(Dispatchers.IO) {
         val req = processPage(board, page)
         val response = client.newCall(req).await()
 
-        return when (board) {
+        when (board) {
             is KBoard.Sora, KBoard.人外, KBoard.格鬥遊戲, KBoard.Idolmaster, KBoard.`3D-STG`, KBoard.魔物獵人, KBoard.`TYPE-MOON` ->
                 SoraBoardParser(SoraPostParser(SoraUrlParser(), SoraPostHeadParser()))
             is KBoard._2catKomica ->
