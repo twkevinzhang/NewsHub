@@ -29,6 +29,10 @@ object DataModule {
 
     @Singleton
     @Provides
+    fun provideTransactionProvider(database: AppDatabase) = TransactionProvider(database)
+
+    @Singleton
+    @Provides
     fun provideNewsDao(database: AppDatabase) = database.newsDao()
 
     @Singleton

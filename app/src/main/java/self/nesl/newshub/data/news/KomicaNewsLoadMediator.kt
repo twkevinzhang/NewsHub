@@ -8,10 +8,13 @@ import self.nesl.komica_api.model.KBoard
 import self.nesl.komica_api.model.KPost
 import self.nesl.newshub.data.AppDatabase
 import self.nesl.newshub.data.toParagraph
+import self.nesl.newshub.di.TransactionProvider
 import self.nesl.newshub.ui.navigation.TopicNavItems
 
 class KomicaNewsLoadMediator (
-    private val database: AppDatabase,
+    private val newsDao: NewsDao,
+    private val newsKeysDao: NewsKeysDao,
+    private val transactionProvider: TransactionProvider,
     private val api: KomicaApi,
 ) {
 
@@ -19,18 +22,18 @@ class KomicaNewsLoadMediator (
         val newsList = api.getAllThreadHead(topicNavItems.toKBoard(), page)
         val endOfPaginationReached = newsList.isEmpty()
 
-        database.withTransaction {
+        transactionProvider.invoke {
             if (loadType == LoadType.REFRESH) {
-                database.newsKeysDao().clear()
-                database.newsDao().clear(Host.KOMICA)
+                newsKeysDao.clear()
+                newsDao.clear(Host.KOMICA)
             }
             val prevKey = if (page == 1) null else page - 1
             val nextKey = if (endOfPaginationReached) null else page + 1
             val keys = newsList.map { news ->
                 NewsRemoteKeys(url = news.url, prevKey = prevKey, nextKey = nextKey)
             }
-            database.newsKeysDao().insertAll(keys)
-            database.newsDao().upsertAll(newsList.map { it.toNews() })
+            newsKeysDao.insertAll(keys)
+            newsDao.upsertAll(newsList.map { it.toNews() })
         }
         return endOfPaginationReached
     }
