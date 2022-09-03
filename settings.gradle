@@ -15,4 +15,5 @@ dependencyResolutionManagement {
 rootProject.name = "news-hub"
 include ':app'
 include ':komica-api'
+include ':gamer-api'
 include ':hub-server'
