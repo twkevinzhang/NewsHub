@@ -1,8 +1,8 @@
 package self.nesl.newshub.ui.topic
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.paging.compose.items
 import androidx.compose.runtime.Composable
@@ -21,9 +21,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import self.nesl.newshub.R
 import self.nesl.newshub.data.news.Host
 import self.nesl.newshub.ui.component.AppMaxWidthItem
-import self.nesl.newshub.ui.theme.AppWhite
 import self.nesl.newshub.ui.theme.NewshubTheme
-import self.nesl.newshub.ui.topic.TopicViewModel.Companion.defaultEnableHosts
 
 @Composable
 fun bindTopicScreen(
@@ -32,7 +30,7 @@ fun bindTopicScreen(
     openDrawer: () -> Unit = { },
 ){
     val newsfeed = topicViewModel.newsfeed.collectAsLazyPagingItems()
-    val enableHosts by topicViewModel.enableHosts.collectAsState(defaultEnableHosts)
+    val enableHosts by topicViewModel.enableHosts.collectAsState(emptyList())
 
     LazyColumn {
         item {

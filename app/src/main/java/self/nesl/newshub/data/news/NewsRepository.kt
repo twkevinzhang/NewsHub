@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 import self.nesl.newshub.ui.navigation.TopicNavItems
 
 interface NewsRepository {
-    fun getAllNews(topicNavItems: TopicNavItems): Flow<PagingData<News>>
+    fun getAllNews(topicNavItems: TopicNavItems, excludeHost: List<Host>): Flow<PagingData<News>>
 }

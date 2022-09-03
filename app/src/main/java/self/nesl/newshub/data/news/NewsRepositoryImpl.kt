@@ -1,9 +1,9 @@
 package self.nesl.newshub.data.news
 
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
+import androidx.paging.*
+import androidx.paging.PagingSource
 import kotlinx.coroutines.CoroutineDispatcher
+import self.nesl.komica_api.model.KPost
 import self.nesl.newshub.di.IoDispatcher
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import javax.inject.Inject
@@ -18,14 +18,17 @@ class NewsRepositoryImpl @Inject constructor(
         private const val PAGE_SIZE = 10
     }
 
-    override fun getAllNews(topicNavItems: TopicNavItems) =
+    override fun getAllNews(
+        topicNavItems: TopicNavItems,
+        excludeHost: List<Host>,
+    ) =
         Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
             remoteMediator = newsLoadMediatorBuilder
                 .topic(topicNavItems)
                 .build(),
             pagingSourceFactory = {
-                newsDao.readAll()
+                newsDao.readAll(excludeHost)
             },
         ).flow
 }

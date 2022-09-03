@@ -6,8 +6,8 @@ import androidx.room.*
 @Dao
 interface NewsDao {
 
-    @Query("SELECT * FROM news")
-    fun readAll(): PagingSource<Int, News>
+    @Query("SELECT * FROM news WHERE host not in (:exclude)")
+    fun readAll(exclude: List<Host>): PagingSource<Int, News>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(list: List<News>)
