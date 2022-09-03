@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "news-hub"
 include ':app'
 include ':core'
-include ':komica_api'
+include ':komica-api'
