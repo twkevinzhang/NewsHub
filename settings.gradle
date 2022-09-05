@@ -16,3 +16,4 @@ rootProject.name = "news-hub"
 include ':app'
 include ':core'
 include ':komica-api'
+include ':hub-server'
