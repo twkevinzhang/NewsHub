@@ -1,14 +1,16 @@
-package self.nesl.newshub.data
+package self.nesl.hub_server.data
 
 import androidx.room.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import self.nesl.newshub.data.news.*
+import self.nesl.hub_server.data.news_head.Host
+import self.nesl.hub_server.data.news_head.NewsHead
+import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
+import self.nesl.hub_server.data.news_head.komica.KomicaNewsHeadDao
 
 @Database(
     entities = [
-        News::class,
-        NewsRemoteKeys::class,
+        KomicaNewsHead::class,
     ],
     version = 1
 )
@@ -56,6 +58,5 @@ abstract class AppDatabase: RoomDatabase() {
         }
     }
 
-    abstract fun newsDao(): NewsDao
-    abstract fun newsKeysDao(): NewsKeysDao
+    abstract fun komicaNewsHeadDao(): KomicaNewsHeadDao
 }

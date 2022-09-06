@@ -18,8 +18,8 @@ import androidx.navigation.NavHostController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import self.nesl.hub_server.data.news_head.Host
 import self.nesl.newshub.R
-import self.nesl.newshub.data.news.Host
 import self.nesl.newshub.ui.component.AppMaxWidthItem
 import self.nesl.newshub.ui.theme.NewshubTheme
 

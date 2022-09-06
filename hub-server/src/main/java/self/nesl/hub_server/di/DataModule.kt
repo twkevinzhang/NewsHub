@@ -1,4 +1,4 @@
-package self.nesl.newshub.di
+package self.nesl.hub_server.di
 
 import android.content.Context
 import androidx.room.Room
@@ -8,14 +8,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import self.nesl.newshub.data.*
-import self.nesl.newshub.data.news.*
+import self.nesl.hub_server.data.AppDatabase
+import self.nesl.hub_server.data.news_head.komica.KomicaNewsHeadHeadRepository
+import self.nesl.hub_server.data.news_head.komica.KomicaNewsHeadHeadRepositoryImpl
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module(includes = [
     DataModule.RepositoryBinder::class,
-    DataModule.MediatorBinder::class,
 ])
 object DataModule {
 
@@ -35,28 +35,13 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideNewsDao(database: AppDatabase) = database.newsDao()
-
-    @Singleton
-    @Provides
-    fun provideNewsKeysDao(database: AppDatabase) = database.newsKeysDao()
+    fun provideKomicaNewsHeadDao(database: AppDatabase) = database.komicaNewsHeadDao()
 
     @InstallIn(SingletonComponent::class)
     @Module
     abstract class RepositoryBinder {
 
         @Binds
-        abstract fun bindNewsRepository(impl: NewsRepositoryImpl): NewsRepository
-    }
-
-    @InstallIn(SingletonComponent::class)
-    @Module
-    abstract class MediatorBinder {
-
-        @Binds
-        abstract fun bindNewsLoadMediatorBuilder(impl: NewsLoadMediatorBuilderImpl): NewsLoadMediatorBuilder
-
-        @Binds
-        abstract fun bindKomicaNewsLoadMediator(impl: KomicaNewsLoadMediatorImpl): KomicaNewsLoadMediator
+        abstract fun bindNewsRepository(impl: KomicaNewsHeadHeadRepositoryImpl): KomicaNewsHeadHeadRepository
     }
 }

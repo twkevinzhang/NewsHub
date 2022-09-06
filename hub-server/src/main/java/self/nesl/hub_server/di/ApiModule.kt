@@ -1,4 +1,4 @@
-package self.nesl.newshub.di
+package self.nesl.hub_server.di
 
 import dagger.Module
 import dagger.Provides
@@ -6,10 +6,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import self.nesl.hub_server.BuildConfig
 import self.nesl.komica_api.KomicaApi
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import self.nesl.newshub.BuildConfig
 
 @InstallIn(SingletonComponent::class)
 @Module

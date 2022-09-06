@@ -1,4 +1,4 @@
-package self.nesl.newshub.data
+package self.nesl.hub_server.data
 
 import self.nesl.komica_api.model.KParagraph
 import self.nesl.komica_api.model.KParagraphType
