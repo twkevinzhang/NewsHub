@@ -51,9 +51,10 @@ class _2catPostParser(
     private fun setPicture(source: Element, url: HttpUrl) {
         source.selectFirst("a.imglink[href=#]")?.let { thumbImg ->
             val fileName = source.selectFirst("a.imglink[href=#]").attr("title")
-            val newLink = "http://img.2nyan.org/${urlParser.parseBoardId(url)}/src/${fileName}"
+            val newRawLink = "http://img.2nyan.org/${urlParser.parseBoardId(url)}/src/${fileName}"
+            val newThumbLink = "http://img.2nyan.org/${urlParser.parseBoardId(url)}/thumb/${fileName}"
             builder.addContent(
-                KImageInfo(newLink, newLink)
+                KImageInfo(newThumbLink, newRawLink)
             )
         }
     }

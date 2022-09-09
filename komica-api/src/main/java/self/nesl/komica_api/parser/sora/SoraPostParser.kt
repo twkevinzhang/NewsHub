@@ -73,9 +73,10 @@ class SoraPostParser(
 
     private fun setPicture(source: Element) {
         source.selectFirst("img")?.let { thumbImg ->
-            val originalUrl = thumbImg.parent().attr("href")
+            val rawUrl = thumbImg.parent().attr("href")
+            val thumbUrl = thumbImg.attr("src")
             builder.addContent(
-                KImageInfo(originalUrl.withHttps(), originalUrl.withHttps())
+                KImageInfo(thumbUrl.withHttps(), rawUrl.withHttps())
             )
         }
     }
