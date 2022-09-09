@@ -2,7 +2,6 @@ package self.nesl.newshub.ui.topic
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.paging.compose.items
 import androidx.compose.runtime.Composable
@@ -19,8 +18,11 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import self.nesl.hub_server.data.news_head.Host
+import self.nesl.hub_server.data.news_head.NewsHead
+import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
+import self.nesl.hub_server.data.news_head.komica.mockKomicaNewsHead
 import self.nesl.newshub.R
-import self.nesl.newshub.ui.component.AppMaxWidthItem
+import self.nesl.newshub.ui.component.ParagraphBlock
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 
@@ -45,9 +47,10 @@ fun bindTopicScreen(
             item {
                 HeaderLoading(loadState = loadState)
             }
-            items(this) { news ->
-                if (news != null) {
-                    NewsHead(news.url.takeLast(10))
+            items(this) { newsHead ->
+                when (newsHead) {
+                    is KomicaNewsHead -> KomicaNewsHeadCard(newsHead)
+                    else -> Text(text = "not support")
                 }
             }
             item {
@@ -58,10 +61,70 @@ fun bindTopicScreen(
 }
 
 @Composable
-fun NewsHead(news: String) {
-    AppMaxWidthItem(
-        title = news,
+fun KomicaNewsHeadCard(newsHead: NewsHead) {
+    Column {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = dimensionResource(id = R.dimen.space_4))
+        ) {
+            Row {
+                CardHeadTextBlock(text = newsHead.poster ?: "poster")
+                CardHeadTextBlock(text = newsHead.createdAt?.toString() ?: "createdAt")
+                CardHeadTextBlock(text = "komica")
+            }
+            Row {
+                CardHeadTextBlock(text = newsHead.replies?.toString() ?: "0")
+            }
+        }
+        CardHeadBlock {
+            Text(
+                text = newsHead.title ?: "title",
+                fontSize = 16.sp,
+            )
+        }
+        CardHeadBlock {
+            ParagraphBlock(newsHead.content, 100)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewKomicaNewsCard() {
+    KomicaNewsHeadCard(
+        mockKomicaNewsHead()
     )
+}
+
+@Composable
+fun CardHeadTextBlock(
+    text: String = "",
+    modifier: Modifier = Modifier,
+
+) {
+    CardHeadBlock(
+        modifier = modifier,
+    ) {
+        Text(
+            text = text,
+            fontSize = 16.sp,
+        )
+    }
+}
+
+@Composable
+fun CardHeadBlock(
+    modifier: Modifier = Modifier,
+    compose: @Composable () -> Unit = { },
+) {
+    Box(
+        modifier = modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.space_4))
+    ) {
+        compose()
+    }
 }
 
 @Composable
@@ -170,7 +233,9 @@ fun HostIcon(
 @Preview
 @Composable
 fun PreviewHostIcon() {
-    HostIcon(Host.KOMICA)
+    NewshubTheme {
+        HostIcon(Host.KOMICA)
+    }
 }
 
 @Composable
