@@ -1,6 +1,7 @@
 package self.nesl.komica_api.parser.sora
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 import self.nesl.komica_api.model.KPost
@@ -32,7 +33,7 @@ class SoraPostParser(
     private val builder = KPostBuilder()
 
     override fun parse(source: Element, url: String): KPost {
-        val httpUrl = HttpUrl.parse(url)!!
+        val httpUrl = url.toHttpUrlOrNull()!!
         setDetail(source, httpUrl)
         setContent(source)
         setPicture(source)

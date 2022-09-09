@@ -1,6 +1,7 @@
 package self.nesl.komica_api
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import self.nesl.komica_api.model.KPost
 import self.nesl.komica_api.model.boards
@@ -116,7 +117,7 @@ fun List<KPost>.replyFor(threadId: String?): List<KPost> {
 }
 
 fun String.isKomica() =
-    boards().map { it.url }.contains(HttpUrl.parse(this)!!.host())
+    boards().map { it.url }.contains(this.toHttpUrlOrNull()!!.host)
 
 fun String.toKomicaBoard() =
     boards().first { this.contains(it.url) }

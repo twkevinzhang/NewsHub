@@ -35,7 +35,7 @@ class GetAllThreadHead(
                 _2catBoardParser(_2catPostParser(_2catUrlParser(), _2catPostHeadParser(_2catUrlParser())))
             else ->
                 throw NotImplementedError("BoardParser of $board not implemented yet")
-        }.parse(Jsoup.parse(response.body()?.string()), board.url)
+        }.parse(Jsoup.parse(response.body?.string()), board.url)
     }
 
     private fun processPage(board: KBoard, page: Int?= null): Request {
