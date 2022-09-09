@@ -16,6 +16,7 @@ import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.theme.AppDarkBlue
 import self.nesl.newshub.ui.theme.AppWhite
+import self.nesl.newshub.ui.theme.PreviewTheme
 
 @Composable
 fun NewsHubTopBar(
@@ -23,9 +24,7 @@ fun NewsHubTopBar(
     onMenuPressed: (() -> Unit)? = null,
     onBackPressed: (() -> Unit)? = null,
 ) {
-    TopAppBar(
-        backgroundColor = NewshubTheme.colors.background,
-    ) {
+    TopAppBar {
         Box(
             modifier = Modifier
                 .height(dimensionResource(id = R.dimen.space_32)),
@@ -50,7 +49,7 @@ fun NewsHubTopBar(
                     }
                     Text(
                         text = title,
-                        fontSize = 20.sp,
+                        style = NewshubTheme.typography.h6,
                     )
                 }
             }
@@ -61,7 +60,7 @@ fun NewsHubTopBar(
 @Preview
 @Composable
 private fun PreviewNewsHubTopBar() {
-    NewshubTheme() {
+    PreviewTheme {
         NewsHubTopBar("NewsHub")
     }
 }
@@ -69,7 +68,7 @@ private fun PreviewNewsHubTopBar() {
 @Preview
 @Composable
 private fun PreviewNewsHubTopBarWithBack() {
-    NewshubTheme() {
+    PreviewTheme {
         NewsHubTopBar(
             title = "NewsHub",
             onBackPressed = { },
@@ -80,7 +79,7 @@ private fun PreviewNewsHubTopBarWithBack() {
 @Preview
 @Composable
 private fun PreviewNewsHubTopBarWithMenu() {
-    NewshubTheme() {
+    PreviewTheme {
         NewsHubTopBar(
             title = "NewsHub",
             onMenuPressed = { },

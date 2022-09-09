@@ -4,26 +4,19 @@ import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import self.nesl.newshub.ui.component.Drawer
+import self.nesl.newshub.ui.navigation.drawerNavItems
+import self.nesl.newshub.ui.navigation.topicNavItems
 
-private val colorPalette = lightColors(
-    primary = AppDarkNavy,
-    secondary = AppTeal,
-    surface = AppDarkBlue,
-    background = AppDarkBlue,
-    error = AppDarkBlue,
-    onPrimary = AppWhite,
-    onSecondary = AppWhite,
-    onBackground = AppWhite,
-    onSurface = AppWhite,
-    onError = AppWhite,
+private val ColorPalette = darkColors(
 )
 
 object NewshubTheme {
     val colors
         @Composable
         @ReadOnlyComposable
-        get() = colorPalette
+        get() = ColorPalette
 
     val typography
         @Composable
@@ -46,4 +39,16 @@ fun NewshubTheme(
         shapes = NewshubTheme.shapes,
         content = content
     )
+}
+
+@Preview
+@Composable
+fun PreviewTheme(
+    content: @Composable () -> Unit =  {},
+) {
+    NewshubTheme() {
+        Surface {
+            content()
+        }
+    }
 }

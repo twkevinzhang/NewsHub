@@ -22,6 +22,7 @@ import self.nesl.hub_server.data.news_head.Host
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.component.AppMaxWidthItem
 import self.nesl.newshub.ui.theme.NewshubTheme
+import self.nesl.newshub.ui.theme.PreviewTheme
 
 @Composable
 fun bindTopicScreen(
@@ -136,7 +137,7 @@ fun HostFilter(
 @Preview
 @Composable
 fun PreviewHostFilter() {
-    NewshubTheme {
+    PreviewTheme {
         HostFilter(
             selected = listOf(Host.KOMICA),
         )

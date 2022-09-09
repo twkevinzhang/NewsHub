@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,6 +42,7 @@ fun bindAppScreen(
     ModalDrawer(
         drawerState = drawerState,
         gesturesEnabled = drawerState.isOpen,
+        drawerElevation = 0.dp,
         drawerContent = {
             Drawer(
                 topNavItems = topicNavItems(),
