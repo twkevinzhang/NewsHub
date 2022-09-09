@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 import self.nesl.hub_server.data.Paragraph
 
 open class NewsHead (
-    @PrimaryKey open val url: String,
+    open val url: String,
     open val host: Host,
     open val title: String?,
     open val createdAt: Long?,
