@@ -4,10 +4,7 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
-import self.nesl.komica_api.model.KPost
-import self.nesl.komica_api.model.KPostBuilder
-import self.nesl.komica_api.model.KParagraph
-import self.nesl.komica_api.model.KParagraphType
+import self.nesl.komica_api.model.*
 import self.nesl.komica_api.parser.PostHeadParser
 import self.nesl.komica_api.parser.Parser
 import self.nesl.komica_api.parser.UrlParser
@@ -53,21 +50,21 @@ class SoraPostParser(
         val parent = source.selectFirst(".quote")
         for (child in parent.childNodes()) {
             if (child is TextNode) {
-                list.add(KParagraph(child.text(), KParagraphType.TEXT))
+                list.add(KText(child.text()))
             }
             if (child is Element) {
                 if (child.`is`("span.resquote")) {
                     val qlink = child.selectFirst("a.qlink")
                     if (qlink != null) {
                         val replyTo = qlink.text().replace(">".toRegex(), "")
-                        list.add(KParagraph(replyTo, KParagraphType.REPLY_TO))
+                        list.add(KReplyTo(replyTo))
                     } else {
                         val quote = child.ownText().replace(">".toRegex(), "")
-                        list.add(KParagraph(quote, KParagraphType.QUOTE))
+                        list.add(KQuote(quote))
                     }
                 }
                 if (child.`is`("a[href^=\"http://\"], a[href^=\"https://\"]")) {
-                    list.add(KParagraph(child.ownText(), KParagraphType.LINK))
+                    list.add(KLink(child.ownText()))
                 }
             }
         }
@@ -78,10 +75,7 @@ class SoraPostParser(
         source.selectFirst("img")?.let { thumbImg ->
             val originalUrl = thumbImg.parent().attr("href")
             builder.addContent(
-                KParagraph(
-                    originalUrl.withHttps(),
-                    KParagraphType.IMAGE
-                )
+                KImageInfo(originalUrl.withHttps(), originalUrl.withHttps())
             )
         }
     }

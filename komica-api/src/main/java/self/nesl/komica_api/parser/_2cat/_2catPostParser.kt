@@ -4,10 +4,7 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
-import self.nesl.komica_api.model.KPost
-import self.nesl.komica_api.model.KPostBuilder
-import self.nesl.komica_api.model.KParagraph
-import self.nesl.komica_api.model.KParagraphType
+import self.nesl.komica_api.model.*
 import self.nesl.komica_api.parser.Parser
 import self.nesl.komica_api.parser.PostHeadParser
 import self.nesl.komica_api.parser.UrlParser
@@ -42,9 +39,9 @@ class _2catPostParser(
             .flatMap {
                 resolveLink(it.text()) { link ->
                     if (IMAGE_URL_PATTERN.matcher(link).find()) {
-                        KParagraph(link, KParagraphType.IMAGE)
+                        KImageInfo(link, link)
                     } else {
-                        KParagraph(link, KParagraphType.LINK)
+                        KLink(link)
                     }
                 }
             }
@@ -56,10 +53,7 @@ class _2catPostParser(
             val fileName = source.selectFirst("a.imglink[href=#]").attr("title")
             val newLink = "http://img.2nyan.org/${urlParser.parseBoardId(url)}/src/${fileName}"
             builder.addContent(
-                KParagraph(
-                    newLink,
-                    KParagraphType.IMAGE
-                )
+                KImageInfo(newLink, newLink)
             )
         }
     }
@@ -69,7 +63,7 @@ class _2catPostParser(
      * @param article 文章
      */
     private fun resolveLink(article: String, callback: (String) -> KParagraph = {
-        KParagraph(it, KParagraphType.LINK)
+        KLink(it)
     }): List<KParagraph> {
         val m = WEB_URL_PATTERN.matcher(article)
         val list: MutableList<KParagraph> = ArrayList()
@@ -77,12 +71,12 @@ class _2catPostParser(
         while (m.find()) {
             val url = m.group()
             val preParagraph = article.substring(index, m.start())
-            list.add(KParagraph(preParagraph, KParagraphType.TEXT))
+            list.add(KText(preParagraph))
             list.add(callback(url))
             index = m.end()
         }
         val lastParagraph = article.substring(index)
-        list.add(KParagraph(lastParagraph, KParagraphType.TEXT))
+        list.add(KText(lastParagraph))
         return list
     }
 

@@ -14,7 +14,7 @@ data class KPost (
 
 fun KPost.replyTo(): List<String> {
     return content
-        .filter { paragraph -> paragraph.type == KParagraphType.REPLY_TO }
+        .filterIsInstance<KReplyTo>()
         .map { paragraph -> paragraph.content }
 }
 
