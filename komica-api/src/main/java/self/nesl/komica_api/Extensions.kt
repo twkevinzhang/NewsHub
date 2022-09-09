@@ -1,6 +1,5 @@
 package self.nesl.komica_api
 
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import self.nesl.komica_api.model.KPost
@@ -28,15 +27,15 @@ fun Element.installThreadTag(): Element {
     return this
 }
 
-fun String.withProtocol(): String {
+fun String.withHttps(): String {
     return if (this.startsWith("//")) {
-        "http:$this"
+        "https:$this"
     } else {
         this
     }
 }
 
-fun String.withProtocol(base: String): String {
+fun String.withHttps(base: String): String {
     return if (this.startsWith("./") || this.startsWith("/")) {
         if (base.endsWith("/") && this.startsWith("/"))
             base + this.substring(1)
@@ -45,7 +44,7 @@ fun String.withProtocol(base: String): String {
         else
             "$base/$this"
     } else {
-        this.withProtocol()
+        this.withHttps()
     }
 }
 

@@ -11,7 +11,7 @@ import self.nesl.komica_api.model.KParagraphType
 import self.nesl.komica_api.parser.PostHeadParser
 import self.nesl.komica_api.parser.Parser
 import self.nesl.komica_api.parser.UrlParser
-import self.nesl.komica_api.withProtocol
+import self.nesl.komica_api.withHttps
 import java.util.*
 
 /**
@@ -79,7 +79,7 @@ class SoraPostParser(
             val originalUrl = thumbImg.parent().attr("href")
             builder.addContent(
                 KParagraph(
-                    originalUrl.withProtocol(),
+                    originalUrl.withHttps(),
                     KParagraphType.IMAGE
                 )
             )

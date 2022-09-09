@@ -10,11 +10,11 @@ internal class ExtensionsTest {
 
     @Test
     fun `Test withProtocol extension expect successful`() =
-        assertEquals("http://www.google.com", "//www.google.com".withProtocol())
+        assertEquals("https://www.google.com", "//www.google.com".withHttps())
 
     @Test
     fun `Test withProtocol extension with correct baseUrl expect successful`() =
-        assertEquals("https://www.google.com/search", "/search".withProtocol("https://www.google.com"))
+        assertEquals("https://www.google.com/search", "/search".withHttps("https://www.google.com"))
 
     @Test
     fun `Test replaceJpnWeekday extension expect successful`() =
