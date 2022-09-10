@@ -51,4 +51,8 @@ class KomicaNewsHeadHeadRepositoryImpl @Inject constructor(
             favorite = null,
             page = page,
         )
+
+    override suspend fun clearAllNewsHead(topic: Topic) = withContext(ioDispatcher) {
+        dao.clearAll()
+    }
 }

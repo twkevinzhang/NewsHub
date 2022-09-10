@@ -20,4 +20,8 @@ class NewsHeadUseCase @Inject constructor(
                 addAll(komicaNewsHeadRepository.getAllNewsHead(topic, page[Host.KOMICA]!! - 1))
             }
         }
+
+    suspend fun clearAllNewsHead(topic: Topic) {
+        komicaNewsHeadRepository.clearAllNewsHead(topic)
+    }
 }

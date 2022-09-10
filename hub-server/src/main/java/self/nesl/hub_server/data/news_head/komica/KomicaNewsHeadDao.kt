@@ -6,8 +6,11 @@ import androidx.room.*
 interface KomicaNewsHeadDao {
 
     @Query("SELECT * FROM komica_news where page = :page")
-    fun readAll(page: Int): List<KomicaNewsHead>
+    suspend fun readAll(page: Int): List<KomicaNewsHead>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(list: List<KomicaNewsHead>)
+
+    @Query("DELETE FROM komica_news")
+    suspend fun clearAll()
 }
