@@ -9,9 +9,6 @@ import self.nesl.newshub.ui.component.Drawer
 import self.nesl.newshub.ui.navigation.drawerNavItems
 import self.nesl.newshub.ui.navigation.topicNavItems
 
-private val ColorPalette = darkColors(
-)
-
 object NewshubTheme {
     val colors
         @Composable

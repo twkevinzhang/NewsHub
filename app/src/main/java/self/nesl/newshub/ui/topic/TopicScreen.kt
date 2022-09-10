@@ -12,6 +12,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.paging.CombinedLoadStates
@@ -22,9 +23,12 @@ import self.nesl.hub_server.data.news_head.NewsHead
 import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
 import self.nesl.hub_server.data.news_head.komica.mockKomicaNewsHead
 import self.nesl.newshub.R
+import self.nesl.newshub.toHumanTime
 import self.nesl.newshub.ui.component.ParagraphBlock
+import self.nesl.newshub.ui.theme.AppDarkNavy
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
+import java.sql.Timestamp
 
 @Composable
 fun bindTopicScreen(
@@ -62,56 +66,78 @@ fun bindTopicScreen(
 
 @Composable
 fun KomicaNewsHeadCard(newsHead: NewsHead) {
-    Column {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = dimensionResource(id = R.dimen.space_4))
+    Surface(
+        elevation = 2.dp,
+    ) {
+        Column(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
         ) {
-            Row {
-                CardHeadTextBlock(text = newsHead.poster ?: "poster")
-                CardHeadTextBlock(text = newsHead.createdAt?.toString() ?: "createdAt")
-                CardHeadTextBlock(text = "komica")
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row {
+                    CardHeadPosterBlock(newsHead.poster)
+                    CardHeadTimeBlock(newsHead.createdAt)
+                    CardHeadHostBlock(newsHead)
+                }
+                Row {
+                    CardHeadRepliesBlock(newsHead.replies)
+                }
             }
-            Row {
-                CardHeadTextBlock(text = newsHead.replies?.toString() ?: "0")
-            }
-        }
-        CardHeadBlock {
-            Text(
-                text = newsHead.title ?: "title",
-                fontSize = 16.sp,
-            )
-        }
-        CardHeadBlock {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
+            KomicaNewsCardTitle(newsHead.title)
             ParagraphBlock(newsHead.content, 100)
         }
     }
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
 }
 
 @Preview
 @Composable
 fun PreviewKomicaNewsCard() {
-    KomicaNewsHeadCard(
-        mockKomicaNewsHead()
+    PreviewTheme {
+        KomicaNewsHeadCard(mockKomicaNewsHead())
+    }
+}
+
+@Composable
+fun KomicaNewsCardTitle(text: String?) {
+    when (text) {
+        null, "無題" ->
+            {}
+        else ->
+            Text(
+                text = text,
+                style = NewshubTheme.typography.h6,
+            )
+    }
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
+}
+
+@Composable
+fun CardHeadPosterBlock(poster: String?) {
+    CardHeadTextBlock(poster?.takeIf { it.isNotBlank() }.toString())
+}
+
+@Composable
+fun CardHeadTimeBlock(timestamp: Long?) {
+    CardHeadTextBlock(timestamp?.toHumanTime() ?: "time")
+}
+
+@Composable
+fun CardHeadHostBlock(newsHead: NewsHead) {
+    CardHeadTextBlock(
+        when (newsHead) {
+            is KomicaNewsHead -> "Komica"
+            else -> "not support"
+        }
     )
 }
 
 @Composable
-fun CardHeadTextBlock(
-    text: String = "",
-    modifier: Modifier = Modifier,
-
-) {
-    CardHeadBlock(
-        modifier = modifier,
-    ) {
-        Text(
-            text = text,
-            fontSize = 16.sp,
-        )
-    }
+fun CardHeadRepliesBlock(replies: Int?) {
+    CardHeadTextBlock(replies.toString())
 }
 
 @Composable
@@ -121,9 +147,26 @@ fun CardHeadBlock(
 ) {
     Box(
         modifier = modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.space_4))
+            .padding(end = dimensionResource(id = R.dimen.space_4))
     ) {
         compose()
+    }
+}
+
+@Composable
+fun CardHeadTextBlock(
+    text: String = "",
+    modifier: Modifier = Modifier,
+
+    ) {
+    CardHeadBlock(
+        modifier = modifier,
+    ) {
+        Text(
+            text = text,
+            style = NewshubTheme.typography.subtitle2,
+            color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
+        )
     }
 }
 
