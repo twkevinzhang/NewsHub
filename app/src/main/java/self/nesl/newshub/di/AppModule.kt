@@ -2,6 +2,9 @@ package self.nesl.newshub.di
 
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import coil.ImageLoader
+import coil.request.CachePolicy
+import coil.util.DebugLogger
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -14,7 +17,13 @@ import dagger.hilt.components.SingletonComponent
 object AppModule {
 
     @Provides
-    fun provideBluetoothManager(@ApplicationContext context: Context): BluetoothManager {
-        return context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-    }
+    fun provideBluetoothManager(@ApplicationContext context: Context) =
+        context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+
+    @Provides
+    fun provideImageLoader(@ApplicationContext context: Context) =
+        ImageLoader.Builder(context)
+            .logger(DebugLogger())
+            .crossfade(true)
+            .build()
 }

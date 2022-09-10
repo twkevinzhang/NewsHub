@@ -14,8 +14,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
+import self.nesl.hub_server.data.ImageInfo
+import self.nesl.hub_server.data.Link
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.ParagraphType
+import self.nesl.hub_server.data.Text
 import self.nesl.newshub.R
 
 @Composable
@@ -25,12 +27,12 @@ fun ParagraphBlock(
 ) {
     Column {
         article.map {
-            when (it.type) {
+            when (it) {
 //            ParagraphType.QUOTE -> QuoteBlock(it)
 //            ParagraphType.REPLY_TO -> QuoteBlock(it)
-                ParagraphType.TEXT -> TextParagraph(it)
-                ParagraphType.IMAGE -> ImageParagraph(it)
-                ParagraphType.LINK -> LinkParagraph(it)
+                is Text -> TextParagraph(it)
+                is ImageInfo -> ImageParagraph(it)
+                is Link -> LinkParagraph(it)
                 else -> {}
             }
         }
@@ -42,46 +44,31 @@ fun ParagraphBlock(
 fun PreviewParagraphBlock() {
     ParagraphBlock(
         article = listOf(
-            Paragraph(
-                type = ParagraphType.TEXT,
-                content = "Hello World"
-            ),
-            Paragraph(
-                type = ParagraphType.IMAGE,
-                content = "https://i.imgur.com/1Z1Z1Z1.jpg"
-            ),
-            Paragraph(
-                type = ParagraphType.LINK,
-                content = "https://www.google.com"
-            )
+            Text("Hello World"),
+            ImageInfo("https://i.imgur.com/1Z1Z1Z1.jpg", "https://i.imgur.com/1Z1Z1Z1.jpg"),
+            Link("https://www.google.com")
         )
     )
 }
 
 @Composable
-fun TextParagraph(paragraph: Paragraph) {
+fun TextParagraph(paragraph: Text) {
     Text(text = paragraph.content)
 }
 
 @Composable
-fun ImageParagraph(paragraph: Paragraph) {
+fun ImageParagraph(paragraph: ImageInfo) {
     SubcomposeAsyncImage(
-        model = paragraph.content,
+        model = paragraph.thumb,
         contentDescription = null,
         loading = {
             CircularProgressIndicator()
         },
-        onSuccess = {
-            Log.d("ImageParagraph", "load ${paragraph.content} success")
-        },
-        onError = {
-            Log.e("ImageParagraph", "load ${paragraph.content} error, ${it.result.throwable.stackTraceToString()}")
-        }
     )
 }
 
 @Composable
-fun LinkParagraph(paragraph: Paragraph, onClick: () -> Unit = { }) {
+fun LinkParagraph(paragraph: Link, onClick: () -> Unit = { }) {
     val annotated = buildAnnotatedString {
         append(paragraph.content)
         val (start, end) = 0 to paragraph.content.length
