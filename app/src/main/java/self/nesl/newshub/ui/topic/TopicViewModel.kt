@@ -8,8 +8,10 @@ import androidx.paging.cachedIn
 import androidx.paging.filter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import self.nesl.hub_server.data.news_head.Host
 import self.nesl.hub_server.data.news_head.NewsHead
+import self.nesl.newshub.interactor.ClearAllNewsHead
 import self.nesl.newshub.interactor.GetAllNewsHead
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import javax.inject.Inject
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TopicViewModel @Inject constructor(
     private val getAllNewsHead: GetAllNewsHead,
+    private val clearAllNewsHead: ClearAllNewsHead,
 ) : ViewModel() {
     companion object {
         val defaultTopic = TopicNavItems.Square
@@ -48,5 +51,11 @@ class TopicViewModel @Inject constructor(
 
     fun enableHost(host: Host) {
         this._excludeHosts.update { it.minus(host).toSet().toList() }
+    }
+
+    fun clearAllNewsHead() {
+        viewModelScope.launch {
+            clearAllNewsHead.invoke(_topic.value)
+        }
     }
 }

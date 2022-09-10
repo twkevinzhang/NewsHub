@@ -3,32 +3,26 @@ package self.nesl.newshub.ui.topic
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.paging.compose.items
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import self.nesl.hub_server.data.news_head.Host
 import self.nesl.hub_server.data.news_head.NewsHead
 import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
-import self.nesl.hub_server.data.news_head.komica.mockKomicaNewsHead
 import self.nesl.newshub.R
 import self.nesl.newshub.toHumanTime
-import self.nesl.newshub.ui.component.ParagraphBlock
-import self.nesl.newshub.ui.theme.AppDarkNavy
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
-import java.sql.Timestamp
 
 @Composable
 fun bindTopicScreen(
@@ -38,82 +32,81 @@ fun bindTopicScreen(
 ){
     val newsfeed = topicViewModel.newsfeed.collectAsLazyPagingItems()
     val enableHosts by topicViewModel.enableHosts.collectAsState(emptyList())
+    var loading by remember { mutableStateOf(false) }
 
-    LazyColumn {
-        item {
-            HostFilter(
-                selected = enableHosts,
-                onActiveClick = { topicViewModel.disableHost(it) },
-                onInactiveClick = { topicViewModel.enableHost(it) },
-            )
-        }
-        newsfeed.apply {
-            item {
-                HeaderLoading(loadState = loadState)
-            }
-            items(this) { newsHead ->
-                when (newsHead) {
-                    is KomicaNewsHead -> KomicaNewsHeadCard(newsHead)
-                    else -> Text(text = "not support")
-                }
-            }
-            item {
-                FooterLoading(loadState = loadState)
-            }
-        }
-    }
-}
-
-@Composable
-fun KomicaNewsHeadCard(newsHead: NewsHead) {
-    Surface(
-        elevation = 2.dp,
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(loading),
+        onRefresh = {
+            topicViewModel.clearAllNewsHead()
+            newsfeed.refresh()
+        },
     ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row {
-                    CardHeadPosterBlock(newsHead.poster)
-                    CardHeadTimeBlock(newsHead.createdAt)
-                    CardHeadHostBlock(newsHead)
+        LazyColumn {
+            item {
+                HostFilter(
+                    selected = enableHosts,
+                    onActiveClick = { topicViewModel.disableHost(it) },
+                    onInactiveClick = { topicViewModel.enableHost(it) },
+                )
+            }
+            newsfeed.apply {
+                item {
+                    loadState.apply {
+                        when {
+                            refresh is LoadState.Loading -> {
+                                loading = true
+                            }
+                            refresh is LoadState.NotLoading -> {
+                                loading = false
+                            }
+                            refresh is LoadState.Error -> {
+                                loading = false
+                                Error(refresh as LoadState.Error)
+                            }
+                            prepend is LoadState.Loading -> {
+                                loading = true
+                            }
+                            prepend is LoadState.NotLoading -> {
+                                loading = false
+                            }
+                            prepend is LoadState.Error -> {
+                                loading = false
+                                Error(prepend as LoadState.Error)
+                            }
+                        }
+                    }
                 }
-                Row {
-                    CardHeadRepliesBlock(newsHead.replies)
+                items(this) { newsHead ->
+                    when (newsHead) {
+                        is KomicaNewsHead -> KomicaNewsHeadCard(newsHead)
+                        else -> Text(text = "not support")
+                    }
+                }
+                item {
+                    Footer()
+                }
+                item {
+                    loadState.apply {
+                        when {
+                            append is LoadState.Loading -> {
+                                loading = true
+                                LoadingFooter()
+                            }
+                            append is LoadState.NotLoading -> {
+                                loading = false
+                            }
+                            append is LoadState.Error -> {
+                                loading = false
+                                Error(append as LoadState.Error)
+                            }
+                        }
+                    }
                 }
             }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
-            KomicaNewsCardTitle(newsHead.title)
-            ParagraphBlock(newsHead.content, 100)
         }
     }
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
 }
 
-@Preview
-@Composable
-fun PreviewKomicaNewsCard() {
-    PreviewTheme {
-        KomicaNewsHeadCard(mockKomicaNewsHead())
-    }
-}
-
-@Composable
-fun KomicaNewsCardTitle(text: String?) {
-    when (text) {
-        null, "無題" ->
-            {}
-        else ->
-            Text(
-                text = text,
-                style = NewshubTheme.typography.h6,
-            )
-    }
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
-}
 
 @Composable
 fun CardHeadPosterBlock(poster: String?) {
@@ -167,49 +160,6 @@ fun CardHeadTextBlock(
             style = NewshubTheme.typography.subtitle2,
             color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
         )
-    }
-}
-
-@Composable
-fun HeaderLoading(loadState: CombinedLoadStates) {
-    loadState.apply {
-        when {
-            refresh is LoadState.Loading -> {
-                Loading()
-            }
-            refresh is LoadState.NotLoading -> {
-
-            }
-            refresh is LoadState.Error -> {
-                Error(refresh as LoadState.Error)
-            }
-            prepend is LoadState.Loading -> {
-                Loading()
-            }
-            prepend is LoadState.NotLoading -> {
-
-            }
-            prepend is LoadState.Error -> {
-                Error(prepend as LoadState.Error)
-            }
-        }
-    }
-}
-
-@Composable
-fun FooterLoading(loadState: CombinedLoadStates) {
-    loadState.apply {
-        when {
-            append is LoadState.Loading -> {
-                Loading()
-            }
-            append is LoadState.NotLoading -> {
-
-            }
-            append is LoadState.Error -> {
-                Error(append as LoadState.Error)
-            }
-        }
     }
 }
 
@@ -282,8 +232,13 @@ fun PreviewHostIcon() {
 }
 
 @Composable
-fun Loading() {
+fun LoadingFooter() {
     Text(text = "Loading", fontSize = 26.sp)
+}
+
+@Composable
+fun Footer() {
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_65)))
 }
 
 @Composable

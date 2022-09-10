@@ -15,7 +15,7 @@ import javax.inject.Singleton
 class GetAllNewsHead @Inject constructor(
     private val newsHeadUseCase: NewsHeadUseCase,
 ) {
-    operator fun invoke(topicNavItems: TopicNavItems, hosts: List<Host>): Flow<PagingData<NewsHead>> {
+    fun invoke(topicNavItems: TopicNavItems, hosts: List<Host>): Flow<PagingData<NewsHead>> {
         return Pager(
             config = PagingConfig(pageSize = 30, enablePlaceholders = false),
             pagingSourceFactory = {
@@ -23,12 +23,6 @@ class GetAllNewsHead @Inject constructor(
             },
         ).flow
     }
-
-    private fun TopicNavItems.toTopic() =
-        when (this) {
-            TopicNavItems.Square -> Topic.Square
-            TopicNavItems.Movie -> Topic.Movie
-        }
 
     private class NewsHeadPagingSource(
         val newsHeadUseCase: NewsHeadUseCase,
@@ -70,10 +64,7 @@ class GetAllNewsHead @Inject constructor(
         }
 
         override fun getRefreshKey(state: PagingState<Int, NewsHead>): Int? {
-            return state.anchorPosition?.let { anchorPosition ->
-                state.closestPageToPosition(anchorPosition)?.prevKey
-                    ?: state.closestPageToPosition(anchorPosition)?.nextKey
-            }
+            return null
         }
 
         private fun <K, V> Set<K>.toMap(fill: V): Map<K, V> {
@@ -85,3 +76,9 @@ class GetAllNewsHead @Inject constructor(
         }
     }
 }
+
+fun TopicNavItems.toTopic() =
+    when (this) {
+        TopicNavItems.Square -> Topic.Square
+        TopicNavItems.Movie -> Topic.Movie
+    }
