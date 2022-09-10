@@ -82,7 +82,7 @@ fun String.replaceChiWeekday(): String {
     return s
 }
 
-fun String.toTimestamp(): Long {
+fun String.toMillTimestamp(): Long {
     for (format in listOf(
         "yy/MM/dd(EEE) HH:mm:ss",
         "yy/MM/dd(EEE)HH:mm:ss",
@@ -91,7 +91,7 @@ fun String.toTimestamp(): Long {
     )) {
         try {
             val formatter = SimpleDateFormat(format, Locale.ENGLISH)
-            formatter.set2DigitYearStart(Date(946684800))
+            formatter.set2DigitYearStart(Date(946684800)) // 從 2000 年開始
             return formatter.parse(this).time
         } catch (ignored: ParseException) {
         }

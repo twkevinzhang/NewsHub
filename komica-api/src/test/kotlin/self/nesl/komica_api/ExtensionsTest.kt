@@ -3,8 +3,7 @@ package self.nesl.komica_api
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import self.nesl.komica_api.model.KPostBuilder
-import self.nesl.komica_api.model.KParagraph
-import self.nesl.komica_api.model.KParagraphType
+import self.nesl.komica_api.model.KReplyTo
 
 internal class ExtensionsTest {
 
@@ -25,24 +24,28 @@ internal class ExtensionsTest {
         assertEquals("Mon Tue", "一 二".replaceChiWeekday())
 
     @Test
-    fun `Test toTimestamp extension expect successful`() =
-        assertEquals(1659259281333L, "2022/07/31(Sun) 17:21:21.333".toTimestamp())
+    fun `Test toMillTimestamp extension expect successful`() =
+        assertEquals(1662795827333L, "2022/09/10(Sat) 15:43:47.333".toMillTimestamp())
+
+    @Test
+    fun `Test toMillTimestamp with years with only two digits extension expect successful`() =
+        assertEquals(1662795827000L, "22/09/10(Sat) 15:43:47".toMillTimestamp())
 
     @Test
     fun `Test replyFor extension expect successful`() {
         val post1 = KPostBuilder().setContent(listOf(
-            KParagraph("A", KParagraphType.REPLY_TO),
-            KParagraph("B", KParagraphType.REPLY_TO),
-            KParagraph("C", KParagraphType.REPLY_TO),
+            KReplyTo("A"),
+            KReplyTo("B"),
+            KReplyTo("C"),
         )).build()
 
         val post2 = KPostBuilder().setContent(listOf(
-            KParagraph("A", KParagraphType.REPLY_TO),
-            KParagraph("B", KParagraphType.REPLY_TO),
+            KReplyTo("A"),
+            KReplyTo("B"),
         )).build()
 
         val post3 = KPostBuilder().setContent(listOf(
-            KParagraph("A", KParagraphType.REPLY_TO),
+            KReplyTo("A"),
         )).build()
 
         assertEquals(2, listOf(post1, post2, post3).replyFor("B").size)

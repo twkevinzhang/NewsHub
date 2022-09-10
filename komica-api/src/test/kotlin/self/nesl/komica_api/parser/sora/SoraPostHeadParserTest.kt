@@ -1,6 +1,7 @@
 package self.nesl.komica_api.parser.sora
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.Jsoup
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -13,7 +14,7 @@ internal class SoraPostHeadParserTest {
         val parser = SoraPostHeadParser()
         val title = parser.parseTitle(
             Jsoup.parse(loadFile("./src/test/html/sora/HeadPost.html")),
-            HttpUrl.parse("https://sora.komica.org/00/pixmicat.php?res=25208017")!!
+            "https://sora.komica.org/00/pixmicat.php?res=25208017".toHttpUrlOrNull()!!
         )
         assertEquals("無題", title)
     }
@@ -23,7 +24,7 @@ internal class SoraPostHeadParserTest {
         val parser = SoraPostHeadParser()
         val time = parser.parseCreatedAt(
             Jsoup.parse(loadFile("./src/test/html/sora/HeadPost.html")),
-            HttpUrl.parse("https://sora.komica.org/00/pixmicat.php?res=25208017")!!
+            "https://sora.komica.org/00/pixmicat.php?res=25208017".toHttpUrlOrNull()!!
         )
         assertEquals(1638460800000L, time)
     }

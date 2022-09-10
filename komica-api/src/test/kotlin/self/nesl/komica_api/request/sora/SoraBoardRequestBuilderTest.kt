@@ -1,6 +1,7 @@
 package self.nesl.komica_api.request.sora
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -12,7 +13,10 @@ internal class SoraBoardRequestBuilderTest {
             .url("https://sora.komica.org/00")
             .setPageReq(1)
             .build()
-        assertEquals(HttpUrl.parse("https://sora.komica.org/00/pixmicat.php?page_num=1"), req.url())
+        assertEquals(
+            "https://sora.komica.org/00/pixmicat.php?page_num=1".toHttpUrlOrNull(),
+            req.url
+        )
     }
 
     @Test
@@ -21,6 +25,9 @@ internal class SoraBoardRequestBuilderTest {
             .url("https://sora.komica.org/00/pixmicat.php?page_num=2")
             .setPageReq(1)
             .build()
-        assertEquals(HttpUrl.parse("https://sora.komica.org/00/pixmicat.php?page_num=1"), req.url())
+        assertEquals(
+            "https://sora.komica.org/00/pixmicat.php?page_num=1".toHttpUrlOrNull(),
+            req.url
+        )
     }
 }

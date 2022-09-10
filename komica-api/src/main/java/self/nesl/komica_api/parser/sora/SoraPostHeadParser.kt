@@ -4,8 +4,7 @@ import okhttp3.HttpUrl
 import org.jsoup.nodes.Element
 import self.nesl.komica_api.parser.PostHeadParser
 import self.nesl.komica_api.replaceChiWeekday
-import self.nesl.komica_api.replaceJpnWeekday
-import self.nesl.komica_api.toTimestamp
+import self.nesl.komica_api.toMillTimestamp
 
 class SoraPostHeadParser: PostHeadParser {
     override fun parseTitle(source: Element, url: HttpUrl): String? {
@@ -22,7 +21,7 @@ class SoraPostHeadParser: PostHeadParser {
             timeE = head
         }
         val post_detail = timeE.text().split(" ID:")
-        return post_detail[0].trim().replaceChiWeekday().toTimestamp()
+        return post_detail[0].trim().replaceChiWeekday().toMillTimestamp()
     }
 
     override fun parsePoster(source: Element, url: HttpUrl): String? {

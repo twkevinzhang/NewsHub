@@ -5,8 +5,7 @@ import org.jsoup.nodes.Element
 import self.nesl.komica_api.parser.PostHeadParser
 import self.nesl.komica_api.parser.UrlParser
 import self.nesl.komica_api.replaceChiWeekday
-import self.nesl.komica_api.replaceJpnWeekday
-import self.nesl.komica_api.toTimestamp
+import self.nesl.komica_api.toMillTimestamp
 
 class _2catPostHeadParser(
     private val urlParser: UrlParser,
@@ -25,7 +24,7 @@ class _2catPostHeadParser(
         println(post_detail[0])
         return post_detail[0].trim()
             .replaceChiWeekday()
-            .toTimestamp()
+            .toMillTimestamp()
     }
 
     override fun parsePoster(source: Element, url: HttpUrl): String? {
