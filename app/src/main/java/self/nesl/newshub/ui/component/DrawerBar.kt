@@ -9,6 +9,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.navigation.NavItems
 import self.nesl.newshub.ui.navigation.drawerNavItems
@@ -51,7 +52,7 @@ fun Drawer(
         }
 
         Surface(
-            elevation = DrawerDefaults.Elevation,
+            elevation = 1.dp,
         ) {
             Column {
                 bottomNavItems.forEach {
