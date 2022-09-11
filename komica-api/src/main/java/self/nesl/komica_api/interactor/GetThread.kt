@@ -10,18 +10,19 @@ import self.nesl.komica_api.model.KPost
 import self.nesl.komica_api.model.KBoard
 import self.nesl.komica_api.parser._2cat.*
 import self.nesl.komica_api.parser.sora.*
+import self.nesl.komica_api.toKomicaBoard
 
 class GetThread(
     private val client: OkHttpClient,
 ) {
-    suspend operator fun invoke(board: KBoard): Pair<KPost, List<KPost>> = withContext(Dispatchers.IO) {
+    suspend operator fun invoke(url: String): Pair<KPost, List<KPost>> = withContext(Dispatchers.IO) {
         val response = client.newCall(
             Request.Builder()
-            .url(board.url)
+            .url(url)
             .build()
         ).await()
 
-        when (board) {
+        when (url.toKomicaBoard()) {
             is KBoard.Sora, KBoard.人外, KBoard.格鬥遊戲, KBoard.Idolmaster, KBoard.`3D-STG`, KBoard.魔物獵人, KBoard.`TYPE-MOON` ->
                 SoraThreadParser(SoraPostParser(SoraUrlParser(), SoraPostHeadParser()))
             is KBoard._2catKomica ->
@@ -29,7 +30,7 @@ class GetThread(
             is KBoard._2cat ->
                 _2catThreadParser(_2catPostParser(_2catUrlParser(), _2catPostHeadParser(_2catUrlParser())))
             else ->
-                throw NotImplementedError("ThreadParser of $board not implemented yet")
-        }.parse(Jsoup.parse(response.body?.string()), board.url)
+                throw NotImplementedError("ThreadParser of $url not implemented yet")
+        }.parse(Jsoup.parse(response.body?.string()), url)
     }
 }
