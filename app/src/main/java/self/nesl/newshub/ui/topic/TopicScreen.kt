@@ -21,6 +21,7 @@ import self.nesl.hub_server.data.news_head.NewsHead
 import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
 import self.nesl.newshub.R
 import self.nesl.newshub.toHumanTime
+import self.nesl.newshub.ui.navigation.TopicNavItems
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 
@@ -28,7 +29,6 @@ import self.nesl.newshub.ui.theme.PreviewTheme
 fun bindTopicScreen(
     topicViewModel: TopicViewModel,
     navController: NavHostController,
-    openDrawer: () -> Unit = { },
 ){
     val newsfeed = topicViewModel.newsfeed.collectAsLazyPagingItems()
     val enableHosts by topicViewModel.enableHosts.collectAsState(emptyList())
@@ -107,62 +107,6 @@ fun bindTopicScreen(
     }
 }
 
-
-@Composable
-fun CardHeadPosterBlock(poster: String?) {
-    CardHeadTextBlock(poster?.takeIf { it.isNotBlank() }.toString())
-}
-
-@Composable
-fun CardHeadTimeBlock(timestamp: Long?) {
-    CardHeadTextBlock(timestamp?.toHumanTime() ?: "time")
-}
-
-@Composable
-fun CardHeadHostBlock(newsHead: NewsHead) {
-    CardHeadTextBlock(
-        when (newsHead) {
-            is KomicaNewsHead -> "Komica"
-            else -> "not support"
-        }
-    )
-}
-
-@Composable
-fun CardHeadRepliesBlock(replies: Int?) {
-    CardHeadTextBlock(replies.toString())
-}
-
-@Composable
-fun CardHeadBlock(
-    modifier: Modifier = Modifier,
-    compose: @Composable () -> Unit = { },
-) {
-    Box(
-        modifier = modifier
-            .padding(end = dimensionResource(id = R.dimen.space_4))
-    ) {
-        compose()
-    }
-}
-
-@Composable
-fun CardHeadTextBlock(
-    text: String = "",
-    modifier: Modifier = Modifier,
-
-    ) {
-    CardHeadBlock(
-        modifier = modifier,
-    ) {
-        Text(
-            text = text,
-            style = NewshubTheme.typography.subtitle2,
-            color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-        )
-    }
-}
-
 @Composable
 fun HostFilter(
     selected: List<Host> = emptyList(),
@@ -226,7 +170,7 @@ fun HostIcon(
 @Preview
 @Composable
 fun PreviewHostIcon() {
-    NewshubTheme {
+    PreviewTheme {
         HostIcon(Host.KOMICA)
     }
 }

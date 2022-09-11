@@ -1,10 +1,8 @@
 package self.nesl.newshub.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -25,7 +23,7 @@ fun bindAppScreen(
     navController: NavHostController,
 ) {
     val defaultNav = DrawerNavItems.Home
-    val currentNavItem = remember { mutableStateOf<NavItems>(defaultNav) }
+    var currentNavItem by remember { mutableStateOf<NavItems>(defaultNav) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val openDrawer = {
@@ -56,7 +54,7 @@ fun bindAppScreen(
     ) {
         Scaffold(
             topBar = { NewsHubTopBar(onMenuPressed = { openDrawer() },
-            title = stringResource(id = currentNavItem.value.resourceId)) },
+            title = stringResource(id = currentNavItem.resourceId)) },
             bottomBar = { AppBottomBar(bottomNavItems()) },
         ) {
             NavHost(
@@ -64,16 +62,20 @@ fun bindAppScreen(
                 startDestination = defaultNav.route,
             ) {
                 composable(DrawerNavItems.Home.route) {
-                    currentNavItem.value = DrawerNavItems.Home
+                    currentNavItem = DrawerNavItems.Home
                 }
 
                 composable(TopicNavItems.Square.route) {
-                    currentNavItem.value = TopicNavItems.Square
+                    currentNavItem = TopicNavItems.Square
                     topicViewModel.topic(TopicNavItems.Square)
                     bindTopicScreen(
                         topicViewModel = topicViewModel,
                         navController = navController,
-                        openDrawer = { openDrawer() })
+                    )
+                }
+
+                composable(TopicNavItems.Movie.route) {
+                    currentNavItem = TopicNavItems.Movie
                 }
             }
         }
