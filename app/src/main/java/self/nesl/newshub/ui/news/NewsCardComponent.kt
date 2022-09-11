@@ -1,10 +1,8 @@
 package self.nesl.newshub.ui.news
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -70,8 +68,8 @@ fun CardHeadTextBlock(
     ) {
         Text(
             text = text,
-            style = NewshubTheme.typography.subtitle2,
-            color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
+            style = NewshubTheme.typography.bodySmall,
+            color = LocalContentColor.current.copy(alpha = 0.4f),
         )
     }
 }

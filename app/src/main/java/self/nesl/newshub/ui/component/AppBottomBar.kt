@@ -2,10 +2,10 @@ package self.nesl.newshub.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -21,11 +21,11 @@ fun AppBottomBar(
     onNavItemClick: (NavItems) -> Unit = { },
     selectedItem : NavItems? = null,
 ) {
-    BottomNavigation(
-        elevation = dimensionResource(id = R.dimen.space_0),
+    BottomAppBar(
+        tonalElevation = dimensionResource(id = R.dimen.space_0),
     ) {
         navItems.forEach { item ->
-            BottomNavigationItem (
+            NavigationRailItem (
                 icon = {
                     Icon(
                         painter = painterResource(id = item.icon),

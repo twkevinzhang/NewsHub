@@ -1,15 +1,14 @@
 package self.nesl.newshub.ui.topic
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import self.nesl.hub_server.data.news_head.NewsHead
 import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
 import self.nesl.hub_server.data.news_head.komica.mockKomicaNewsHead
 import self.nesl.newshub.R
@@ -26,21 +25,21 @@ fun KomicaNewsHeadCard(
     newsHead: KomicaNewsHead,
 ) {
     Surface(
-        elevation = 2.dp,
+        tonalElevation = 2.dp,
     ) {
         KomicaNewsHeadCardContent(newsHead)
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KomicaNewsHeadCard(
     newsHead: KomicaNewsHead,
     onClick: () -> Unit,
 ) {
     Surface(
-        elevation = 2.dp,
+        tonalElevation = 2.dp,
         onClick = onClick,
     ) {
         KomicaNewsHeadCardContent(newsHead)
@@ -88,7 +87,7 @@ fun KomicaNewsCardTitle(text: String?) {
         else ->
             Text(
                 text = text,
-                style = NewshubTheme.typography.h6,
+                style = NewshubTheme.typography.titleMedium,
             )
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))

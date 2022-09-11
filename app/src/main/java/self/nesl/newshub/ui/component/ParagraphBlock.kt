@@ -1,10 +1,10 @@
 package self.nesl.newshub.ui.component
 
 import android.util.Log
+import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -19,6 +19,7 @@ import self.nesl.hub_server.data.Link
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.Text
 import self.nesl.newshub.R
+import self.nesl.newshub.ui.theme.NewshubTheme
 
 @Composable
 fun ParagraphBlock(
@@ -53,7 +54,10 @@ fun PreviewParagraphBlock() {
 
 @Composable
 fun TextParagraph(paragraph: Text) {
-    Text(text = paragraph.content)
+    Text(
+        text = paragraph.content,
+        style = NewshubTheme.typography.bodyMedium,
+    )
 }
 
 @Composable

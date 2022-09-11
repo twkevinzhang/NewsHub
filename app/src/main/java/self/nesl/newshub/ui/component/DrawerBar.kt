@@ -3,6 +3,9 @@ package self.nesl.newshub.ui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material3.DrawerDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -40,7 +43,7 @@ fun Drawer(
                     onClick = { onTopNavItemClick(it) }
                 )
                 Surface(
-                    elevation = DrawerDefaults.Elevation,
+                    tonalElevation = 1.dp,
                 ) {
                     Spacer(
                         modifier = Modifier
@@ -52,7 +55,7 @@ fun Drawer(
         }
 
         Surface(
-            elevation = 1.dp,
+            tonalElevation = 1.dp,
         ) {
             Column {
                 bottomNavItems.forEach {
@@ -83,7 +86,7 @@ fun DrawerHeader(
             .padding(horizontal = dimensionResource(id = R.dimen.space_16))
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_100)))
-        Text(text = name, style = NewshubTheme.typography.h3)
+        Text(text = name, style = NewshubTheme.typography.displayLarge)
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_2)))
     }
 }

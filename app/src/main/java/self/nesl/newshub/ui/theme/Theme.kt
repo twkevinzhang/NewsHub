@@ -1,13 +1,10 @@
 package self.nesl.newshub.ui.theme
 
-import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.tooling.preview.Preview
-import self.nesl.newshub.ui.component.Drawer
-import self.nesl.newshub.ui.navigation.drawerNavItems
-import self.nesl.newshub.ui.navigation.topicNavItems
 
 object NewshubTheme {
     val colors
@@ -31,7 +28,7 @@ fun NewshubTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colors = NewshubTheme.colors,
+        colorScheme = NewshubTheme.colors,
         typography = NewshubTheme.typography,
         shapes = NewshubTheme.shapes,
         content = content

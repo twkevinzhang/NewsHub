@@ -5,6 +5,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -18,43 +19,40 @@ import self.nesl.newshub.ui.theme.AppDarkBlue
 import self.nesl.newshub.ui.theme.AppWhite
 import self.nesl.newshub.ui.theme.PreviewTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsHubTopBar(
     title: String = "",
     onMenuPressed: (() -> Unit)? = null,
     onBackPressed: (() -> Unit)? = null,
 ) {
-    TopAppBar {
-        Box(
-            modifier = Modifier
-                .height(dimensionResource(id = R.dimen.space_32)),
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.high,
-                ) {
-                    if (onBackPressed != null) {
-                        IconButton(
-                            onClick = { onBackPressed() }
-                        ) {
-                            Icon(Icons.Outlined.ArrowBack, "arrow_back")
-                        }
-                    }
-                    if (onMenuPressed != null) {
-                        IconButton(
-                            onClick = { onMenuPressed() }
-                        ) {
-                            Icon(Icons.Outlined.Menu, "menu")
-                        }
-                    }
-                    Text(
-                        text = title,
-                        style = NewshubTheme.typography.h6,
+    SmallTopAppBar(
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+            )
+        },
+        navigationIcon = {
+            if (onBackPressed != null) {
+                IconButton(onClick = onBackPressed) {
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowBack,
+                        contentDescription = "Back",
+                        tint = AppWhite,
+                    )
+                }
+            } else if (onMenuPressed != null) {
+                IconButton(onClick = onMenuPressed) {
+                    Icon(
+                        imageVector = Icons.Outlined.Menu,
+                        contentDescription = "Menu",
+                        tint = AppWhite,
                     )
                 }
             }
-        }
-    }
+        },
+    )
 }
 
 @Preview

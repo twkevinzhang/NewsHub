@@ -1,6 +1,6 @@
 package self.nesl.newshub.ui.theme
 
-import androidx.compose.material.darkColors
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.graphics.Color
 
 val AppWhite = Color(0xffffffff)
@@ -18,5 +18,5 @@ val AppPink = Color(0xffe04aff)
 val AppRed = Color(0xfff8536f)
 val AppProgressBarLight = Color(0x33e04aff)
 
-val ColorPalette = darkColors(
+val ColorPalette = darkColorScheme(
 )

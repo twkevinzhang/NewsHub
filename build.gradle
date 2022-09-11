@@ -23,6 +23,7 @@ buildscript {
                 androidx_hilt: '1.0.0',
                 datastore: '1.0.0-rc01',
                 work: '2.7.0',
+                material3: '1.0.0-beta01',
         ]
     }
 

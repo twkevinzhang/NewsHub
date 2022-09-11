@@ -3,6 +3,9 @@ package self.nesl.newshub.ui.topic
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.paging.compose.items
 import androidx.compose.ui.Modifier

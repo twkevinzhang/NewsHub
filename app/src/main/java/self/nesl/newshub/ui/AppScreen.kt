@@ -2,6 +2,7 @@ package self.nesl.newshub.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -17,6 +18,7 @@ import self.nesl.newshub.ui.topic.bindTopicScreen
 import self.nesl.newshub.ui.navigation.*
 import self.nesl.newshub.ui.theme.AppDarkBlue
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun bindAppScreen(
     topicViewModel: TopicViewModel,
@@ -37,10 +39,9 @@ fun bindAppScreen(
         }
     }
 
-    ModalDrawer(
+    ModalNavigationDrawer(
         drawerState = drawerState,
         gesturesEnabled = drawerState.isOpen,
-        drawerElevation = 0.dp,
         drawerContent = {
             Drawer(
                 topNavItems = topicNavItems(),
