@@ -13,17 +13,10 @@ import self.nesl.newshub.ui.theme.NewshubTheme
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val topicViewModel by viewModels<TopicViewModel>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            NewshubTheme {
-                bindAppScreen(
-                    topicViewModel = topicViewModel,
-                    navController = rememberNavController(),
-                )
-            }
+            bindAppScreen()
         }
     }
 }

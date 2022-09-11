@@ -26,6 +26,9 @@ class TopicViewModel @Inject constructor(
     }
     private val _topic = MutableStateFlow<TopicNavItems>(defaultTopic)
     private val _excludeHosts = MutableStateFlow(emptyList<Host>())
+
+    val topic = _topic.asStateFlow()
+
     val enableHosts = _excludeHosts.mapLatest {
         Host.values().toList().minus(it.toSet())
     }

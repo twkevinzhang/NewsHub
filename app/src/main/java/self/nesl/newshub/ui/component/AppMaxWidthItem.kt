@@ -43,7 +43,7 @@ fun AppMaxWidthItem(
             text = title,
             modifier = Modifier
                 .padding(dimensionResource(id = R.dimen.space_16)),
-            style = NewshubTheme.typography.bodySmall,
+            style = NewshubTheme.typography.bodyMedium,
         )
     }
     Spacer(

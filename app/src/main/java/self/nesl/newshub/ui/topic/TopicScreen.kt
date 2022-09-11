@@ -3,9 +3,7 @@ package self.nesl.newshub.ui.topic
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.paging.compose.items
 import androidx.compose.ui.Modifier
@@ -24,83 +22,101 @@ import self.nesl.hub_server.data.news_head.NewsHead
 import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
 import self.nesl.newshub.R
 import self.nesl.newshub.toHumanTime
+import self.nesl.newshub.ui.component.AppBottomBar
+import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.navigation.TopicNavItems
+import self.nesl.newshub.ui.navigation.bottomNavItems
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun bindTopicScreen(
     topicViewModel: TopicViewModel,
     navController: NavHostController,
+    openDrawer: () -> Unit,
 ){
+    val topic by topicViewModel.topic.collectAsState()
     val newsfeed = topicViewModel.newsfeed.collectAsLazyPagingItems()
     val enableHosts by topicViewModel.enableHosts.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
 
-    SwipeRefresh(
-        state = rememberSwipeRefreshState(loading),
-        onRefresh = {
-            topicViewModel.clearAllNewsHead()
-            newsfeed.refresh()
+    Scaffold(
+        topBar = {
+            NewsHubTopBar(
+                onMenuPressed = { openDrawer() },
+                title = stringResource(id = topic.resourceId)
+            )
         },
+        bottomBar = { AppBottomBar(bottomNavItems()) },
     ) {
-        LazyColumn {
-            item {
-                HostFilter(
-                    selected = enableHosts,
-                    onActiveClick = { topicViewModel.disableHost(it) },
-                    onInactiveClick = { topicViewModel.enableHost(it) },
-                )
-            }
-            newsfeed.apply {
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(loading),
+            onRefresh = {
+                topicViewModel.clearAllNewsHead()
+                newsfeed.refresh()
+            },
+        ) {
+            LazyColumn(
+                contentPadding = it,
+            ) {
                 item {
-                    loadState.apply {
-                        when {
-                            refresh is LoadState.Loading -> {
-                                loading = true
-                            }
-                            refresh is LoadState.NotLoading -> {
-                                loading = false
-                            }
-                            refresh is LoadState.Error -> {
-                                loading = false
-                                Error(refresh as LoadState.Error)
-                            }
-                            prepend is LoadState.Loading -> {
-                                loading = true
-                            }
-                            prepend is LoadState.NotLoading -> {
-                                loading = false
-                            }
-                            prepend is LoadState.Error -> {
-                                loading = false
-                                Error(prepend as LoadState.Error)
+                    HostFilter(
+                        selected = enableHosts,
+                        onActiveClick = { topicViewModel.disableHost(it) },
+                        onInactiveClick = { topicViewModel.enableHost(it) },
+                    )
+                }
+                newsfeed.apply {
+                    item {
+                        loadState.apply {
+                            when {
+                                refresh is LoadState.Loading -> {
+                                    loading = true
+                                }
+                                refresh is LoadState.NotLoading -> {
+                                    loading = false
+                                }
+                                refresh is LoadState.Error -> {
+                                    loading = false
+                                    Error(refresh as LoadState.Error)
+                                }
+                                prepend is LoadState.Loading -> {
+                                    loading = true
+                                }
+                                prepend is LoadState.NotLoading -> {
+                                    loading = false
+                                }
+                                prepend is LoadState.Error -> {
+                                    loading = false
+                                    Error(prepend as LoadState.Error)
+                                }
                             }
                         }
                     }
-                }
-                items(this) { newsHead ->
-                    when (newsHead) {
-                        is KomicaNewsHead -> KomicaNewsHeadCard(newsHead)
-                        else -> Text(text = "not support")
+                    items(this) { newsHead ->
+                        when (newsHead) {
+                            is KomicaNewsHead -> KomicaNewsHeadCard(newsHead)
+                            else -> Text(text = "not support")
+                        }
                     }
-                }
-                item {
-                    Footer()
-                }
-                item {
-                    loadState.apply {
-                        when {
-                            append is LoadState.Loading -> {
-                                loading = true
-                                LoadingFooter()
-                            }
-                            append is LoadState.NotLoading -> {
-                                loading = false
-                            }
-                            append is LoadState.Error -> {
-                                loading = false
-                                Error(append as LoadState.Error)
+                    item {
+                        Footer()
+                    }
+                    item {
+                        loadState.apply {
+                            when {
+                                append is LoadState.Loading -> {
+                                    loading = true
+                                    LoadingFooter()
+                                }
+                                append is LoadState.NotLoading -> {
+                                    loading = false
+                                }
+                                append is LoadState.Error -> {
+                                    loading = false
+                                    Error(append as LoadState.Error)
+                                }
                             }
                         }
                     }

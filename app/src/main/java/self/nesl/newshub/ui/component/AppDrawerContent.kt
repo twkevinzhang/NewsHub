@@ -2,10 +2,7 @@ package self.nesl.newshub.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.material3.DrawerDefaults
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -19,50 +16,56 @@ import self.nesl.newshub.ui.navigation.drawerNavItems
 import self.nesl.newshub.ui.navigation.topicNavItems
 import self.nesl.newshub.ui.theme.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Drawer(
+fun AppDrawerContent(
+    currentRoute: String,
     topNavItems: List<NavItems>,
     onTopNavItemClick: (NavItems) -> Unit = { },
     bottomNavItems: List<NavItems>,
     onBottomNavItemClick: (NavItems) -> Unit = { },
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween,
-    ) {
+    ModalDrawerSheet {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            DrawerHeader(name = "NewsHub")
-            topNavItems.forEach {
-                AppMaxWidthItem(
-                    title = stringResource(id = it.resourceId),
-                    icon = painterResource(id = it.icon),
-                    onClick = { onTopNavItemClick(it) }
-                )
-                Surface(
-                    tonalElevation = 1.dp,
-                ) {
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(dimensionResource(id = R.dimen.space_1))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                AppDrawerHeader(name = "NewsHub")
+                topNavItems.forEach {
+                    NavigationDrawerItem(
+                        label = { Text(stringResource(id = it.resourceId),) },
+                        icon = { Icon(painterResource(id = it.icon), null) },
+                        selected = currentRoute == it.route,
+                        onClick = { onTopNavItemClick(it) },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
                     )
+                    Surface(
+                        tonalElevation = dimensionResource(id = R.dimen.space_0),
+                    ) {
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(dimensionResource(id = R.dimen.space_1))
+                                .background(color = NewshubTheme.colors.background)
+                        )
+                    }
                 }
             }
-        }
 
-        Surface(
-            tonalElevation = 1.dp,
-        ) {
             Column {
                 bottomNavItems.forEach {
-                    AppMaxWidthItem(
-                        title = stringResource(id = it.resourceId),
-                        icon = painterResource(id = it.icon),
-                        onClick = { onBottomNavItemClick(it) }
+                    NavigationDrawerItem(
+                        label = { Text(stringResource(id = it.resourceId),) },
+                        icon = { Icon(painterResource(id = it.icon), null) },
+                        selected = currentRoute == it.route,
+                        onClick = { onBottomNavItemClick(it) },
+                        modifier = Modifier
+                            .padding(NavigationDrawerItemDefaults.ItemPadding),
                     )
                     Spacer(
                         modifier = Modifier
@@ -77,7 +80,7 @@ fun Drawer(
 }
 
 @Composable
-fun DrawerHeader(
+fun AppDrawerHeader(
     name: String,
 ) {
     Column(
@@ -95,7 +98,8 @@ fun DrawerHeader(
 @Composable
 private fun PreviewDrawer() {
     PreviewTheme {
-        Drawer(
+        AppDrawerContent(
+            currentRoute = "",
             topNavItems = topicNavItems(),
             bottomNavItems = drawerNavItems(),
         )

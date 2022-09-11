@@ -25,7 +25,7 @@ fun KomicaNewsHeadCard(
     newsHead: KomicaNewsHead,
 ) {
     Surface(
-        tonalElevation = 2.dp,
+        tonalElevation = dimensionResource(id = R.dimen.space_2),
     ) {
         KomicaNewsHeadCardContent(newsHead)
     }
@@ -39,7 +39,7 @@ fun KomicaNewsHeadCard(
     onClick: () -> Unit,
 ) {
     Surface(
-        tonalElevation = 2.dp,
+        tonalElevation = dimensionResource(id = R.dimen.space_2),
         onClick = onClick,
     ) {
         KomicaNewsHeadCardContent(newsHead)
