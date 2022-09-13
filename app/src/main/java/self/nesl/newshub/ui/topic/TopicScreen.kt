@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -29,9 +30,8 @@ import self.nesl.newshub.ui.navigation.bottomNavItems
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun bindTopicScreen(
+fun TopicRoute(
     topicViewModel: TopicViewModel,
     navController: NavHostController,
     openDrawer: () -> Unit,
@@ -41,6 +41,40 @@ fun bindTopicScreen(
     val enableHosts by topicViewModel.enableHosts.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
 
+    TopicScreen(
+        topic = topic,
+        loading = loading,
+        onLoading = { loading = true },
+        onLoaded = { loading = false },
+        enableHosts = enableHosts,
+        openDrawer = openDrawer,
+        onRefresh = {
+            topicViewModel.clearAllNewsHead()
+            newsfeed.refresh()
+        },
+        onHostActiveClick = {
+            topicViewModel.disableHost(it)
+        },
+        onHostInactiveClick = {
+            topicViewModel.enableHost(it)
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopicScreen(
+    topic: TopicNavItems,
+    loading: Boolean,
+    onLoading: () -> Unit,
+    onLoaded: () -> Unit,
+    newsfeed: LazyPagingItems<NewsHead>,
+    enableHosts: List<Host>,
+    onHostActiveClick: (Host) -> Unit,
+    onHostInactiveClick: (Host) -> Unit,
+    openDrawer: () -> Unit,
+    onRefresh: () -> Unit,
+) {
     Scaffold(
         topBar = {
             NewsHubTopBar(
@@ -52,10 +86,7 @@ fun bindTopicScreen(
     ) {
         SwipeRefresh(
             state = rememberSwipeRefreshState(loading),
-            onRefresh = {
-                topicViewModel.clearAllNewsHead()
-                newsfeed.refresh()
-            },
+            onRefresh = onRefresh,
         ) {
             LazyColumn(
                 contentPadding = it,
@@ -63,8 +94,8 @@ fun bindTopicScreen(
                 item {
                     HostFilter(
                         selected = enableHosts,
-                        onActiveClick = { topicViewModel.disableHost(it) },
-                        onInactiveClick = { topicViewModel.enableHost(it) },
+                        onActiveClick = { onHostActiveClick(it) },
+                        onInactiveClick = { onHostInactiveClick(it) },
                     )
                 }
                 newsfeed.apply {
@@ -72,23 +103,23 @@ fun bindTopicScreen(
                         loadState.apply {
                             when {
                                 refresh is LoadState.Loading -> {
-                                    loading = true
+                                    onLoading()
                                 }
                                 refresh is LoadState.NotLoading -> {
-                                    loading = false
+                                    onLoaded()
                                 }
                                 refresh is LoadState.Error -> {
-                                    loading = false
+                                    onLoaded()
                                     Error(refresh as LoadState.Error)
                                 }
                                 prepend is LoadState.Loading -> {
-                                    loading = true
+                                    onLoading()
                                 }
                                 prepend is LoadState.NotLoading -> {
-                                    loading = false
+                                    onLoaded()
                                 }
                                 prepend is LoadState.Error -> {
-                                    loading = false
+                                    onLoaded()
                                     Error(prepend as LoadState.Error)
                                 }
                             }
@@ -107,14 +138,14 @@ fun bindTopicScreen(
                         loadState.apply {
                             when {
                                 append is LoadState.Loading -> {
-                                    loading = true
+                                    onLoading()
                                     LoadingFooter()
                                 }
                                 append is LoadState.NotLoading -> {
-                                    loading = false
+                                    onLoaded()
                                 }
                                 append is LoadState.Error -> {
-                                    loading = false
+                                    onLoaded()
                                     Error(append as LoadState.Error)
                                 }
                             }

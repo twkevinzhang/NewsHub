@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import androidx.hilt.navigation.HiltViewModelFactory
 import self.nesl.newshub.ui.component.AppDrawerContent
 import self.nesl.newshub.ui.topic.TopicViewModel
-import self.nesl.newshub.ui.topic.bindTopicScreen
+import self.nesl.newshub.ui.topic.TopicRoute
 import self.nesl.newshub.ui.navigation.*
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.topic.bindEmptyScreen
@@ -62,7 +62,7 @@ fun bindAppScreen() {
                         val factory = HiltViewModelFactory(LocalContext.current, it)
                         val topicViewModel = viewModel<TopicViewModel>(factory = factory)
                         topicViewModel.topic(TopicNavItems.Square)
-                        bindTopicScreen(
+                        TopicRoute(
                             topicViewModel = topicViewModel,
                             navController = navController,
                             openDrawer = { openDrawer() },
