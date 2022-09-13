@@ -2,7 +2,7 @@ package self.nesl.newshub.ui.topic
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.paging.compose.items
@@ -22,12 +22,10 @@ import self.nesl.hub_server.data.news_head.Host
 import self.nesl.hub_server.data.news_head.NewsHead
 import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
 import self.nesl.newshub.R
-import self.nesl.newshub.toHumanTime
 import self.nesl.newshub.ui.component.AppBottomBar
 import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import self.nesl.newshub.ui.navigation.bottomNavItems
-import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 
 @Composable
@@ -37,20 +35,22 @@ fun TopicRoute(
     openDrawer: () -> Unit,
 ){
     val topic by topicViewModel.topic.collectAsState()
-    val newsfeed = topicViewModel.newsfeed.collectAsLazyPagingItems()
+    val newsHeadPagingItems = topicViewModel.newsfeed.collectAsLazyPagingItems()
     val enableHosts by topicViewModel.enableHosts.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
 
     TopicScreen(
         topic = topic,
         loading = loading,
+        newsHeadPagingItems = newsHeadPagingItems,
+        lazyColumnState = newsHeadPagingItems.rememberLazyListState(),
         onLoading = { loading = true },
         onLoaded = { loading = false },
         enableHosts = enableHosts,
         openDrawer = openDrawer,
         onRefresh = {
             topicViewModel.clearAllNewsHead()
-            newsfeed.refresh()
+            newsHeadPagingItems.refresh()
         },
         onHostActiveClick = {
             topicViewModel.disableHost(it)
@@ -66,9 +66,10 @@ fun TopicRoute(
 fun TopicScreen(
     topic: TopicNavItems,
     loading: Boolean,
+    lazyColumnState: LazyListState,
     onLoading: () -> Unit,
     onLoaded: () -> Unit,
-    newsfeed: LazyPagingItems<NewsHead>,
+    newsHeadPagingItems: LazyPagingItems<NewsHead>,
     enableHosts: List<Host>,
     onHostActiveClick: (Host) -> Unit,
     onHostInactiveClick: (Host) -> Unit,
@@ -90,6 +91,7 @@ fun TopicScreen(
         ) {
             LazyColumn(
                 contentPadding = it,
+                state = lazyColumnState,
             ) {
                 item {
                     HostFilter(
@@ -98,7 +100,7 @@ fun TopicScreen(
                         onInactiveClick = { onHostInactiveClick(it) },
                     )
                 }
-                newsfeed.apply {
+                newsHeadPagingItems.apply {
                     item {
                         loadState.apply {
                             when {
@@ -238,4 +240,21 @@ fun Footer() {
 @Composable
 fun Error(error: LoadState.Error) {
     Text(error.error.stackTraceToString())
+}
+
+/**
+ * Paging lib has a issue about "Scroll position of LazyColumn built with `collectAsLazyPagingItems` is lost when using Navigation."
+ * issue link: https://issuetracker.google.com/issues/177245496#comment24
+ */
+@Composable
+fun <T : Any> LazyPagingItems<T>.rememberLazyListState(): LazyListState {
+    // After recreation, LazyPagingItems first return 0 items, then the cached items.
+    // This behavior/issue is resetting the LazyListState scroll position.
+    // Below is a workaround. More info: https://issuetracker.google.com/issues/177245496.
+    return when (itemCount) {
+        // Return a different LazyListState instance.
+        0 -> remember(this) { LazyListState(0, 0) }
+        // Return rememberLazyListState (normal case).
+        else -> androidx.compose.foundation.lazy.rememberLazyListState()
+    }
 }
