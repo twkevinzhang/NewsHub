@@ -13,11 +13,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.flowOf
 import self.nesl.hub_server.data.news_head.Host
@@ -43,15 +45,14 @@ fun TopicRoute(
     val newsHeadPagingItems = topicViewModel.newsfeed.collectAsLazyPagingItems()
     val enableHosts by topicViewModel.enableHosts.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
+    val refreshState = rememberSwipeRefreshState(loading)
     val navigateToNews = { newsHead: NewsHead -> navController.navigate(NewsNavItems.NewsThread.route.plus("/${newsHead.url.encode()}")) }
 
     TopicScreen(
-        topic = topic,
-        loading = loading,
-        newsHeadPagingItems = newsHeadPagingItems,
+        refreshState = refreshState,
         lazyColumnState = newsHeadPagingItems.rememberLazyListState(),
-        onLoading = { loading = true },
-        onLoaded = { loading = false },
+        topic = topic,
+        newsHeadPagingItems = newsHeadPagingItems,
         enableHosts = enableHosts,
         openDrawer = openDrawer,
         onRefresh = {
@@ -64,12 +65,36 @@ fun TopicRoute(
         onHostInactiveClick = {
             topicViewModel.enableHost(it)
         },
+        onLoadStateChange = { loadState ->
+            loadState.apply {
+                when {
+                    refresh is LoadState.Loading -> {
+                        loading = true
+                    }
+                    refresh is LoadState.NotLoading -> {
+                        loading = false
+                    }
+                    refresh is LoadState.Error -> {
+                        loading = false
+                    }
+                    prepend is LoadState.Loading -> {
+                        loading = true
+                    }
+                    prepend is LoadState.NotLoading -> {
+                        loading = false
+                    }
+                    prepend is LoadState.Error -> {
+                        loading = false
+                    }
+                }
+            }
+        },
         newsHead = { newsHead ->
             when (newsHead) {
                 is KomicaNewsHead -> KomicaNewsHeadCard(newsHead) { navigateToNews(newsHead) }
                 else -> Text(text = "not support")
             }
-        }
+        },
     )
 }
 
@@ -77,16 +102,15 @@ fun TopicRoute(
 @Composable
 fun TopicScreen(
     topic: TopicNavItems,
-    loading: Boolean,
+    refreshState: SwipeRefreshState,
     lazyColumnState: LazyListState,
-    onLoading: () -> Unit,
-    onLoaded: () -> Unit,
     newsHeadPagingItems: LazyPagingItems<NewsHead>,
     enableHosts: List<Host>,
     onHostActiveClick: (Host) -> Unit,
     onHostInactiveClick: (Host) -> Unit,
     openDrawer: () -> Unit,
     onRefresh: () -> Unit,
+    onLoadStateChange: (CombinedLoadStates) -> Unit = { },
     newsHead: @Composable (NewsHead?) -> Unit,
 ) {
     Scaffold(
@@ -98,69 +122,31 @@ fun TopicScreen(
         },
         bottomBar = { AppBottomBar(bottomNavItems()) },
     ) {
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(loading),
-            onRefresh = onRefresh,
+        Surface(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
         ) {
-            LazyColumn(
-                contentPadding = it,
-                state = lazyColumnState,
+            SwipeRefresh(
+                state = refreshState,
+                onRefresh = onRefresh,
             ) {
-                item {
-                    HostFilter(
-                        selected = enableHosts,
-                        onActiveClick = { onHostActiveClick(it) },
-                        onInactiveClick = { onHostInactiveClick(it) },
-                    )
-                }
-                newsHeadPagingItems.apply {
+                LazyColumn(
+                    state = lazyColumnState,
+                ) {
                     item {
-                        loadState.apply {
-                            when {
-                                refresh is LoadState.Loading -> {
-                                    onLoading()
-                                }
-                                refresh is LoadState.NotLoading -> {
-                                    onLoaded()
-                                }
-                                refresh is LoadState.Error -> {
-                                    onLoaded()
-                                    Error(refresh as LoadState.Error)
-                                }
-                                prepend is LoadState.Loading -> {
-                                    onLoading()
-                                }
-                                prepend is LoadState.NotLoading -> {
-                                    onLoaded()
-                                }
-                                prepend is LoadState.Error -> {
-                                    onLoaded()
-                                    Error(prepend as LoadState.Error)
-                                }
-                            }
+                        HostFilter(
+                            selected = enableHosts,
+                            onActiveClick = { onHostActiveClick(it) },
+                            onInactiveClick = { onHostInactiveClick(it) },
+                        )
+                    }
+                    newsHeadPagingItems.apply {
+                        item {
+                            onLoadStateChange(loadState)
                         }
-                    }
-                    items(this) { newsHead ->
-                        newsHead(newsHead)
-                    }
-                    item {
-                        Footer()
-                    }
-                    item {
-                        loadState.apply {
-                            when {
-                                append is LoadState.Loading -> {
-                                    onLoading()
-                                    LoadingFooter()
-                                }
-                                append is LoadState.NotLoading -> {
-                                    onLoaded()
-                                }
-                                append is LoadState.Error -> {
-                                    onLoaded()
-                                    Error(append as LoadState.Error)
-                                }
-                            }
+                        items(this) { newsHead ->
+                            newsHead(newsHead)
                         }
                     }
                 }
@@ -169,19 +155,20 @@ fun TopicScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun PreviewTopicScreen() {
     val mockNewsfeed = flowOf(PagingData.from(listOf<NewsHead>(mockKomicaNewsHead()))).collectAsLazyPagingItems()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
 
     PreviewTheme {
         TopicScreen(
             topic = TopicNavItems.Square,
-            loading = false,
+            refreshState = rememberSwipeRefreshState(isRefreshing = false),
             newsHeadPagingItems = mockNewsfeed,
             lazyColumnState = mockNewsfeed.rememberLazyListState(),
-            onLoading = { },
-            onLoaded = { },
             enableHosts = emptyList(),
             openDrawer = { },
             onRefresh = { },
@@ -192,7 +179,7 @@ fun PreviewTopicScreen() {
                     is KomicaNewsHead -> KomicaNewsHeadCard(newsHead) { }
                     else -> Text(text = "not support")
                 }
-            }
+            },
         )
     }
 }

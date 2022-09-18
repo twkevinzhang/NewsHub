@@ -36,13 +36,8 @@ class TopicViewModel @Inject constructor(
     val newsfeed = _topic.combine(enableHosts) { it, it2 ->
         getAllNewsHead.invoke(it, it2)
     }
-        .flatMapLatest { it.mapLatest { it } }
+        .flatMapLatest { it }
         .cachedIn(viewModelScope)
-        .distinctUntilChanged()
-        .catch {
-            Log.e("TopicViewModel", it.stackTraceToString())
-            PagingData.empty<NewsHead>()
-        }
 
     fun topic(topic: TopicNavItems) {
         this._topic.update { topic }

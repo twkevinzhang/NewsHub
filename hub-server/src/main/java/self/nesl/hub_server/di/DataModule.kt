@@ -9,8 +9,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import self.nesl.hub_server.data.AppDatabase
-import self.nesl.hub_server.data.news_head.komica.KomicaNewsHeadHeadRepository
-import self.nesl.hub_server.data.news_head.komica.KomicaNewsHeadHeadRepositoryImpl
+import self.nesl.hub_server.data.news_head.komica.KomicaNewsHeadRepository
+import self.nesl.hub_server.data.news_head.komica.KomicaNewsHeadRepositoryImpl
 import self.nesl.hub_server.data.news_thread.komica.KomicaNewsThreadRepository
 import self.nesl.hub_server.data.news_thread.komica.KomicaNewsThreadRepositoryImpl
 import javax.inject.Singleton
@@ -44,7 +44,7 @@ object DataModule {
     abstract class RepositoryBinder {
 
         @Binds
-        abstract fun bindNewsHeadRepository(impl: KomicaNewsHeadHeadRepositoryImpl): KomicaNewsHeadHeadRepository
+        abstract fun bindNewsHeadRepository(impl: KomicaNewsHeadRepositoryImpl): KomicaNewsHeadRepository
 
         @Binds
         abstract fun bindNewsThreadRepository(impl: KomicaNewsThreadRepositoryImpl): KomicaNewsThreadRepository
