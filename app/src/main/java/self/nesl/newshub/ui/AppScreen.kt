@@ -14,8 +14,10 @@ import self.nesl.newshub.ui.component.AppDrawerContent
 import self.nesl.newshub.ui.topic.TopicViewModel
 import self.nesl.newshub.ui.topic.TopicRoute
 import self.nesl.newshub.ui.navigation.*
+import self.nesl.newshub.ui.news.NewsThreadViewModel
+import self.nesl.newshub.ui.news.NewsThreadRoute
 import self.nesl.newshub.ui.theme.NewshubTheme
-import self.nesl.newshub.ui.topic.bindEmptyScreen
+import self.nesl.newshub.ui.topic.EmptyRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +55,7 @@ fun bindAppScreen() {
                     startDestination = defaultNav.route,
                 ) {
                     composable(DrawerNavItems.Home.route) {
-                        bindEmptyScreen(
+                        EmptyRoute(
                             openDrawer = { openDrawer() },
                         )
                     }
@@ -70,8 +72,20 @@ fun bindAppScreen() {
                     }
 
                     composable(TopicNavItems.Movie.route) {
-                        bindEmptyScreen(
+                        EmptyRoute(
                             openDrawer = { openDrawer() },
+                        )
+                    }
+
+                    composable(NewsNavItems.NewsThread.route.plus("/{url}")) {
+                        val factory = HiltViewModelFactory(LocalContext.current, it)
+                        val newsThreadViewModel = viewModel<NewsThreadViewModel>(factory = factory)
+                        it.arguments?.getString("url")?.let { url ->
+                            newsThreadViewModel.newsThreadUrl(url)
+                        }
+                        NewsThreadRoute(
+                            newsThreadViewModel = newsThreadViewModel,
+                            navController = navController,
                         )
                     }
                 }

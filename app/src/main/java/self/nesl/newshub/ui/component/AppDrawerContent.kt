@@ -42,18 +42,13 @@ fun AppDrawerContent(
                         icon = { Icon(painterResource(id = it.icon), null) },
                         selected = currentRoute == it.route,
                         onClick = { onTopNavItemClick(it) },
-                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
                     )
-                    Surface(
-                        tonalElevation = dimensionResource(id = R.dimen.space_0),
-                    ) {
-                        Spacer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(dimensionResource(id = R.dimen.space_1))
-                                .background(color = NewshubTheme.colors.background)
-                        )
-                    }
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(dimensionResource(id = R.dimen.space_1))
+                            .background(color = NewshubTheme.colors.background)
+                    )
                 }
             }
 

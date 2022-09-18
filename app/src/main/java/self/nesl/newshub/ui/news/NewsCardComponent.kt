@@ -14,6 +14,7 @@ import self.nesl.hub_server.data.news_head.komica.mockKomicaNewsHead
 import self.nesl.newshub.R
 import self.nesl.newshub.toHumanTime
 import self.nesl.newshub.ui.component.ParagraphBlock
+import self.nesl.newshub.ui.theme.AppDisabledAlpha
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 
@@ -61,15 +62,14 @@ fun CardHeadBlock(
 fun CardHeadTextBlock(
     text: String = "",
     modifier: Modifier = Modifier,
-
-    ) {
+) {
     CardHeadBlock(
         modifier = modifier,
     ) {
         Text(
             text = text,
             style = NewshubTheme.typography.bodySmall,
-            color = LocalContentColor.current.copy(alpha = 0.4f),
+            color = LocalContentColor.current.copy(alpha = AppDisabledAlpha),
         )
     }
 }

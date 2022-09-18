@@ -14,16 +14,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.flow.flowOf
 import self.nesl.hub_server.data.news_head.Host
 import self.nesl.hub_server.data.news_head.NewsHead
 import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
+import self.nesl.hub_server.data.news_head.komica.mockKomicaNewsHead
 import self.nesl.newshub.R
+import self.nesl.newshub.encode
 import self.nesl.newshub.ui.component.AppBottomBar
 import self.nesl.newshub.ui.component.NewsHubTopBar
+import self.nesl.newshub.ui.navigation.NewsNavItems
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import self.nesl.newshub.ui.navigation.bottomNavItems
 import self.nesl.newshub.ui.theme.PreviewTheme
@@ -38,6 +43,7 @@ fun TopicRoute(
     val newsHeadPagingItems = topicViewModel.newsfeed.collectAsLazyPagingItems()
     val enableHosts by topicViewModel.enableHosts.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
+    val navigateToNews = { newsHead: NewsHead -> navController.navigate(NewsNavItems.NewsThread.route.plus("/${newsHead.url.encode()}")) }
 
     TopicScreen(
         topic = topic,
@@ -57,6 +63,12 @@ fun TopicRoute(
         },
         onHostInactiveClick = {
             topicViewModel.enableHost(it)
+        },
+        newsHead = { newsHead ->
+            when (newsHead) {
+                is KomicaNewsHead -> KomicaNewsHeadCard(newsHead) { navigateToNews(newsHead) }
+                else -> Text(text = "not support")
+            }
         }
     )
 }
@@ -75,6 +87,7 @@ fun TopicScreen(
     onHostInactiveClick: (Host) -> Unit,
     openDrawer: () -> Unit,
     onRefresh: () -> Unit,
+    newsHead: @Composable (NewsHead?) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -128,10 +141,7 @@ fun TopicScreen(
                         }
                     }
                     items(this) { newsHead ->
-                        when (newsHead) {
-                            is KomicaNewsHead -> KomicaNewsHeadCard(newsHead)
-                            else -> Text(text = "not support")
-                        }
+                        newsHead(newsHead)
                     }
                     item {
                         Footer()
@@ -156,6 +166,34 @@ fun TopicScreen(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewTopicScreen() {
+    val mockNewsfeed = flowOf(PagingData.from(listOf<NewsHead>(mockKomicaNewsHead()))).collectAsLazyPagingItems()
+
+    PreviewTheme {
+        TopicScreen(
+            topic = TopicNavItems.Square,
+            loading = false,
+            newsHeadPagingItems = mockNewsfeed,
+            lazyColumnState = mockNewsfeed.rememberLazyListState(),
+            onLoading = { },
+            onLoaded = { },
+            enableHosts = emptyList(),
+            openDrawer = { },
+            onRefresh = { },
+            onHostActiveClick = { },
+            onHostInactiveClick = { },
+            newsHead = { newsHead ->
+                when (newsHead) {
+                    is KomicaNewsHead -> KomicaNewsHeadCard(newsHead) { }
+                    else -> Text(text = "not support")
+                }
+            }
+        )
     }
 }
 

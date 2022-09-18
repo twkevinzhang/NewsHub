@@ -31,7 +31,7 @@ import self.nesl.newshub.ui.theme.PreviewTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun bindEmptyScreen(
+fun EmptyRoute(
     openDrawer: () -> Unit,
 ){
     Scaffold(

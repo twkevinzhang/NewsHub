@@ -2,6 +2,7 @@ package self.nesl.newshub.ui.topic
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +18,7 @@ import self.nesl.newshub.ui.news.CardHeadHostBlock
 import self.nesl.newshub.ui.news.CardHeadPosterBlock
 import self.nesl.newshub.ui.news.CardHeadRepliesBlock
 import self.nesl.newshub.ui.news.CardHeadTimeBlock
+import self.nesl.newshub.ui.theme.AppDisabledAlpha
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 
@@ -66,7 +68,9 @@ private fun KomicaNewsHeadCardContent(newsHead: KomicaNewsHead) {
             }
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
-        KomicaNewsCardTitle(newsHead.title)
+        if (newsHead.title.isNullOrEmpty().not()) {
+            KomicaNewsCardTitle(newsHead.title!!)
+        }
         ParagraphBlock(newsHead.content, 100)
     }
 }
@@ -80,10 +84,14 @@ fun PreviewKomicaNewsCard() {
 }
 
 @Composable
-fun KomicaNewsCardTitle(text: String?) {
+fun KomicaNewsCardTitle(text: String) {
     when (text) {
-        null, "無題" ->
-        {}
+        "無題" ->
+            Text(
+                text = text,
+                style = NewshubTheme.typography.titleMedium.copy(),
+                color = LocalContentColor.current.copy(alpha = AppDisabledAlpha),
+            )
         else ->
             Text(
                 text = text,

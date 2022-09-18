@@ -2,6 +2,8 @@ package self.nesl.newshub
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import self.nesl.newshub.ui.navigation.NavItems
+import java.net.URLEncoder
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneId
@@ -32,3 +34,5 @@ fun Long.toHumanTime(): String {
         else -> this.toMMDDString()
     }
 }
+
+fun String.encode() = URLEncoder.encode(this, "utf-8")

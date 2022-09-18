@@ -14,9 +14,15 @@ val AppDarkSpaceNavy = Color(0xff232e4c)
 val AppDarkNavy = Color(0xff1e2b4b)
 val AppPurple = Color(0xffcf5bf7)
 val AppTeal = Color(0xFF03DAC5)
+val AppOrigen = Color(0xFF934400)
+val AppYellow = Color(0xFF937B00)
 val AppPink = Color(0xffe04aff)
 val AppRed = Color(0xfff8536f)
 val AppProgressBarLight = Color(0x33e04aff)
+val AppDisabledAlpha = 0.38f
 
 val ColorPalette = darkColorScheme(
+//    background = AppDarkNavy,
+//    surface = AppOrigen,
+//    primary = AppYellow,
 )

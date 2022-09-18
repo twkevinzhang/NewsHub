@@ -51,3 +51,11 @@ fun bottomNavItems() = listOf(
     BottomNavItems.Newest,
     BottomNavItems.Hot,
 )
+
+sealed class NewsNavItems(
+    override val resourceId: Int,
+    override val icon: Int,
+    override val route: String
+): NavItems(resourceId, icon, route) {
+    object NewsThread : NavItems(0, 0, "news_thread")
+}
