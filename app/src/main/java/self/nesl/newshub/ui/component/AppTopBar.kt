@@ -39,7 +39,6 @@ fun NewsHubTopBar(
                     Icon(
                         imageVector = Icons.Outlined.ArrowBack,
                         contentDescription = "Back",
-                        tint = AppWhite,
                     )
                 }
             } else if (onMenuPressed != null) {
@@ -47,7 +46,6 @@ fun NewsHubTopBar(
                     Icon(
                         imageVector = Icons.Outlined.Menu,
                         contentDescription = "Menu",
-                        tint = AppWhite,
                     )
                 }
             }

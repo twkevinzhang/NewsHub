@@ -36,7 +36,6 @@ fun AppMaxWidthItem(
             Icon(
                 painter = icon,
                 contentDescription = title,
-                tint = AppWhite,
             )
         }
         Text(
