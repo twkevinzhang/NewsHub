@@ -11,7 +11,7 @@ internal class SoraThreadParserTest {
     fun `Test SoraThreadParser expect successful`() {
         val parser = SoraThreadParser(SoraPostParser(SoraUrlParser(), SoraPostHeadParser()))
         val pair = parser.parse(
-            Jsoup.parse(loadFile("./src/test/html/sora/ThreadPage.html")),
+            Jsoup.parse(loadFile("./src/test/html/org/komica/sora/ThreadPage.html")),
             "https://sora.komica.org/00/pixmicat.php?res=25214959",
         )
         assertEquals(48, pair.second.size)

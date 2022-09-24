@@ -11,7 +11,7 @@ internal class SoraPostParserTest {
     fun `Test SoraPostParser expect successful`() {
         val parser = SoraPostParser(SoraUrlParser(), SoraPostHeadParser())
         val post = parser.parse(
-            Jsoup.parse(loadFile("./src/test/html/sora/ReplyPost.html")),
+            Jsoup.parse(loadFile("./src/test/html/org/komica/sora/ReplyPost.html")),
             "https://sora.komica.org/00/pixmicat.php?res=25208017",
         )
         assertEquals("25208017", post.id)

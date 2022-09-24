@@ -13,7 +13,7 @@ internal class SoraPostHeadParserTest {
     fun `Test parse title expect successful`() {
         val parser = SoraPostHeadParser()
         val title = parser.parseTitle(
-            Jsoup.parse(loadFile("./src/test/html/sora/HeadPost.html")),
+            Jsoup.parse(loadFile("./src/test/html/org/komica/sora/HeadPost.html")),
             "https://sora.komica.org/00/pixmicat.php?res=25208017".toHttpUrlOrNull()!!
         )
         assertEquals("無題", title)
@@ -23,7 +23,7 @@ internal class SoraPostHeadParserTest {
     fun `Test parse created at expect successful`() {
         val parser = SoraPostHeadParser()
         val time = parser.parseCreatedAt(
-            Jsoup.parse(loadFile("./src/test/html/sora/HeadPost.html")),
+            Jsoup.parse(loadFile("./src/test/html/org/komica/sora/HeadPost.html")),
             "https://sora.komica.org/00/pixmicat.php?res=25208017".toHttpUrlOrNull()!!
         )
         assertEquals(1638460800000L, time)

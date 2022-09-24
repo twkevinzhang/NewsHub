@@ -11,7 +11,7 @@ internal class SoraBoardParserTest {
     fun `Test SoraBoardParser expect successful`() {
         val parser = SoraBoardParser(SoraPostParser(SoraUrlParser(), SoraPostHeadParser()))
         val posts = parser.parse(
-            Jsoup.parse(loadFile("./src/test/html/sora/BoardPage.html")),
+            Jsoup.parse(loadFile("./src/test/html/org/komica/sora/BoardPage.html")),
             "https://sora.komica.org/00",
         )
         assertEquals(15, posts.size)
