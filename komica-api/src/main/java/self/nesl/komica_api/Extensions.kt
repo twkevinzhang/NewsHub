@@ -28,23 +28,29 @@ fun Element.installThreadTag(): Element {
 }
 
 fun String.withHttps(): String {
-    return if (this.startsWith("//")) {
-        "https:$this"
-    } else {
+    return if (this.startsWith("https://")) {
         this
+    } else if (this.startsWith("//")) {
+        "https:$this"
+    } else if (this.startsWith("/")) {
+        throw ParseException("The string should not start with /")
+    } else {
+        "https://$this"
     }
 }
 
 fun String.withHttps(base: String): String {
-    return if (this.startsWith("./") || this.startsWith("/")) {
-        if (base.endsWith("/") && this.startsWith("/"))
+    val startsWithSingleSlash = this.startsWith("/") && !this.startsWith("//")
+    return if (!this.startsWith("./") && !startsWithSingleSlash) {
+        this.withHttps()
+    } else {
+        val url = if (base.endsWith("/") && startsWithSingleSlash)
             base + this.substring(1)
-        else if (base.endsWith("/") || this.startsWith("/"))
+        else if (base.endsWith("/") || startsWithSingleSlash)
             base + this
         else
             "$base/$this"
-    } else {
-        this.withHttps()
+        return url.withHttps()
     }
 }
 

@@ -2,18 +2,39 @@ package self.nesl.komica_api
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import self.nesl.komica_api.model.KPostBuilder
 import self.nesl.komica_api.model.KReplyTo
+
 
 internal class ExtensionsTest {
 
     @Test
-    fun `Test withProtocol extension expect successful`() =
+    fun `Test withHttps extension with same url expect successful`() =
+        assertEquals("https://www.google.com", "https://www.google.com".withHttps())
+
+    @Test
+    fun `Test withHttps extension with start with double slash expect successful`() =
         assertEquals("https://www.google.com", "//www.google.com".withHttps())
 
     @Test
-    fun `Test withProtocol extension with correct baseUrl expect successful`() =
+    fun `Test withHttps extension expect failure`() {
+        assertThrows<ParseException> {
+            "www.google.com".withHttps()
+        }
+    }
+
+    @Test
+    fun `Test withHttps extension with host expect successful`() =
+        assertEquals("https://www.google.com", "www.google.com".withHttps())
+
+    @Test
+    fun `Test withHttps extension with path expect successful`() =
         assertEquals("https://www.google.com/search", "/search".withHttps("https://www.google.com"))
+
+    @Test
+    fun `Test withHttps extension with dot path expect successful`() =
+        assertEquals("https://www.google.com/./search", "./search".withHttps("https://www.google.com"))
 
     @Test
     fun `Test replaceJpnWeekday extension expect successful`() =

@@ -8,20 +8,19 @@ import self.nesl.komica_api.toMillTimestamp
 
 class SoraPostHeadParser: PostHeadParser {
     override fun parseTitle(source: Element, url: HttpUrl): String? {
-        val head = source.selectFirst("div.post-head")
-        val titleE = head.selectFirst("span.title")
+        val titleE = source.selectFirst("span.title")
         return titleE?.text()
     }
 
     override fun parseCreatedAt(source: Element, url: HttpUrl): Long {
-        val head = source.selectFirst("div.post-head")
-        var timeE = head.selectFirst("span.now")
-        if (timeE == null) {
+        var timeE = source.selectFirst("span.now")
+        return if (timeE != null) {
+            val post_detail = timeE.text().split(" ID:")
+            post_detail[0].trim().replaceChiWeekday().toMillTimestamp()
+        } else {
             // is 2cat.komica.org
-            timeE = head
+            0
         }
-        val post_detail = timeE.text().split(" ID:")
-        return post_detail[0].trim().replaceChiWeekday().toMillTimestamp()
     }
 
     override fun parsePoster(source: Element, url: HttpUrl): String? {

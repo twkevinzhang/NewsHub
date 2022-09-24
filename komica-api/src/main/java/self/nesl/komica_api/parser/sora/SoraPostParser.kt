@@ -4,6 +4,7 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
+import self.nesl.komica_api.ParseException
 import self.nesl.komica_api.model.*
 import self.nesl.komica_api.parser.PostHeadParser
 import self.nesl.komica_api.parser.Parser
@@ -33,7 +34,7 @@ class SoraPostParser(
         val httpUrl = url.toHttpUrlOrNull()!!
         setDetail(source, httpUrl)
         setContent(source)
-        setPicture(source)
+        setPicture(source, httpUrl.host)
         builder.setUrl(url)
         builder.setPostId(urlParser.parsePostId(httpUrl)!!)
         return builder.build()
@@ -71,13 +72,20 @@ class SoraPostParser(
         builder.setContent(list)
     }
 
-    private fun setPicture(source: Element) {
+    private fun setPicture(source: Element, host: String) {
         source.selectFirst("img")?.let { thumbImg ->
             val rawUrl = thumbImg.parent().attr("href")
             val thumbUrl = thumbImg.attr("src")
-            builder.addContent(
-                KImageInfo(thumbUrl.withHttps(), rawUrl.withHttps())
-            )
+
+            try {
+                builder.addContent(
+                    KImageInfo(thumbUrl.withHttps(), rawUrl.withHttps())
+                )
+            } catch (e: ParseException) {
+                builder.addContent(
+                    KImageInfo(thumbUrl.withHttps(host), rawUrl.withHttps(host))
+                )
+            }
         }
     }
 }
