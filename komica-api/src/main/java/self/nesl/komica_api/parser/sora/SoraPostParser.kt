@@ -57,7 +57,9 @@ class SoraPostParser(
                 if (child.`is`("span.resquote")) {
                     val qlink = child.selectFirst("a.qlink")
                     if (qlink != null) {
-                        val replyTo = qlink.text().replace(">".toRegex(), "")
+                        val replyTo = qlink.text()
+                            .replace(">".toRegex(), "") // for sora.komica.org
+                            .replace("No.", "") // for 2cat.komica.org
                         list.add(KReplyTo(replyTo))
                     } else {
                         val quote = child.ownText().replace(">".toRegex(), "")
