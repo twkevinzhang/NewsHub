@@ -1,12 +1,14 @@
 package self.nesl.newshub.ui.news_thread
 
 import android.util.Log
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
@@ -15,6 +17,7 @@ import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
 import self.nesl.hub_server.data.news_thread.Comment
 import self.nesl.hub_server.data.news_thread.NewsThread
+import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.news.KomicaCommentCard
 import self.nesl.newshub.ui.news.KomicaTopNewsCard
@@ -26,6 +29,13 @@ fun NewsThreadRoute(
 ){
     val newsThread by newsThreadViewModel.newsThread.collectAsState(null)
     val loading by newsThreadViewModel.loading.collectAsState(false)
+    val replyStack = remember { mutableStateListOf<Comment>() }
+
+    fun onKomicaReplyToClick(replyTo: Paragraph.ReplyTo) {
+        newsThread?.comments
+            ?.findLast { it.url.contains(replyTo.content) }
+            ?.let { replyStack.add(it) }
+    }
 
     NewsThreadScreen(
         refreshState = rememberSwipeRefreshState(loading),
@@ -34,7 +44,38 @@ fun NewsThreadRoute(
             newsThreadViewModel.refresh()
         },
         navigateUp = { navController.navigateUp() },
-    )
+    ) { allComments ->
+        allComments.forEach { comment ->
+            item {
+                CommentsCard(
+                    comment,
+                    onLinkClick = { },
+                    onKomicaReplyToClick = { onKomicaReplyToClick(it) },
+                )
+            }
+        }
+    }
+
+    if (replyStack.isNotEmpty()) {
+        AppDialog(
+            onDismissRequest = {
+                replyStack.clear()
+            },
+        ) {
+            CommentsCard(
+                comment = replyStack.lastOrNull(),
+                onLinkClick = { },
+                onKomicaReplyToClick = { onKomicaReplyToClick(it) },
+            )
+            Row {
+                if (replyStack.size > 1) {
+                    Button(onClick = { replyStack.removeLast() }) {
+                        Text(text = "Prev")
+                    }
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,6 +85,7 @@ fun NewsThreadScreen(
     newsThread: NewsThread? = null,
     onRefresh: () -> Unit,
     navigateUp: () -> Unit = {},
+    comments: LazyListScope.(List<Comment>) -> Unit,
 ){
     Scaffold(
         topBar = {
@@ -62,23 +104,14 @@ fun NewsThreadScreen(
                 state = refreshState,
                 onRefresh = onRefresh,
             ) {
-                LazyColumn {
-                    item {
-                        when (val head = newsThread?.head) {
-                            is KomicaTopNews -> {
-                                KomicaTopNewsCard(head)
-                                newsThread.comments.forEach { comment ->
-                                    when (comment) {
-                                        is KomicaTopNews -> KomicaCommentCard(
-                                            comment = comment,
-                                            onLinkClick = ::onLinkClick,
-                                            onReplyToClick = { onKomicaReplyToClick(it, newsThread.comments) },
-                                        )
-                                        else -> Log.e("NewsThreadScreen", "unknown comment type")
-                                    }
-                                }
+                if (newsThread != null) {
+                    LazyColumn {
+                        item {
+                            when (val head = newsThread.head) {
+                                is KomicaTopNews -> KomicaTopNewsCard(head)
                             }
                         }
+                        comments(newsThread.comments)
                     }
                 }
             }
@@ -86,10 +119,18 @@ fun NewsThreadScreen(
     }
 }
 
-private fun onLinkClick(link: Paragraph.Link) {
-
-}
-
-private fun onKomicaReplyToClick(link: Paragraph.ReplyTo, allComment: List<Comment>) {
-    val replyTo = allComment.findLast { it.url.contains(link.content) }
+@Composable
+fun CommentsCard(
+    comment: Comment?,
+    onLinkClick: (Paragraph.Link) -> Unit = {},
+    onKomicaReplyToClick: (Paragraph.ReplyTo) -> Unit = {},
+) {
+    when (comment) {
+        is KomicaTopNews -> KomicaCommentCard(
+            comment = comment,
+            onLinkClick = onLinkClick,
+            onReplyToClick = onKomicaReplyToClick,
+        )
+        else -> {}
+    }
 }
