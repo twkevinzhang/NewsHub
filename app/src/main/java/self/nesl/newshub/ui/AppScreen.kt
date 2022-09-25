@@ -14,8 +14,8 @@ import self.nesl.newshub.ui.component.AppDrawerContent
 import self.nesl.newshub.ui.topic.TopicViewModel
 import self.nesl.newshub.ui.topic.TopicRoute
 import self.nesl.newshub.ui.navigation.*
-import self.nesl.newshub.ui.news.NewsThreadViewModel
-import self.nesl.newshub.ui.news.NewsThreadRoute
+import self.nesl.newshub.ui.news_thread.NewsThreadViewModel
+import self.nesl.newshub.ui.news_thread.NewsThreadRoute
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.topic.EmptyRoute
 

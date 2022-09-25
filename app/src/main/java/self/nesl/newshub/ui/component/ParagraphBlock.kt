@@ -3,9 +3,13 @@ package self.nesl.newshub.ui.component
 import android.util.Log
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -16,26 +20,23 @@ import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import self.nesl.hub_server.data.*
 import self.nesl.newshub.R
-import self.nesl.newshub.ui.theme.AppLink
-import self.nesl.newshub.ui.theme.AppWhite
-import self.nesl.newshub.ui.theme.NewshubTheme
-import self.nesl.newshub.ui.theme.PreviewTheme
+import self.nesl.newshub.ui.theme.*
 
 @Composable
 fun ParagraphBlock(
     article: List<Paragraph>,
-    max: Int? = null
+    max: Int? = null,
+    onLinkClick: (Paragraph.Link) -> Unit,
+    onReplyToClick: (Paragraph.ReplyTo) -> Unit,
 ) {
     Column {
         article.map {
             when (it) {
-//            ParagraphType.QUOTE -> QuoteBlock(it)
-//            ParagraphType.REPLY_TO -> QuoteBlock(it)
                 is Paragraph.Text -> TextParagraph(it)
                 is Paragraph.ImageInfo -> ImageParagraph(it)
-                is Paragraph.Link -> LinkParagraph(it)
-                is Paragraph.ReplyTo -> ReplyToParagraph(it)
-                else -> {}
+                is Paragraph.Link -> LinkParagraph(it) { onLinkClick(it) }
+                is Paragraph.ReplyTo -> ReplyToParagraph(it) { onReplyToClick(it) }
+                is Paragraph.Quote -> QuoteParagraph(it)
             }
         }
     }
@@ -47,14 +48,18 @@ fun PreviewParagraphBlock() {
     PreviewTheme {
         ParagraphBlock(
             article = listOf(
-                Paragraph.ReplyTo("Hello World"),
-                Paragraph.Text("Hello World"),
+                Paragraph.ReplyTo("Kevin"),
+                Paragraph.Quote("Hi Google"),
+                Paragraph.Text("Hi Kevin, welcome!"),
                 Paragraph.ImageInfo(
                     "https://i.imgur.com/1Z1Z1Z1.jpg",
                     "https://i.imgur.com/1Z1Z1Z1.jpg"
                 ),
+                Paragraph.Text("see about us:"),
                 Paragraph.Link("https://www.google.com")
-            )
+            ),
+            onLinkClick = { },
+            onReplyToClick = { },
         )
     }
 }
@@ -99,5 +104,15 @@ fun LinkParagraph(paragraph: Paragraph.Link, onClick: () -> Unit = { }) {
 
 @Composable
 fun ReplyToParagraph(paragraph: Paragraph.ReplyTo, onClick: () -> Unit = { }) {
+    LinkParagraph(Paragraph.Link(">>${paragraph.content}"), onClick)
+}
 
+@Composable
+fun QuoteParagraph(paragraph: Paragraph.Quote) {
+    Text(
+        text = paragraph.content,
+        style = NewshubTheme.typography.bodyMedium,
+        color = AppQuote,
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
 }

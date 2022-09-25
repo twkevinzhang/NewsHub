@@ -1,4 +1,4 @@
-package self.nesl.newshub.ui.topic
+package self.nesl.newshub.ui.news
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -9,48 +9,58 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
 import self.nesl.hub_server.data.news_head.komica.mockKomicaTopNews
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.component.ParagraphBlock
-import self.nesl.newshub.ui.news.CardHeadHostBlock
-import self.nesl.newshub.ui.news.CardHeadPosterBlock
-import self.nesl.newshub.ui.news.CardHeadRepliesBlock
-import self.nesl.newshub.ui.news.CardHeadTimeBlock
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
-
-@Composable
-fun KomicaTopNewsCard(
-    topNews: KomicaTopNews,
-) {
-    Surface(
-        tonalElevation = dimensionResource(id = R.dimen.space_2),
-    ) {
-        KomicaTopNewsCardContent(topNews)
-    }
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KomicaTopNewsCard(
     topNews: KomicaTopNews,
-    onClick: () -> Unit,
+    onClick: () -> Unit = { },
 ) {
     Surface(
         tonalElevation = dimensionResource(id = R.dimen.space_2),
         onClick = onClick,
     ) {
-        KomicaTopNewsCardContent(topNews)
+        KomicaTopNewsCardContent(
+            topNews = topNews,
+            onLinkClick = { },
+            onReplyToClick = { },
+        )
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
 }
 
 @Composable
-private fun KomicaTopNewsCardContent(topNews: KomicaTopNews) {
+fun KomicaCommentCard(
+    comment: KomicaTopNews,
+    onLinkClick: (Paragraph.Link) -> Unit = { },
+    onReplyToClick: (Paragraph.ReplyTo) -> Unit = { },
+) {
+    Surface(
+        tonalElevation = dimensionResource(id = R.dimen.space_2),
+    ) {
+        KomicaTopNewsCardContent(
+            topNews = comment,
+            onLinkClick = onLinkClick,
+            onReplyToClick = onReplyToClick,
+        )
+    }
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
+}
+
+@Composable
+private fun KomicaTopNewsCardContent(
+    topNews: KomicaTopNews,
+    onLinkClick: (Paragraph.Link) -> Unit,
+    onReplyToClick: (Paragraph.ReplyTo) -> Unit,
+) {
     Column(
         modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
     ) {
@@ -71,7 +81,12 @@ private fun KomicaTopNewsCardContent(topNews: KomicaTopNews) {
         if (topNews.title.isNullOrEmpty().not()) {
             KomicaNewsCardTitle(topNews.title!!)
         }
-        ParagraphBlock(topNews.content, 100)
+        ParagraphBlock(
+            topNews.content,
+            100,
+            onLinkClick,
+            onReplyToClick,
+        )
     }
 }
 
@@ -79,7 +94,10 @@ private fun KomicaTopNewsCardContent(topNews: KomicaTopNews) {
 @Composable
 fun PreviewKomicaNewsCard() {
     PreviewTheme {
-        KomicaTopNewsCard(mockKomicaTopNews())
+        KomicaTopNewsCard(
+            topNews = mockKomicaTopNews(),
+            onClick = { },
+        )
     }
 }
 

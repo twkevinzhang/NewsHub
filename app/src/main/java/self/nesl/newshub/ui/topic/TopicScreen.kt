@@ -33,6 +33,7 @@ import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.navigation.NewsNavItems
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import self.nesl.newshub.ui.navigation.bottomNavItems
+import self.nesl.newshub.ui.news.KomicaTopNewsCard
 import self.nesl.newshub.ui.theme.PreviewTheme
 
 @Composable

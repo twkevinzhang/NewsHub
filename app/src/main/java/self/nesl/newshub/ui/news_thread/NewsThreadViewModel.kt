@@ -1,4 +1,4 @@
-package self.nesl.newshub.ui.news
+package self.nesl.newshub.ui.news_thread
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

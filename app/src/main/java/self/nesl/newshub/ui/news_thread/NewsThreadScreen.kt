@@ -1,4 +1,4 @@
-package self.nesl.newshub.ui.news
+package self.nesl.newshub.ui.news_thread
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,13 +11,13 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import self.nesl.hub_server.data.news_head.TopNews
+import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
+import self.nesl.hub_server.data.news_thread.Comment
 import self.nesl.hub_server.data.news_thread.NewsThread
-import self.nesl.newshub.ui.component.AppBottomBar
 import self.nesl.newshub.ui.component.NewsHubTopBar
-import self.nesl.newshub.ui.navigation.bottomNavItems
-import self.nesl.newshub.ui.topic.KomicaTopNewsCard
+import self.nesl.newshub.ui.news.KomicaCommentCard
+import self.nesl.newshub.ui.news.KomicaTopNewsCard
 
 @Composable
 fun NewsThreadRoute(
@@ -64,13 +64,18 @@ fun NewsThreadScreen(
             ) {
                 LazyColumn {
                     item {
-                        val head = newsThread?.head
-                        if (head is KomicaTopNews) {
-                            KomicaTopNewsCard(head)
-                            newsThread.comments.forEach { comment ->
-                                when (comment) {
-                                    is KomicaTopNews -> KomicaTopNewsCard(comment)
-                                    else -> Log.e("NewsThreadScreen", "unknown comment type")
+                        when (val head = newsThread?.head) {
+                            is KomicaTopNews -> {
+                                KomicaTopNewsCard(head)
+                                newsThread.comments.forEach { comment ->
+                                    when (comment) {
+                                        is KomicaTopNews -> KomicaCommentCard(
+                                            comment = comment,
+                                            onLinkClick = ::onLinkClick,
+                                            onReplyToClick = { onKomicaReplyToClick(it, newsThread.comments) },
+                                        )
+                                        else -> Log.e("NewsThreadScreen", "unknown comment type")
+                                    }
                                 }
                             }
                         }
@@ -79,4 +84,12 @@ fun NewsThreadScreen(
             }
         }
     }
+}
+
+private fun onLinkClick(link: Paragraph.Link) {
+
+}
+
+private fun onKomicaReplyToClick(link: Paragraph.ReplyTo, allComment: List<Comment>) {
+    val replyTo = allComment.findLast { it.url.contains(link.content) }
 }
