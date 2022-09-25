@@ -10,16 +10,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.NewsHead
-import self.nesl.newshub.interactor.ClearAllNewsHead
-import self.nesl.newshub.interactor.GetAllNewsHead
+import self.nesl.hub_server.data.news_head.TopNews
+import self.nesl.newshub.interactor.ClearAllTopNews
+import self.nesl.newshub.interactor.GetAllTopNews
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import javax.inject.Inject
 
 @HiltViewModel
 class TopicViewModel @Inject constructor(
-    private val getAllNewsHead: GetAllNewsHead,
-    private val clearAllNewsHead: ClearAllNewsHead,
+    private val getAllTopNews: GetAllTopNews,
+    private val clearAllTopNews: ClearAllTopNews,
 ) : ViewModel() {
     companion object {
         val defaultTopic = TopicNavItems.Square
@@ -33,8 +33,8 @@ class TopicViewModel @Inject constructor(
         Host.values().toList().minus(it.toSet())
     }
 
-    val newsfeed = _topic.combine(enableHosts) { it, it2 ->
-        getAllNewsHead.invoke(it, it2)
+    val pagingTopNews = _topic.combine(enableHosts) { it, it2 ->
+        getAllTopNews.invoke(it, it2)
     }
         .flatMapLatest { it }
         .cachedIn(viewModelScope)
@@ -51,9 +51,9 @@ class TopicViewModel @Inject constructor(
         this._excludeHosts.update { it.minus(host).toSet().toList() }
     }
 
-    fun clearAllNewsHead() {
+    fun clearAllTopNews() {
         viewModelScope.launch {
-            clearAllNewsHead.invoke(_topic.value)
+            clearAllTopNews.invoke(_topic.value)
         }
     }
 }

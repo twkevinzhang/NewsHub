@@ -23,9 +23,9 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.flowOf
 import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.NewsHead
-import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
-import self.nesl.hub_server.data.news_head.komica.mockKomicaNewsHead
+import self.nesl.hub_server.data.news_head.TopNews
+import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
+import self.nesl.hub_server.data.news_head.komica.mockKomicaTopNews
 import self.nesl.newshub.R
 import self.nesl.newshub.encode
 import self.nesl.newshub.ui.component.AppBottomBar
@@ -42,22 +42,22 @@ fun TopicRoute(
     openDrawer: () -> Unit,
 ){
     val topic by topicViewModel.topic.collectAsState()
-    val newsHeadPagingItems = topicViewModel.newsfeed.collectAsLazyPagingItems()
+    val pagingTopNews = topicViewModel.pagingTopNews.collectAsLazyPagingItems()
     val enableHosts by topicViewModel.enableHosts.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
     val refreshState = rememberSwipeRefreshState(loading)
-    val navigateToNews = { newsHead: NewsHead -> navController.navigate(NewsNavItems.NewsThread.route.plus("/${newsHead.url.encode()}")) }
+    val navigateToNews = { topNews: TopNews -> navController.navigate(NewsNavItems.NewsThread.route.plus("/${topNews.url.encode()}")) }
 
     TopicScreen(
         refreshState = refreshState,
-        lazyColumnState = newsHeadPagingItems.rememberLazyListState(),
+        lazyColumnState = pagingTopNews.rememberLazyListState(),
         topic = topic,
-        newsHeadPagingItems = newsHeadPagingItems,
+        pagingTopNews = pagingTopNews,
         enableHosts = enableHosts,
         openDrawer = openDrawer,
         onRefresh = {
-            topicViewModel.clearAllNewsHead()
-            newsHeadPagingItems.refresh()
+            topicViewModel.clearAllTopNews()
+            pagingTopNews.refresh()
         },
         onHostActiveClick = {
             topicViewModel.disableHost(it)
@@ -89,9 +89,9 @@ fun TopicRoute(
                 }
             }
         },
-        newsHead = { newsHead ->
-            when (newsHead) {
-                is KomicaNewsHead -> KomicaNewsHeadCard(newsHead) { navigateToNews(newsHead) }
+        topNews = { topNews ->
+            when (topNews) {
+                is KomicaTopNews -> KomicaTopNewsCard(topNews) { navigateToNews(topNews) }
                 else -> Text(text = "not support")
             }
         },
@@ -104,14 +104,14 @@ fun TopicScreen(
     topic: TopicNavItems,
     refreshState: SwipeRefreshState,
     lazyColumnState: LazyListState,
-    newsHeadPagingItems: LazyPagingItems<NewsHead>,
+    pagingTopNews: LazyPagingItems<TopNews>,
     enableHosts: List<Host>,
     onHostActiveClick: (Host) -> Unit,
     onHostInactiveClick: (Host) -> Unit,
     openDrawer: () -> Unit,
     onRefresh: () -> Unit,
     onLoadStateChange: (CombinedLoadStates) -> Unit = { },
-    newsHead: @Composable (NewsHead?) -> Unit,
+    topNews: @Composable (TopNews?) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -141,12 +141,12 @@ fun TopicScreen(
                             onInactiveClick = { onHostInactiveClick(it) },
                         )
                     }
-                    newsHeadPagingItems.apply {
+                    pagingTopNews.apply {
                         item {
                             onLoadStateChange(loadState)
                         }
-                        items(this) { newsHead ->
-                            newsHead(newsHead)
+                        items(this) { topNews ->
+                            topNews(topNews)
                         }
                     }
                 }
@@ -159,7 +159,7 @@ fun TopicScreen(
 @Preview
 @Composable
 fun PreviewTopicScreen() {
-    val mockNewsfeed = flowOf(PagingData.from(listOf<NewsHead>(mockKomicaNewsHead()))).collectAsLazyPagingItems()
+    val mockNewsfeed = flowOf(PagingData.from(listOf<TopNews>(mockKomicaTopNews()))).collectAsLazyPagingItems()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
 
@@ -167,16 +167,16 @@ fun PreviewTopicScreen() {
         TopicScreen(
             topic = TopicNavItems.Square,
             refreshState = rememberSwipeRefreshState(isRefreshing = false),
-            newsHeadPagingItems = mockNewsfeed,
+            pagingTopNews = mockNewsfeed,
             lazyColumnState = mockNewsfeed.rememberLazyListState(),
             enableHosts = emptyList(),
             openDrawer = { },
             onRefresh = { },
             onHostActiveClick = { },
             onHostInactiveClick = { },
-            newsHead = { newsHead ->
-                when (newsHead) {
-                    is KomicaNewsHead -> KomicaNewsHeadCard(newsHead) { }
+            topNews = { topNews ->
+                when (topNews) {
+                    is KomicaTopNews -> KomicaTopNewsCard(topNews) { }
                     else -> Text(text = "not support")
                 }
             },

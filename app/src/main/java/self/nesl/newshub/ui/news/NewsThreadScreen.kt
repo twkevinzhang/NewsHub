@@ -11,13 +11,13 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import self.nesl.hub_server.data.news_head.NewsHead
-import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
+import self.nesl.hub_server.data.news_head.TopNews
+import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
 import self.nesl.hub_server.data.news_thread.NewsThread
 import self.nesl.newshub.ui.component.AppBottomBar
 import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.navigation.bottomNavItems
-import self.nesl.newshub.ui.topic.KomicaNewsHeadCard
+import self.nesl.newshub.ui.topic.KomicaTopNewsCard
 
 @Composable
 fun NewsThreadRoute(
@@ -65,11 +65,11 @@ fun NewsThreadScreen(
                 LazyColumn {
                     item {
                         val head = newsThread?.head
-                        if (head is KomicaNewsHead) {
-                            KomicaNewsHeadCard(head)
+                        if (head is KomicaTopNews) {
+                            KomicaTopNewsCard(head)
                             newsThread.comments.forEach { comment ->
                                 when (comment) {
-                                    is KomicaNewsHead -> KomicaNewsHeadCard(comment)
+                                    is KomicaTopNews -> KomicaTopNewsCard(comment)
                                     else -> Log.e("NewsThreadScreen", "unknown comment type")
                                 }
                             }

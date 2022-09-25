@@ -8,9 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import self.nesl.hub_server.data.news_head.NewsHead
-import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
-import self.nesl.hub_server.data.news_head.komica.mockKomicaNewsHead
+import self.nesl.hub_server.data.news_head.TopNews
+import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
+import self.nesl.hub_server.data.news_head.komica.mockKomicaTopNews
 import self.nesl.newshub.R
 import self.nesl.newshub.toHumanTime
 import self.nesl.newshub.ui.component.ParagraphBlock
@@ -31,10 +31,10 @@ fun CardHeadTimeBlock(timestamp: Long?) {
 }
 
 @Composable
-fun CardHeadHostBlock(newsHead: NewsHead) {
+fun CardHeadHostBlock(topNews: TopNews) {
     CardHeadTextBlock(
-        when (newsHead) {
-            is KomicaNewsHead -> "Komica"
+        when (topNews) {
+            is KomicaTopNews -> "Komica"
             else -> "not support"
         }
     )

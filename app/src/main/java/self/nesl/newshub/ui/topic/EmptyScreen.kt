@@ -18,8 +18,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.NewsHead
-import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
+import self.nesl.hub_server.data.news_head.TopNews
+import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
 import self.nesl.newshub.R
 import self.nesl.newshub.toHumanTime
 import self.nesl.newshub.ui.component.AppBottomBar

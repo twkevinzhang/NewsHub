@@ -7,14 +7,14 @@ import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONObject
 import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.NewsHead
-import self.nesl.hub_server.data.news_head.komica.KomicaNewsHead
-import self.nesl.hub_server.data.news_head.komica.KomicaNewsHeadDao
+import self.nesl.hub_server.data.news_head.TopNews
+import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
+import self.nesl.hub_server.data.news_head.komica.KomicaTopNewsDao
 import java.lang.reflect.Type
 
 @Database(
     entities = [
-        KomicaNewsHead::class,
+        KomicaTopNews::class,
     ],
     version = 1
 )
@@ -89,5 +89,5 @@ abstract class AppDatabase: RoomDatabase() {
         }
     }
 
-    abstract fun komicaNewsHeadDao(): KomicaNewsHeadDao
+    abstract fun komicaTopNewsDao(): KomicaTopNewsDao
 }

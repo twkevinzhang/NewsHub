@@ -3,7 +3,7 @@ package self.nesl.hub_server.data.news_head
 import androidx.room.PrimaryKey
 import self.nesl.hub_server.data.Paragraph
 
-interface NewsHead {
+interface TopNews {
     val url: String
     val host: Host
     open val title: String?

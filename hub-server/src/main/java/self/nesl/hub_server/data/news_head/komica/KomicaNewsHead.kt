@@ -4,11 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.NewsHead
+import self.nesl.hub_server.data.news_head.TopNews
 import self.nesl.hub_server.data.news_thread.Comment
 
 @Entity(tableName = "komica_news")
-data class KomicaNewsHead (
+data class KomicaTopNews (
     @PrimaryKey override val url: String,
     override val host: Host,
     override val title: String?,
@@ -20,10 +20,10 @@ data class KomicaNewsHead (
     override val content: List<Paragraph>,
     override val favorite: String?,
     val page: Int,
-): NewsHead, Comment
+): TopNews, Comment
 
-fun mockKomicaNewsHead() =
-    KomicaNewsHead(
+fun mockKomicaTopNews() =
+    KomicaTopNews(
         url = "https://www.google.com",
         title = "How to Google?",
         host = Host.KOMICA,

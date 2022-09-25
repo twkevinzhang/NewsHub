@@ -1,27 +1,27 @@
 package self.nesl.hub_server.interactor
 
 import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.NewsHead
+import self.nesl.hub_server.data.news_head.TopNews
 import self.nesl.hub_server.data.news_head.Topic
-import self.nesl.hub_server.data.news_head.komica.KomicaNewsHeadRepository
+import self.nesl.hub_server.data.news_head.komica.KomicaTopNewsRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NewsHeadUseCase @Inject constructor(
-    private val komicaNewsHeadRepository: KomicaNewsHeadRepository,
+class TopNewsUseCase @Inject constructor(
+    private val komicaTopNewsRepository: KomicaTopNewsRepository,
 ) {
-    suspend fun getAllNewsHead(
+    suspend fun getAllTopNews(
         topic: Topic,
         page: Map<Host, Int>,
-    ): List<NewsHead> =
-        ArrayList<NewsHead>().apply {
+    ): List<TopNews> =
+        ArrayList<TopNews>().apply {
             if (page.containsKey(Host.KOMICA)) {
-                addAll(komicaNewsHeadRepository.getAllNewsHead(topic, page[Host.KOMICA]!! - 1))
+                addAll(komicaTopNewsRepository.getAllTopNews(topic, page[Host.KOMICA]!! - 1))
             }
         }
 
-    suspend fun clearAllNewsHead(topic: Topic) {
-        komicaNewsHeadRepository.clearAllNewsHead(topic)
+    suspend fun clearAllTopNews(topic: Topic) {
+        komicaTopNewsRepository.clearAllTopNews(topic)
     }
 }

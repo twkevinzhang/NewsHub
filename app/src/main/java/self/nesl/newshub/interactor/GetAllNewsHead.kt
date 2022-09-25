@@ -4,32 +4,32 @@ import android.util.Log
 import androidx.paging.*
 import kotlinx.coroutines.flow.*
 import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.NewsHead
+import self.nesl.hub_server.data.news_head.TopNews
 import self.nesl.hub_server.data.news_head.Topic
-import self.nesl.hub_server.interactor.NewsHeadUseCase
+import self.nesl.hub_server.interactor.TopNewsUseCase
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetAllNewsHead @Inject constructor(
-    private val newsHeadUseCase: NewsHeadUseCase,
+class GetAllTopNews @Inject constructor(
+    private val topNewsUseCase: TopNewsUseCase,
 ) {
-    fun invoke(topicNavItems: TopicNavItems, hosts: List<Host>): Flow<PagingData<NewsHead>> {
+    fun invoke(topicNavItems: TopicNavItems, hosts: List<Host>): Flow<PagingData<TopNews>> {
         return Pager(
             config = PagingConfig(pageSize = 30, enablePlaceholders = false),
             pagingSourceFactory = {
-                NewsHeadPagingSource(newsHeadUseCase, topicNavItems.toTopic(), hosts.toSet())
+                TopNewsPagingSource(topNewsUseCase, topicNavItems.toTopic(), hosts.toSet())
             },
         ).flow
     }
 
-    private class NewsHeadPagingSource(
-        val newsHeadUseCase: NewsHeadUseCase,
+    private class TopNewsPagingSource(
+        val topNewsUseCase: TopNewsUseCase,
         val topic: Topic,
         val hosts: Set<Host>,
-    ) : PagingSource<Int, NewsHead>() {
-        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NewsHead> {
+    ) : PagingSource<Int, TopNews>() {
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TopNews> {
             if (hosts.isEmpty()) {
                 return LoadResult.Page(
                     data = emptyList(),
@@ -45,9 +45,9 @@ class GetAllNewsHead @Inject constructor(
             } else {
                 hosts.toMap(params.key!! + 1)
             }
-            Log.d("NewsHeadPagingSource", "is first? ${first}, prev: ${prev}, next: ${next}, nextPageParameter: ${nextPageParameter}")
+            Log.d("TopNewsPagingSource", "is first? ${first}, prev: ${prev}, next: ${next}, nextPageParameter: ${nextPageParameter}")
 
-            val response = newsHeadUseCase.getAllNewsHead(topic, nextPageParameter)
+            val response = topNewsUseCase.getAllTopNews(topic, nextPageParameter)
             return if (response.isEmpty()) {
                 LoadResult.Page(
                     data = response,
@@ -63,7 +63,7 @@ class GetAllNewsHead @Inject constructor(
             }
         }
 
-        override fun getRefreshKey(state: PagingState<Int, NewsHead>): Int? {
+        override fun getRefreshKey(state: PagingState<Int, TopNews>): Int? {
             return null
         }
 

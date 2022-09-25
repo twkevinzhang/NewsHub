@@ -8,29 +8,29 @@ import self.nesl.komica_api.KomicaApi
 import self.nesl.komica_api.model.KBoard
 import self.nesl.newshub.di.IoDispatcher
 import self.nesl.hub_server.di.TransactionProvider
-import self.nesl.hub_server.toKomicaNewsHead
+import self.nesl.hub_server.toKomicaTopNews
 import javax.inject.Inject
 
-class KomicaNewsHeadRepositoryImpl @Inject constructor(
-    private val dao: KomicaNewsHeadDao,
+class KomicaTopNewsRepositoryImpl @Inject constructor(
+    private val dao: KomicaTopNewsDao,
     private val api: KomicaApi,
     private val transactionProvider: TransactionProvider,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-): KomicaNewsHeadRepository {
+): KomicaTopNewsRepository {
 
-    override suspend fun getAllNewsHead(topic: Topic, page: Int): List<KomicaNewsHead> = withContext(ioDispatcher) {
+    override suspend fun getAllTopNews(topic: Topic, page: Int): List<KomicaTopNews> = withContext(ioDispatcher) {
         val news = dao.readAll(page)
         if (news.isNotEmpty()) {
             news
         } else {
             try {
-                val remote = api.getAllThreadHead(topic.toKBoard(), page.takeIf { it != 0 }).map { it.toKomicaNewsHead(page) }
+                val remote = api.getAllThreadHead(topic.toKBoard(), page.takeIf { it != 0 }).map { it.toKomicaTopNews(page) }
                 transactionProvider.invoke {
                     dao.upsertAll(remote)
                 }
                 remote
             } catch (e: Exception) {
-                Log.e("KomicaNewsHeadRepo", e.stackTraceToString())
+                Log.e("KomicaTopNewsRepo", e.stackTraceToString())
                 emptyList()
             }
         }
@@ -42,7 +42,7 @@ class KomicaNewsHeadRepositoryImpl @Inject constructor(
             else -> throw NotImplementedError()
         }
 
-    override suspend fun clearAllNewsHead(topic: Topic) = withContext(ioDispatcher) {
+    override suspend fun clearAllTopNews(topic: Topic) = withContext(ioDispatcher) {
         dao.clearAll()
     }
 }
