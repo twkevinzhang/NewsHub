@@ -14,10 +14,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
-import self.nesl.hub_server.data.ImageInfo
-import self.nesl.hub_server.data.Link
-import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.Text
+import self.nesl.hub_server.data.*
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.theme.AppLink
 import self.nesl.newshub.ui.theme.AppWhite
@@ -34,9 +31,10 @@ fun ParagraphBlock(
             when (it) {
 //            ParagraphType.QUOTE -> QuoteBlock(it)
 //            ParagraphType.REPLY_TO -> QuoteBlock(it)
-                is Text -> TextParagraph(it)
-                is ImageInfo -> ImageParagraph(it)
-                is Link -> LinkParagraph(it)
+                is Paragraph.Text -> TextParagraph(it)
+                is Paragraph.ImageInfo -> ImageParagraph(it)
+                is Paragraph.Link -> LinkParagraph(it)
+                is Paragraph.ReplyTo -> ReplyToParagraph(it)
                 else -> {}
             }
         }
@@ -49,16 +47,20 @@ fun PreviewParagraphBlock() {
     PreviewTheme {
         ParagraphBlock(
             article = listOf(
-                Text("Hello World"),
-                ImageInfo("https://i.imgur.com/1Z1Z1Z1.jpg", "https://i.imgur.com/1Z1Z1Z1.jpg"),
-                Link("https://www.google.com")
+                Paragraph.ReplyTo("Hello World"),
+                Paragraph.Text("Hello World"),
+                Paragraph.ImageInfo(
+                    "https://i.imgur.com/1Z1Z1Z1.jpg",
+                    "https://i.imgur.com/1Z1Z1Z1.jpg"
+                ),
+                Paragraph.Link("https://www.google.com")
             )
         )
     }
 }
 
 @Composable
-fun TextParagraph(paragraph: Text) {
+fun TextParagraph(paragraph: Paragraph.Text) {
     Text(
         text = paragraph.content,
         style = NewshubTheme.typography.bodyMedium,
@@ -66,7 +68,7 @@ fun TextParagraph(paragraph: Text) {
 }
 
 @Composable
-fun ImageParagraph(paragraph: ImageInfo) {
+fun ImageParagraph(paragraph: Paragraph.ImageInfo) {
     SubcomposeAsyncImage(
         model = paragraph.thumb,
         contentDescription = null,
@@ -77,7 +79,7 @@ fun ImageParagraph(paragraph: ImageInfo) {
 }
 
 @Composable
-fun LinkParagraph(paragraph: Link, onClick: () -> Unit = { }) {
+fun LinkParagraph(paragraph: Paragraph.Link, onClick: () -> Unit = { }) {
     val annotated = buildAnnotatedString {
         append(paragraph.content)
         val (start, end) = 0 to paragraph.content.length
@@ -93,4 +95,9 @@ fun LinkParagraph(paragraph: Link, onClick: () -> Unit = { }) {
         text = annotated,
         onClick = { onClick() },
     )
+}
+
+@Composable
+fun ReplyToParagraph(paragraph: Paragraph.ReplyTo, onClick: () -> Unit = { }) {
+
 }

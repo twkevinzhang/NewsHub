@@ -41,20 +41,20 @@ abstract class AppDatabase: RoomDatabase() {
             return json.takeIf { it.isNotBlank() }?.let { jsonString: String ->
                 JSONArray(jsonString).map {
                     when (it.getString("type")) {
-                        ParagraphType.QUOTE.toString() -> Quote(
+                        ParagraphType.QUOTE.toString() -> Paragraph.Quote(
                             content = it.getString("content")
                         )
-                        ParagraphType.REPLY_TO.toString() -> ReplyTo(
+                        ParagraphType.REPLY_TO.toString() -> Paragraph.ReplyTo(
                             content = it.getString("content")
                         )
-                        ParagraphType.TEXT.toString() -> Text(
+                        ParagraphType.TEXT.toString() -> Paragraph.Text(
                             content = it.getString("content")
                         )
-                        ParagraphType.IMAGE.toString() -> ImageInfo(
+                        ParagraphType.IMAGE.toString() -> Paragraph.ImageInfo(
                             thumb = it.getString("thumb"),
                             raw = it.getString("raw"),
                         )
-                        ParagraphType.LINK.toString() -> Link(
+                        ParagraphType.LINK.toString() -> Paragraph.Link(
                             content = it.getString("content")
                         )
                         else -> throw IllegalArgumentException()
