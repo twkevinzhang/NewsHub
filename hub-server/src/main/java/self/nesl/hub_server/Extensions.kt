@@ -27,3 +27,11 @@ fun Pair<KPost, List<KPost>>.toKomicaNewsThread(url: String) =
         head = first.toKomicaTopNews(0),
         comments = second.map { it.toKomicaTopNews(0) },
     )
+
+fun String.trySubstring(range: IntRange): String {
+    return if (length - 1 < (range.last - range.first)) {
+        this
+    } else {
+        substring(range)
+    }
+}

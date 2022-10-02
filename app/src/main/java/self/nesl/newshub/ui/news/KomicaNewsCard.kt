@@ -32,6 +32,7 @@ fun KomicaTopNewsCard(
             topNews = topNews,
             onLinkClick = { },
             onReplyToClick = { },
+            onPreviewReplyTo = { "" },
         )
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
@@ -42,6 +43,7 @@ fun KomicaCommentCard(
     comment: KomicaTopNews,
     onLinkClick: (Paragraph.Link) -> Unit = { },
     onReplyToClick: (Paragraph.ReplyTo) -> Unit = { },
+    onPreviewReplyTo: (Paragraph.ReplyTo) -> String  = { "" },
 ) {
     Surface(
         tonalElevation = dimensionResource(id = R.dimen.space_2),
@@ -50,6 +52,7 @@ fun KomicaCommentCard(
             topNews = comment,
             onLinkClick = onLinkClick,
             onReplyToClick = onReplyToClick,
+            onPreviewReplyTo = onPreviewReplyTo,
         )
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
@@ -60,6 +63,7 @@ private fun KomicaTopNewsCardContent(
     topNews: KomicaTopNews,
     onLinkClick: (Paragraph.Link) -> Unit,
     onReplyToClick: (Paragraph.ReplyTo) -> Unit,
+    onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
     Column(
         modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
@@ -86,6 +90,7 @@ private fun KomicaTopNewsCardContent(
             100,
             onLinkClick,
             onReplyToClick,
+            onPreviewReplyTo,
         )
     }
 }
@@ -102,7 +107,7 @@ fun PreviewKomicaNewsCard() {
 }
 
 @Composable
-fun KomicaNewsCardTitle(text: String) {
+private fun KomicaNewsCardTitle(text: String) {
     when (text) {
         "無題" ->
             Text(

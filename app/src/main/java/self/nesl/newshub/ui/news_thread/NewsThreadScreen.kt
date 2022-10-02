@@ -1,22 +1,18 @@
 package self.nesl.newshub.ui.news_thread
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
-import self.nesl.hub_server.data.news_thread.Comment
-import self.nesl.hub_server.data.news_thread.NewsThread
+import self.nesl.hub_server.data.news_thread.*
 import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.news.KomicaCommentCard
@@ -51,6 +47,9 @@ fun NewsThreadRoute(
                     comment,
                     onLinkClick = { },
                     onKomicaReplyToClick = { onKomicaReplyToClick(it) },
+                    onPreviewReplyTo = {
+                        allComments.replyFor(it.content)[0].toText()
+                    }
                 )
             }
         }
@@ -66,6 +65,9 @@ fun NewsThreadRoute(
                 comment = replyStack.lastOrNull(),
                 onLinkClick = { },
                 onKomicaReplyToClick = { onKomicaReplyToClick(it) },
+                onPreviewReplyTo = {
+                    newsThread?.comments?.replyFor(it.content)?.get(0)?.toText() ?: ""
+                }
             )
             Row {
                 if (replyStack.size > 1) {
@@ -124,12 +126,14 @@ fun CommentsCard(
     comment: Comment?,
     onLinkClick: (Paragraph.Link) -> Unit = {},
     onKomicaReplyToClick: (Paragraph.ReplyTo) -> Unit = {},
+    onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
     when (comment) {
         is KomicaTopNews -> KomicaCommentCard(
             comment = comment,
             onLinkClick = onLinkClick,
             onReplyToClick = onKomicaReplyToClick,
+            onPreviewReplyTo = onPreviewReplyTo,
         )
         else -> {}
     }

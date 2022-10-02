@@ -1,6 +1,5 @@
 package self.nesl.newshub.ui.component
 
-import android.util.Log
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,13 +9,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import self.nesl.hub_server.data.*
 import self.nesl.newshub.R
@@ -28,6 +24,7 @@ fun ParagraphBlock(
     max: Int? = null,
     onLinkClick: (Paragraph.Link) -> Unit,
     onReplyToClick: (Paragraph.ReplyTo) -> Unit,
+    onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
     Column {
         article.map {
@@ -35,7 +32,7 @@ fun ParagraphBlock(
                 is Paragraph.Text -> TextParagraph(it)
                 is Paragraph.ImageInfo -> ImageParagraph(it)
                 is Paragraph.Link -> LinkParagraph(it) { onLinkClick(it) }
-                is Paragraph.ReplyTo -> ReplyToParagraph(it) { onReplyToClick(it) }
+                is Paragraph.ReplyTo -> ReplyToParagraph(it, onPreviewReplyTo) { onReplyToClick(it) }
                 is Paragraph.Quote -> QuoteParagraph(it)
             }
         }
@@ -60,6 +57,7 @@ fun PreviewParagraphBlock() {
             ),
             onLinkClick = { },
             onReplyToClick = { },
+            onPreviewReplyTo = { "" }
         )
     }
 }
@@ -103,8 +101,14 @@ fun LinkParagraph(paragraph: Paragraph.Link, onClick: () -> Unit = { }) {
 }
 
 @Composable
-fun ReplyToParagraph(paragraph: Paragraph.ReplyTo, onClick: () -> Unit = { }) {
-    LinkParagraph(Paragraph.Link(">>${paragraph.content}"), onClick)
+fun ReplyToParagraph(paragraph: Paragraph.ReplyTo, onPreviewReplyTo: (Paragraph.ReplyTo) -> String, onClick: () -> Unit = { }) {
+    val preview = onPreviewReplyTo(paragraph)
+    val annotations = if (preview.isBlank()) {
+        ">>${paragraph.content}"
+    } else {
+        ">>${paragraph.content}($preview...)"
+    }
+    LinkParagraph(Paragraph.Link(annotations), onClick)
 }
 
 @Composable
