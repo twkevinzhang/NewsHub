@@ -22,6 +22,7 @@ import self.nesl.newshub.ui.theme.PreviewTheme
 @Composable
 fun KomicaTopNewsCard(
     topNews: KomicaTopNews,
+    onLinkClick: (Paragraph.Link) -> Unit,
     onClick: () -> Unit = { },
 ) {
     Surface(
@@ -30,7 +31,7 @@ fun KomicaTopNewsCard(
     ) {
         KomicaTopNewsCardContent(
             topNews = topNews,
-            onLinkClick = { },
+            onLinkClick = onLinkClick,
             onReplyToClick = { },
             onPreviewReplyTo = { "" },
         )
@@ -101,6 +102,7 @@ fun PreviewKomicaNewsCard() {
     PreviewTheme {
         KomicaTopNewsCard(
             topNews = mockKomicaTopNews(),
+            onLinkClick = { },
             onClick = { },
         )
     }

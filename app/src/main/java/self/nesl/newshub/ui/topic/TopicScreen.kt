@@ -1,5 +1,7 @@
 package self.nesl.newshub.ui.topic
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -7,11 +9,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.paging.compose.items
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -22,6 +26,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.flowOf
+import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news_head.Host
 import self.nesl.hub_server.data.news_head.TopNews
 import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
@@ -48,6 +53,12 @@ fun TopicRoute(
     var loading by remember { mutableStateOf(false) }
     val refreshState = rememberSwipeRefreshState(loading)
     val navigateToNews = { topNews: TopNews -> navController.navigate(NewsNavItems.NewsThread.route.plus("/${topNews.url.encode()}")) }
+    val context = LocalContext.current
+
+    fun onLinkClick(link: Paragraph.Link) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link.content))
+        ContextCompat.startActivity(context, intent, null)
+    }
 
     TopicScreen(
         refreshState = refreshState,
@@ -92,7 +103,11 @@ fun TopicRoute(
         },
         topNews = { topNews ->
             when (topNews) {
-                is KomicaTopNews -> KomicaTopNewsCard(topNews) { navigateToNews(topNews) }
+                is KomicaTopNews -> KomicaTopNewsCard(
+                    topNews = topNews,
+                    onLinkClick = { onLinkClick(it) },
+                    onClick = { navigateToNews(topNews) },
+                )
                 else -> Text(text = "not support")
             }
         },
@@ -161,8 +176,6 @@ fun TopicScreen(
 @Composable
 fun PreviewTopicScreen() {
     val mockNewsfeed = flowOf(PagingData.from(listOf<TopNews>(mockKomicaTopNews()))).collectAsLazyPagingItems()
-    val topAppBarState = rememberTopAppBarState()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
 
     PreviewTheme {
         TopicScreen(
@@ -177,7 +190,11 @@ fun PreviewTopicScreen() {
             onHostInactiveClick = { },
             topNews = { topNews ->
                 when (topNews) {
-                    is KomicaTopNews -> KomicaTopNewsCard(topNews) { }
+                    is KomicaTopNews -> KomicaTopNewsCard(
+                        topNews = topNews,
+                        onLinkClick = { },
+                        onClick = { }
+                    )
                     else -> Text(text = "not support")
                 }
             },

@@ -1,11 +1,16 @@
 package self.nesl.newshub.ui.news_thread
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
@@ -26,11 +31,21 @@ fun NewsThreadRoute(
     val newsThread by newsThreadViewModel.newsThread.collectAsState(null)
     val loading by newsThreadViewModel.loading.collectAsState(false)
     val replyStack = remember { mutableStateListOf<Comment>() }
+    val context = LocalContext.current
 
     fun onKomicaReplyToClick(replyTo: Paragraph.ReplyTo) {
         newsThread?.comments
             ?.findLast { it.url.contains(replyTo.content) }
             ?.let { replyStack.add(it) }
+    }
+
+    fun onLinkClick(link: Paragraph.Link) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link.content))
+        startActivity(context, intent, null)
+    }
+
+    fun onPreviewReplyTo(replyTo: Paragraph.ReplyTo): String {
+        return newsThread?.comments?.replyFor(replyTo.content)?.get(0)?.toText() ?: ""
     }
 
     NewsThreadScreen(
@@ -40,20 +55,10 @@ fun NewsThreadRoute(
             newsThreadViewModel.refresh()
         },
         navigateUp = { navController.navigateUp() },
-    ) { allComments ->
-        allComments.forEach { comment ->
-            item {
-                CommentsCard(
-                    comment,
-                    onLinkClick = { },
-                    onKomicaReplyToClick = { onKomicaReplyToClick(it) },
-                    onPreviewReplyTo = {
-                        allComments.replyFor(it.content)[0].toText()
-                    }
-                )
-            }
-        }
-    }
+        onLinkClick = { onLinkClick(it) },
+        onKomicaReplyToClick = { onKomicaReplyToClick(it) },
+        onPreviewReplyTo = { onPreviewReplyTo(it) },
+    )
 
     if (replyStack.isNotEmpty()) {
         AppDialog(
@@ -63,11 +68,9 @@ fun NewsThreadRoute(
         ) {
             CommentsCard(
                 comment = replyStack.lastOrNull(),
-                onLinkClick = { },
+                onLinkClick = { onLinkClick(it) },
                 onKomicaReplyToClick = { onKomicaReplyToClick(it) },
-                onPreviewReplyTo = {
-                    newsThread?.comments?.replyFor(it.content)?.get(0)?.toText() ?: ""
-                }
+                onPreviewReplyTo = { onPreviewReplyTo(it) }
             )
             Row {
                 if (replyStack.size > 1) {
@@ -87,7 +90,9 @@ fun NewsThreadScreen(
     newsThread: NewsThread? = null,
     onRefresh: () -> Unit,
     navigateUp: () -> Unit = {},
-    comments: LazyListScope.(List<Comment>) -> Unit,
+    onLinkClick: (Paragraph.Link) -> Unit = {},
+    onKomicaReplyToClick: (Paragraph.ReplyTo) -> Unit = {},
+    onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ){
     Scaffold(
         topBar = {
@@ -110,10 +115,22 @@ fun NewsThreadScreen(
                     LazyColumn {
                         item {
                             when (val head = newsThread.head) {
-                                is KomicaTopNews -> KomicaTopNewsCard(head)
+                                is KomicaTopNews -> KomicaTopNewsCard(
+                                    topNews = head,
+                                    onLinkClick = onLinkClick,
+                                )
                             }
                         }
-                        comments(newsThread.comments)
+                        newsThread.comments.forEach { comment ->
+                            item {
+                                CommentsCard(
+                                    comment,
+                                    onLinkClick = onLinkClick,
+                                    onKomicaReplyToClick = onKomicaReplyToClick,
+                                    onPreviewReplyTo = onPreviewReplyTo
+                                )
+                            }
+                        }
                     }
                 }
             }
