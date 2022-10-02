@@ -1,5 +1,6 @@
 package self.nesl.newshub.ui
 
+import android.util.Log
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -10,6 +11,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import androidx.hilt.navigation.HiltViewModelFactory
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import kotlinx.coroutines.CoroutineScope
 import self.nesl.newshub.ui.component.AppDrawerContent
 import self.nesl.newshub.ui.topic.TopicViewModel
 import self.nesl.newshub.ui.topic.TopicRoute
@@ -21,18 +27,19 @@ import self.nesl.newshub.ui.topic.EmptyRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun bindAppScreen() {
+fun bindAppScreen(
+    navController: NavHostController = rememberNavController(),
+    scope: CoroutineScope = rememberCoroutineScope(),
+    drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
+) {
     val defaultNav = DrawerNavItems.Home
 
     NewshubTheme {
-        val scope = rememberCoroutineScope()
-        val navController = rememberNavController()
         val navigationActions = remember(navController) { AppNavigation(navController) }
-        val drawerState = rememberDrawerState(DrawerValue.Closed)
-        val openDrawer = { scope.launch { drawerState.open() } }
-        val closeDrawer = { scope.launch { drawerState.close() } }
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route ?: defaultNav.route
+        val openDrawer = { scope.launch { drawerState.open() } }
+        val closeDrawer = { scope.launch { drawerState.close() } }
 
         ModalNavigationDrawer(
             drawerState = drawerState,
