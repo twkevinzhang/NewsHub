@@ -12,9 +12,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
 import self.nesl.hub_server.data.news_head.komica.mockKomicaTopNews
+import self.nesl.hub_server.data.news_thread.Comment
 import self.nesl.newshub.R
+import self.nesl.newshub.isZeroOrNull
 import self.nesl.newshub.ui.component.ParagraphBlock
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
+import self.nesl.newshub.ui.theme.AppLink
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 
@@ -29,14 +32,31 @@ fun KomicaTopNewsCard(
         tonalElevation = dimensionResource(id = R.dimen.space_2),
         onClick = onClick,
     ) {
-        KomicaTopNewsCardContent(
-            topNews = topNews,
-            onLinkClick = onLinkClick,
-            onReplyToClick = { },
-            onPreviewReplyTo = { "" },
-        )
+        Column(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
+        ) {
+            KomicaTopNewsCardHeader(topNews)
+            KomicaTopNewsCardContent(
+                topNews = topNews,
+                onLinkClick = onLinkClick,
+                onReplyToClick = { },
+                onPreviewReplyTo = { "" },
+            )
+        }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
+}
+
+@Preview
+@Composable
+fun PreviewKomicaTopNewsCard() {
+    PreviewTheme {
+        KomicaTopNewsCard(
+            topNews = mockKomicaTopNews(),
+            onLinkClick = { },
+            onClick = { },
+        )
+    }
 }
 
 @Composable
@@ -49,14 +69,67 @@ fun KomicaCommentCard(
     Surface(
         tonalElevation = dimensionResource(id = R.dimen.space_2),
     ) {
-        KomicaTopNewsCardContent(
-            topNews = comment,
-            onLinkClick = onLinkClick,
-            onReplyToClick = onReplyToClick,
-            onPreviewReplyTo = onPreviewReplyTo,
-        )
+        Column(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
+        ) {
+            KomicaCommentCardHeader(comment)
+            ParagraphBlock(
+                comment.content,
+                100,
+                onLinkClick = onLinkClick,
+                onReplyToClick = onReplyToClick,
+                onPreviewReplyTo = onPreviewReplyTo,
+            )
+        }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
+}
+
+@Preview
+@Composable
+fun PreviewKomicaCommentCard() {
+    PreviewTheme {
+        KomicaCommentCard(
+            comment = mockKomicaTopNews(),
+            onLinkClick = { },
+            onReplyToClick = { },
+            onPreviewReplyTo = { "" },
+        )
+    }
+}
+
+@Composable
+private fun KomicaTopNewsCardHeader(topNews: KomicaTopNews) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row {
+            CardHeadPosterBlock(topNews.poster)
+            CardHeadTimeBlock(topNews.createdAt)
+            CardHeadTextBlock("${topNews.id}@Komica")
+        }
+        Row {
+            CardHeadRepliesBlock(topNews.replies)
+        }
+    }
+}
+
+@Composable
+private fun KomicaCommentCardHeader(comment: KomicaTopNews) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row {
+            KomicaNewsCardTitle(comment.title!!)
+        }
+        Row {
+            CardHeadPosterBlock(comment.poster)
+            CardHeadTimeBlock(comment.createdAt)
+            CardHeadTextBlock(comment.id)
+        }
+    }
 }
 
 @Composable
@@ -66,22 +139,7 @@ private fun KomicaTopNewsCardContent(
     onReplyToClick: (Paragraph.ReplyTo) -> Unit,
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
-    Column(
-        modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row {
-                CardHeadPosterBlock(topNews.poster)
-                CardHeadTimeBlock(topNews.createdAt)
-                CardHeadHostBlock(topNews)
-            }
-            Row {
-                CardHeadRepliesBlock(topNews.replies)
-            }
-        }
+    Column {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
         if (topNews.title.isNullOrEmpty().not()) {
             KomicaNewsCardTitle(topNews.title!!)
@@ -96,22 +154,10 @@ private fun KomicaTopNewsCardContent(
     }
 }
 
-@Preview
-@Composable
-fun PreviewKomicaNewsCard() {
-    PreviewTheme {
-        KomicaTopNewsCard(
-            topNews = mockKomicaTopNews(),
-            onLinkClick = { },
-            onClick = { },
-        )
-    }
-}
-
 @Composable
 private fun KomicaNewsCardTitle(text: String) {
     when (text) {
-        "無題" ->
+        "無題", "無念" ->
             Text(
                 text = text,
                 style = NewshubTheme.typography.titleMedium.copy(),

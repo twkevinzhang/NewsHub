@@ -2,12 +2,14 @@ package self.nesl.newshub
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.compose.ui.Modifier
 import self.nesl.newshub.ui.navigation.NavItems
 import java.net.URLEncoder
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.locks.Condition
 
 fun String.toBitmap(): Bitmap {
     val imageBytes = android.util.Base64.decode(this, android.util.Base64.DEFAULT)
@@ -36,3 +38,12 @@ fun Long.toHumanTime(): String {
 }
 
 fun String.encode() = URLEncoder.encode(this, "utf-8")
+
+fun Int?.isZeroOrNull() = this == 0 || this == null
+
+fun Modifier.doIf(condition: Boolean, thing: Modifier.() -> Modifier): Modifier {
+    return if (condition)
+        thing()
+    else
+        this
+}

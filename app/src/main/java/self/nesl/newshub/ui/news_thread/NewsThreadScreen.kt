@@ -2,7 +2,6 @@ package self.nesl.newshub.ui.news_thread
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
@@ -65,11 +64,11 @@ fun NewsThreadRoute(
                 replyStack.clear()
             },
         ) {
-            CommentsCard(
+            CommentCard(
                 comment = replyStack.lastOrNull(),
                 onLinkClick = { onLinkClick(it) },
                 onKomicaReplyToClick = { onKomicaReplyToClick(it) },
-                onPreviewReplyTo = { onPreviewReplyTo(it) }
+                onPreviewReplyTo = { onPreviewReplyTo(it) },
             )
             Row {
                 if (replyStack.size > 1) {
@@ -122,11 +121,11 @@ fun NewsThreadScreen(
                         }
                         newsThread.comments.forEach { comment ->
                             item {
-                                CommentsCard(
-                                    comment,
+                                CommentCard(
+                                    comment = comment,
                                     onLinkClick = onLinkClick,
                                     onKomicaReplyToClick = onKomicaReplyToClick,
-                                    onPreviewReplyTo = onPreviewReplyTo
+                                    onPreviewReplyTo = onPreviewReplyTo,
                                 )
                             }
                         }
@@ -138,7 +137,7 @@ fun NewsThreadScreen(
 }
 
 @Composable
-fun CommentsCard(
+fun CommentCard(
     comment: Comment?,
     onLinkClick: (Paragraph.Link) -> Unit = {},
     onKomicaReplyToClick: (Paragraph.ReplyTo) -> Unit = {},

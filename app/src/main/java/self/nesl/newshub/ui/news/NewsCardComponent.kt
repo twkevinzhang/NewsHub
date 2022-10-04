@@ -1,23 +1,18 @@
 package self.nesl.newshub.ui.news
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import self.nesl.hub_server.data.news_head.TopNews
-import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
-import self.nesl.hub_server.data.news_head.komica.mockKomicaTopNews
+import self.nesl.newshub.*
 import self.nesl.newshub.R
-import self.nesl.newshub.toHumanTime
-import self.nesl.newshub.ui.component.ParagraphBlock
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
+import self.nesl.newshub.ui.theme.AppLink
 import self.nesl.newshub.ui.theme.NewshubTheme
-import self.nesl.newshub.ui.theme.PreviewTheme
-
 
 
 @Composable
@@ -31,18 +26,18 @@ fun CardHeadTimeBlock(timestamp: Long?) {
 }
 
 @Composable
-fun CardHeadHostBlock(topNews: TopNews) {
-    CardHeadTextBlock(
-        when (topNews) {
-            is KomicaTopNews -> "${topNews.id}@Komica"
-            else -> "not support"
-        }
-    )
-}
-
-@Composable
-fun CardHeadRepliesBlock(replies: Int?) {
-    CardHeadTextBlock(replies.toString())
+fun CardHeadRepliesBlock(replies: Int?, onShowMoreClick: (() -> Unit)? = null) {
+    if (onShowMoreClick == null || replies.isZeroOrNull()) {
+        CardHeadTextBlock(
+            text = (replies ?: 0).toString(),
+        )
+    } else {
+        CardHeadTextBlock(
+            text = (replies ?: 0).toString(),
+            color = AppLink,
+            onClick = onShowMoreClick,
+        )
+    }
 }
 
 @Composable
@@ -61,15 +56,17 @@ fun CardHeadBlock(
 @Composable
 fun CardHeadTextBlock(
     text: String = "",
-    modifier: Modifier = Modifier,
+    color: Color = LocalContentColor.current.copy(alpha = AppDisabledAlpha),
+    onClick: (() -> Unit)? = null,
 ) {
     CardHeadBlock(
-        modifier = modifier,
+        modifier = Modifier
+            .doIf(onClick != null) { clickable { onClick!!.invoke() } },
     ) {
         Text(
             text = text,
             style = NewshubTheme.typography.bodySmall,
-            color = LocalContentColor.current.copy(alpha = AppDisabledAlpha),
+            color = color,
         )
     }
 }

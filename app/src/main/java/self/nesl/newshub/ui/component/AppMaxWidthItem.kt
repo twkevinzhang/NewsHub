@@ -1,6 +1,5 @@
 package self.nesl.newshub.ui.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
@@ -10,10 +9,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import self.nesl.newshub.R
+import self.nesl.newshub.doIf
 import self.nesl.newshub.ui.theme.*
 
 
@@ -23,11 +21,9 @@ fun AppMaxWidthItem(
     icon: Painter? = null,
     onClick: (() -> Unit)? = null,
 ) {
-    val modifier = onClick?.let {
-        Modifier.clickable(onClick = { onClick() })
-    } ?: Modifier
     Row(
-        modifier = modifier
+        modifier = Modifier
+            .doIf(onClick != null) { clickable { onClick?.invoke() } }
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.space_16)),
         verticalAlignment = Alignment.CenterVertically
