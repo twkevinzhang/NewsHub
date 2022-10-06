@@ -18,6 +18,13 @@ fun KPost.replyTo(): List<String> {
         .map { paragraph -> paragraph.content }
 }
 
+fun List<KPost>.filterReplyToIs(threadId: String?): List<KPost> {
+    return if(threadId == null)
+        this.filter { it.replyTo().isEmpty() }
+    else
+        this.filter { it.replyTo().contains(threadId) }
+}
+
 class KPostBuilder {
     private var id: String= ""
     private var url: String= ""

@@ -114,13 +114,6 @@ fun String.toMillTimestamp(): Long {
     return 0L
 }
 
-fun List<KPost>.replyFor(threadId: String?): List<KPost> {
-    return if(threadId == null)
-        this.filter { it.replyTo().isEmpty() }
-    else
-        this.filter { it.replyTo().contains(threadId) }
-}
-
 fun String.isKomica() =
     boards().map { it.url }.contains(this.toHttpUrlOrNull()!!.host)
 

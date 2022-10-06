@@ -51,25 +51,5 @@ internal class ExtensionsTest {
     @Test
     fun `Test toMillTimestamp with years with only two digits extension expect successful`() =
         assertEquals(1662795827000L, "22/09/10(Sat) 15:43:47".toMillTimestamp())
-
-    @Test
-    fun `Test replyFor extension expect successful`() {
-        val post1 = KPostBuilder().setContent(listOf(
-            KReplyTo("A"),
-            KReplyTo("B"),
-            KReplyTo("C"),
-        )).build()
-
-        val post2 = KPostBuilder().setContent(listOf(
-            KReplyTo("A"),
-            KReplyTo("B"),
-        )).build()
-
-        val post3 = KPostBuilder().setContent(listOf(
-            KReplyTo("A"),
-        )).build()
-
-        assertEquals(2, listOf(post1, post2, post3).replyFor("B").size)
-    }
 }
 
