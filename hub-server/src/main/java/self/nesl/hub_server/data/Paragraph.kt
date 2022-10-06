@@ -20,7 +20,7 @@ sealed class Paragraph(
     ): Paragraph(ParagraphType.QUOTE)
 
     class ReplyTo(
-        val content: String,
+        val id: String,
     ): Paragraph(ParagraphType.REPLY_TO)
 
     class Link(

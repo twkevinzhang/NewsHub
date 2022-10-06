@@ -104,9 +104,9 @@ fun LinkParagraph(paragraph: Paragraph.Link, onClick: () -> Unit = { }) {
 fun ReplyToParagraph(paragraph: Paragraph.ReplyTo, onPreviewReplyTo: (Paragraph.ReplyTo) -> String, onClick: () -> Unit = { }) {
     val preview = onPreviewReplyTo(paragraph)
     val annotations = if (preview.isBlank()) {
-        ">>${paragraph.content}"
+        ">>${paragraph.id}"
     } else {
-        ">>${paragraph.content}($preview...)"
+        ">>${paragraph.id}($preview...)"
     }
     LinkParagraph(Paragraph.Link(annotations), onClick)
 }

@@ -1,16 +1,13 @@
 package self.nesl.hub_server.data
 
-import android.util.Log
 import androidx.room.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONObject
 import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.TopNews
 import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
 import self.nesl.hub_server.data.news_head.komica.KomicaTopNewsDao
-import java.lang.reflect.Type
 
 @Database(
     entities = [
@@ -45,7 +42,7 @@ abstract class AppDatabase: RoomDatabase() {
                             content = it.getString("content")
                         )
                         ParagraphType.REPLY_TO.toString() -> Paragraph.ReplyTo(
-                            content = it.getString("content")
+                            id = it.getString("content")
                         )
                         ParagraphType.TEXT.toString() -> Paragraph.Text(
                             content = it.getString("content")

@@ -35,7 +35,7 @@ fun NewsThreadRoute(
 
     fun onKomicaReplyToClick(replyTo: Paragraph.ReplyTo) {
         newsThread?.comments
-            ?.findLast { it.url.contains(replyTo.content) }
+            ?.findLast { it.url.contains(replyTo.id) }
             ?.let { replyStack.add(it) }
     }
 

@@ -22,7 +22,7 @@ fun List<Comment>.filterReplyToIs(commentId: String): List<Comment> {
 fun Comment.replyTo(): List<String> {
     return content
         .filterIsInstance<Paragraph.ReplyTo>()
-        .map { paragraph -> paragraph.content }
+        .map { paragraph -> paragraph.id }
 }
 
 fun Comment.toText(): String {
