@@ -1,11 +1,10 @@
 package self.nesl.newshub.ui.news_thread
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -45,7 +44,7 @@ fun NewsThreadRoute(
     }
 
     fun onPreviewReplyTo(replyTo: Paragraph.ReplyTo): String {
-        return newsThread?.comments?.replyFor(replyTo.content)?.get(0)?.toText() ?: ""
+        return newsThread?.comments?.findLast { it.id ==  replyTo.id }?.toText() ?: ""
     }
 
     NewsThreadScreen(
