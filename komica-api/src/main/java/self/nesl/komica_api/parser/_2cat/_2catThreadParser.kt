@@ -4,7 +4,6 @@ import org.jsoup.nodes.Element
 import self.nesl.komica_api.installThreadTag
 import self.nesl.komica_api.model.KPost
 import self.nesl.komica_api.parser.Parser
-import self.nesl.komica_api.replyFor
 
 class _2catThreadParser(
     private val postParser: Parser<KPost>,

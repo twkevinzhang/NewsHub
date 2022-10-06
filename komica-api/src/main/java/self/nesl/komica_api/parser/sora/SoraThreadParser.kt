@@ -3,8 +3,8 @@ package self.nesl.komica_api.parser.sora
 import org.jsoup.nodes.Element
 import self.nesl.komica_api.installThreadTag
 import self.nesl.komica_api.model.KPost
+import self.nesl.komica_api.model.filterReplyToIs
 import self.nesl.komica_api.parser.Parser
-import self.nesl.komica_api.replyFor
 
 class SoraThreadParser(
     private val postParser: Parser<KPost>,
@@ -33,7 +33,7 @@ class SoraThreadParser(
 
     private fun setRepliesCount(posts: List<KPost>) {
         for (post in posts) {
-            post.replies = posts.replyFor(post.id).size
+            post.replies = posts.filterReplyToIs(post.id).size
         }
     }
 }
