@@ -3,6 +3,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id "dagger.hilt.android.plugin"
+    id "de.mannodermaus.android-junit5"
 }
 
 android {
@@ -46,4 +47,9 @@ dependencies {
 
     // other
     implementation "com.google.code.gson:gson:$versions.gson"
+
+    // unit test
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.junit"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$versions.junit"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.junit"
 }
