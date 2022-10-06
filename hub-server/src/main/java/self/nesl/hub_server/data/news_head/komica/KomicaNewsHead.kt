@@ -10,6 +10,7 @@ import self.nesl.hub_server.data.news_thread.Comment
 @Entity(tableName = "komica_news")
 data class KomicaTopNews (
     @PrimaryKey override val url: String,
+    override val id: String,
     override val host: Host,
     override val title: String?,
     override val createdAt: Long?,
@@ -42,4 +43,5 @@ fun mockKomicaTopNews() =
         ),
         favorite = null,
         page = 1,
+        id = "1",
     )

@@ -6,12 +6,12 @@ import self.nesl.hub_server.data.Paragraph
 interface TopNews {
     val url: String
     val host: Host
-    open val title: String?
-    open val createdAt: Long?
-    open val poster: String?
-    open val visits: Int?
-    open val replies: Int?
-    open val readAt: Int?
-    open val content: List<Paragraph>
-    open val favorite: String?
+    val title: String?
+    val createdAt: Long?
+    val poster: String?
+    val visits: Int?
+    val replies: Int?
+    val readAt: Int?
+    val content: List<Paragraph>
+    val favorite: String?
 }

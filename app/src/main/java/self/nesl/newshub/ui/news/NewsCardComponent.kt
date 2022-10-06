@@ -34,7 +34,7 @@ fun CardHeadTimeBlock(timestamp: Long?) {
 fun CardHeadHostBlock(topNews: TopNews) {
     CardHeadTextBlock(
         when (topNews) {
-            is KomicaTopNews -> "Komica"
+            is KomicaTopNews -> "${topNews.id}@Komica"
             else -> "not support"
         }
     )

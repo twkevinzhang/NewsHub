@@ -19,6 +19,7 @@ fun KPost.toKomicaTopNews(page: Int) =
         content = content.map { it.toParagraph() },
         favorite = null,
         page = page,
+        id = id,
     )
 
 fun Pair<KPost, List<KPost>>.toKomicaNewsThread(url: String) =
