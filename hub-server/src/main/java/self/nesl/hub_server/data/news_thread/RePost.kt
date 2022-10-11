@@ -3,7 +3,7 @@ package self.nesl.hub_server.data.news_thread
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.trySubstring
 
-interface Comment {
+interface RePost {
 
     /**
      * Returns the id in the discussion thread.
@@ -15,17 +15,17 @@ interface Comment {
     val content: List<Paragraph>
 }
 
-fun List<Comment>.filterReplyToIs(commentId: String): List<Comment> {
-    return this.filter { it.replyTo().contains(commentId) }
+fun List<RePost>.parentIs(parentId: String): List<RePost> {
+    return this.filter { it.parent().contains(parentId) }
 }
 
-fun Comment.replyTo(): List<String> {
+fun RePost.parent(): List<String> {
     return content
         .filterIsInstance<Paragraph.ReplyTo>()
         .map { paragraph -> paragraph.id }
 }
 
-fun Comment.toText(): String {
+fun RePost.toText(): String {
     return content
         .filterIsInstance<Paragraph.Text>()
         .first()

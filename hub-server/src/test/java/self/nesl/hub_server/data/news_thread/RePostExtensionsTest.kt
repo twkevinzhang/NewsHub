@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import self.nesl.hub_server.data.Paragraph
 
-internal class CommentExtensionsTest {
+internal class RePostExtensionsTest {
 
     @Test
-    fun `Test CommentList filterReplyToIs extensions with correct target expect successful`() {
-        val comment1 = object: Comment {
+    fun `Test RePostList filterReplyToIs extensions with correct target expect successful`() {
+        val rePost1 = object: RePost {
             override val id = "D"
             override val url = "https://example.org?id=D"
             override val content = listOf(
@@ -18,7 +18,7 @@ internal class CommentExtensionsTest {
             )
         }
 
-        val comment2 = object: Comment {
+        val rePost2 = object: RePost {
             override val id = "C"
             override val url = "https://example.org?id=C"
             override val content = listOf(
@@ -27,7 +27,7 @@ internal class CommentExtensionsTest {
             )
         }
 
-        val comment3 = object: Comment {
+        val rePost3 = object: RePost {
             override val id = "B"
             override val url = "https://example.org?id=B"
             override val content = listOf(
@@ -35,6 +35,6 @@ internal class CommentExtensionsTest {
             )
         }
 
-        assertEquals(2, listOf(comment1, comment2, comment3).filterReplyToIs("B").size)
+        assertEquals(2, listOf(rePost1, rePost2, rePost3).parentIs("B").size)
     }
 }

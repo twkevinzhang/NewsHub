@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news_head.Host
 import self.nesl.hub_server.data.news_head.TopNews
-import self.nesl.hub_server.data.news_thread.Comment
+import self.nesl.hub_server.data.news_thread.RePost
 
 @Entity(tableName = "komica_news")
 data class KomicaTopNews (
@@ -21,7 +21,7 @@ data class KomicaTopNews (
     override val content: List<Paragraph>,
     override val favorite: String?,
     val page: Int,
-): TopNews, Comment
+): TopNews, RePost
 
 fun mockKomicaTopNews() =
     KomicaTopNews(

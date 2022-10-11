@@ -12,12 +12,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
 import self.nesl.hub_server.data.news_head.komica.mockKomicaTopNews
-import self.nesl.hub_server.data.news_thread.Comment
 import self.nesl.newshub.R
-import self.nesl.newshub.isZeroOrNull
 import self.nesl.newshub.ui.component.ParagraphBlock
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
-import self.nesl.newshub.ui.theme.AppLink
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 
@@ -26,12 +23,10 @@ import self.nesl.newshub.ui.theme.PreviewTheme
 fun KomicaTopNewsCard(
     topNews: KomicaTopNews,
     onLinkClick: (Paragraph.Link) -> Unit,
-    onClick: () -> Unit = { },
+    onClick: (() -> Unit)? = null,
 ) {
-    Surface(
-        tonalElevation = dimensionResource(id = R.dimen.space_2),
-        onClick = onClick,
-    ) {
+    @Composable
+    fun content() {
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
         ) {
@@ -44,6 +39,21 @@ fun KomicaTopNewsCard(
             )
         }
     }
+    if (onClick != null) {
+        Surface(
+            tonalElevation = dimensionResource(id = R.dimen.space_2),
+            onClick = onClick,
+        ) {
+            content()
+        }
+    } else {
+        Surface(
+            tonalElevation = dimensionResource(id = R.dimen.space_2),
+        ) {
+            content()
+        }
+    }
+
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
 }
 
@@ -59,22 +69,23 @@ fun PreviewKomicaTopNewsCard() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KomicaCommentCard(
-    comment: KomicaTopNews,
+fun KomicaRePostCard(
+    rePost: KomicaTopNews,
     onLinkClick: (Paragraph.Link) -> Unit = { },
     onReplyToClick: (Paragraph.ReplyTo) -> Unit = { },
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String  = { "" },
+    onClick: (() -> Unit)? = null,
 ) {
-    Surface(
-        tonalElevation = dimensionResource(id = R.dimen.space_2),
-    ) {
+    @Composable
+    fun content() {
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
         ) {
-            KomicaCommentCardHeader(comment)
+            KomicaRePostCardHeader(rePost)
             ParagraphBlock(
-                comment.content,
+                rePost.content,
                 100,
                 onLinkClick = onLinkClick,
                 onReplyToClick = onReplyToClick,
@@ -82,15 +93,29 @@ fun KomicaCommentCard(
             )
         }
     }
+    if (onClick != null) {
+        Surface(
+            tonalElevation = dimensionResource(id = R.dimen.space_2),
+            onClick = onClick,
+        ) {
+            content()
+        }
+    } else {
+        Surface(
+            tonalElevation = dimensionResource(id = R.dimen.space_2),
+        ) {
+            content()
+        }
+    }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
 }
 
 @Preview
 @Composable
-fun PreviewKomicaCommentCard() {
+fun PreviewKomicaRePostCard() {
     PreviewTheme {
-        KomicaCommentCard(
-            comment = mockKomicaTopNews(),
+        KomicaRePostCard(
+            rePost = mockKomicaTopNews(),
             onLinkClick = { },
             onReplyToClick = { },
             onPreviewReplyTo = { "" },
@@ -116,18 +141,18 @@ private fun KomicaTopNewsCardHeader(topNews: KomicaTopNews) {
 }
 
 @Composable
-private fun KomicaCommentCardHeader(comment: KomicaTopNews) {
+private fun KomicaRePostCardHeader(rePost: KomicaTopNews) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row {
-            KomicaNewsCardTitle(comment.title!!)
+            KomicaNewsCardTitle(rePost.title!!)
         }
         Row {
-            CardHeadPosterBlock(comment.poster)
-            CardHeadTimeBlock(comment.createdAt)
-            CardHeadTextBlock(comment.id)
+            CardHeadPosterBlock(rePost.poster)
+            CardHeadTimeBlock(rePost.createdAt)
+            CardHeadTextBlock(rePost.id)
         }
     }
 }

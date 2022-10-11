@@ -25,8 +25,8 @@ fun KPost.toKomicaTopNews(page: Int) =
 fun Pair<KPost, List<KPost>>.toKomicaNewsThread(url: String) =
     KomicaNewsThread(
         url = url,
-        head = first.toKomicaTopNews(0),
-        comments = second.map { it.toKomicaTopNews(0) },
+        post = first.toKomicaTopNews(0),
+        rePost = second.map { it.toKomicaTopNews(0) },
     )
 
 fun String.trySubstring(range: IntRange): String {
