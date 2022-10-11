@@ -5,7 +5,11 @@ import androidx.navigation.NavHostController
 
 class AppNavigation(navController: NavHostController) {
     val navigateWithPop: (NavItems) -> Unit = {
-        navController.navigate(it.route) {
+        val route = when (it) {
+            is TopicNavItems -> "topic/${it.route}"
+            else -> it.route
+        }
+        navController.navigate(route) {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }

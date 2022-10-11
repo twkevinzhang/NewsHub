@@ -36,6 +36,9 @@ fun topicNavItems() = listOf(
     TopicNavItems.Movie,
 )
 
+fun String.toTopic() =
+    topicNavItems().findLast { it.route == this }!!
+
 sealed class BottomNavItems(
     override val resourceId: Int,
     override val icon: Int,
