@@ -27,6 +27,8 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.fragula2.compose.FragulaNavHost
+import com.fragula2.compose.swipeable
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -54,11 +56,11 @@ fun TopicRoute(
     topic: TopicNavItems,
 ) {
     val navController = rememberNavController()
-    NavHost(
+    FragulaNavHost(
         navController = navController,
         startDestination = "list",
     ) {
-        composable("list") {
+        swipeable("list") {
             val factory = HiltViewModelFactory(LocalContext.current, it)
             val newsListViewModel = viewModel<NewsListViewModel>(factory = factory)
             newsListViewModel.topic(topic)
@@ -69,7 +71,7 @@ fun TopicRoute(
             )
         }
 
-        composable("thread/{url}") {
+        swipeable("thread/{url}") {
             val factory = HiltViewModelFactory(LocalContext.current, it)
             val newsThreadViewModel = viewModel<NewsThreadViewModel>(factory = factory)
             it.arguments?.getString("url")?.let { url ->

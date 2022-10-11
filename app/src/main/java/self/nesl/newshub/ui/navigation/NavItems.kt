@@ -27,8 +27,8 @@ sealed class TopicNavItems(
     override val icon: Int,
     override val route: String
 ): NavItems(resourceId, icon, route) {
-    object Square : TopicNavItems(R.string.square, R.drawable.ic_outline_globe_24, "square")
-    object Movie : TopicNavItems(R.string.movie, R.drawable.ic_outline_globe_24, "movie")
+    object Square : TopicNavItems(R.string.square, R.drawable.ic_outline_globe_24, "topic/square")
+    object Movie : TopicNavItems(R.string.movie, R.drawable.ic_outline_globe_24, "topic/movie")
 }
 
 fun topicNavItems() = listOf(
@@ -36,8 +36,9 @@ fun topicNavItems() = listOf(
     TopicNavItems.Movie,
 )
 
-fun String.toTopic() =
-    topicNavItems().findLast { it.route == this }!!
+fun String.toTopicNavItem() = checkNotNull(topicNavItems().findLast { this == it.route }) {
+    "$this not implement yet"
+}
 
 sealed class BottomNavItems(
     override val resourceId: Int,
