@@ -33,12 +33,13 @@ import self.nesl.newshub.ui.theme.PreviewTheme
 @Composable
 fun EmptyRoute(
     openDrawer: () -> Unit,
+    title: String = "Empty",
 ){
     Scaffold(
         topBar = {
             NewsHubTopBar(
                 onMenuPressed = { openDrawer() },
-                title = "Empty"
+                title = title,
             )
         },
     ) {

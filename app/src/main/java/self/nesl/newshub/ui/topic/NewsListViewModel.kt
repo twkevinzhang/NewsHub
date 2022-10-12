@@ -17,7 +17,7 @@ import self.nesl.newshub.ui.navigation.TopicNavItems
 import javax.inject.Inject
 
 @HiltViewModel
-class TopicViewModel @Inject constructor(
+class NewsListViewModel @Inject constructor(
     private val getAllTopNews: GetAllTopNews,
     private val clearAllTopNews: ClearAllTopNews,
 ) : ViewModel() {

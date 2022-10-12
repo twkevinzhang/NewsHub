@@ -4,8 +4,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 
 class AppNavigation(navController: NavHostController) {
-    val navigateWithPop: (NavItems) -> Unit = {
-        navController.navigate(it.route) {
+    val navigateWithPop: (String) -> Unit = {
+        navController.navigate(it) {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }

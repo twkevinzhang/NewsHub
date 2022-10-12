@@ -16,12 +16,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.HiltViewModelFactory
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.fragula2.compose.FragulaNavHost
+import com.fragula2.compose.swipeable
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -39,20 +46,57 @@ import self.nesl.newshub.ui.navigation.NewsNavItems
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import self.nesl.newshub.ui.navigation.bottomNavItems
 import self.nesl.newshub.ui.news.KomicaTopNewsCard
+import self.nesl.newshub.ui.news_thread.NewsThreadRoute
+import self.nesl.newshub.ui.news_thread.NewsThreadViewModel
 import self.nesl.newshub.ui.theme.PreviewTheme
 
 @Composable
 fun TopicRoute(
-    topicViewModel: TopicViewModel,
+    openDrawer: () -> Unit,
+    topic: TopicNavItems,
+) {
+    val navController = rememberNavController()
+    FragulaNavHost(
+        navController = navController,
+        startDestination = "list",
+    ) {
+        swipeable("list") {
+            val factory = HiltViewModelFactory(LocalContext.current, it)
+            val newsListViewModel = viewModel<NewsListViewModel>(factory = factory)
+            newsListViewModel.topic(topic)
+            NewsListRoute(
+                newsListViewModel = newsListViewModel,
+                navController = navController,
+                openDrawer = { openDrawer() },
+            )
+        }
+
+        swipeable("thread/{url}") {
+            val factory = HiltViewModelFactory(LocalContext.current, it)
+            val newsThreadViewModel = viewModel<NewsThreadViewModel>(factory = factory)
+            it.arguments?.getString("url")?.let { url ->
+                newsThreadViewModel.newsThreadUrl(url)
+            }
+            NewsThreadRoute(
+                newsThreadViewModel = newsThreadViewModel,
+                navController = navController,
+            )
+        }
+    }
+}
+
+@Composable
+fun NewsListRoute(
+    newsListViewModel: NewsListViewModel,
     navController: NavHostController,
     openDrawer: () -> Unit,
 ){
-    val topic by topicViewModel.topic.collectAsState()
-    val pagingTopNews = topicViewModel.pagingTopNews.collectAsLazyPagingItems()
-    val enableHosts by topicViewModel.enableHosts.collectAsState(emptyList())
+    val topic by newsListViewModel.topic.collectAsState()
+    val pagingTopNews = newsListViewModel.pagingTopNews.collectAsLazyPagingItems()
+    val enableHosts by newsListViewModel.enableHosts.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
     val refreshState = rememberSwipeRefreshState(loading)
-    val navigateToNews = { topNews: TopNews -> navController.navigate(NewsNavItems.NewsThread.route.plus("/${topNews.url.encode()}")) }
+    val navigateToNews = { topNews: TopNews -> navController.navigate("thread/${topNews.url.encode()}") }
     val context = LocalContext.current
 
     fun onLinkClick(link: Paragraph.Link) {
@@ -68,14 +112,14 @@ fun TopicRoute(
         enableHosts = enableHosts,
         openDrawer = openDrawer,
         onRefresh = {
-            topicViewModel.clearAllTopNews()
+            newsListViewModel.clearAllTopNews()
             pagingTopNews.refresh()
         },
         onHostActiveClick = {
-            topicViewModel.disableHost(it)
+            newsListViewModel.disableHost(it)
         },
         onHostInactiveClick = {
-            topicViewModel.enableHost(it)
+            newsListViewModel.enableHost(it)
         },
         onLoadStateChange = { loadState ->
             loadState.apply {
