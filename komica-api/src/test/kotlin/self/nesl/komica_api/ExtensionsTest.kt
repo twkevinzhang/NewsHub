@@ -10,7 +10,7 @@ import self.nesl.komica_api.model.KReplyTo
 internal class ExtensionsTest {
 
     @Test
-    fun `Test withHttps extension with same url expect successful`() =
+    fun `Test withHttps extension with same schema expect successful`() =
         assertEquals("https://www.google.com", "https://www.google.com".withHttps())
 
     @Test
@@ -20,7 +20,7 @@ internal class ExtensionsTest {
     @Test
     fun `Test withHttps extension expect failure`() {
         assertThrows<ParseException> {
-            "www.google.com".withHttps()
+            "/path".withHttps()
         }
     }
 
@@ -35,6 +35,30 @@ internal class ExtensionsTest {
     @Test
     fun `Test withHttps extension with dot path expect successful`() =
         assertEquals("https://www.google.com/./search", "./search".withHttps("https://www.google.com"))
+
+    @Test
+    fun `Test withHttp extension with same schema expect successful`() =
+        assertEquals("http://example.com", "http://example.com".withHttp())
+
+    @Test
+    fun `Test withHttp extension with start with double slash expect successful`() =
+        assertEquals("http://example.com", "//example.com".withHttp())
+
+    @Test
+    fun `Test withHttp extension expect failure`() {
+        assertThrows<ParseException> {
+            "/path".withHttp()
+        }
+    }
+
+    @Test
+    fun `Test withHttp extension with host expect successful`() =
+        assertEquals("http://example.com", "example.com".withHttp())
+
+    @Test
+    fun `Test withFolder extension expect successful`() {
+        assertEquals("http://example.com/path", "http://example.com/path/page.php".withFolder())
+    }
 
     @Test
     fun `Test replaceJpnWeekday extension expect successful`() =

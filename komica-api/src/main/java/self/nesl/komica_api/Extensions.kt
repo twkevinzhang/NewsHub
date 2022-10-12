@@ -1,5 +1,6 @@
 package self.nesl.komica_api
 
+import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import self.nesl.komica_api.model.KPost
@@ -52,6 +53,25 @@ fun String.withHttps(base: String): String {
             "$base/$this"
         return url.withHttps()
     }
+}
+
+fun String.withHttp(): String {
+    return if (this.startsWith("http://")) {
+        this
+    } else if (this.startsWith("//")) {
+        "http:$this"
+    } else if (this.startsWith("/")) {
+        throw ParseException("The string should not start with /")
+    } else {
+        "http://$this"
+    }
+}
+
+fun String.withFolder(): String {
+    val url = this.toHttpUrlOrNull()!!
+    val pathSegments = url.pathSegments.dropLast(1)
+    val hostWithHttps = if (url.isHttps) url.host.withHttps() else url.host.withHttp()
+    return hostWithHttps + pathSegments.joinToString("/", prefix = "/")
 }
 
 fun String.replaceJpnWeekday(): String {
@@ -115,7 +135,7 @@ fun String.toMillTimestamp(): Long {
 }
 
 fun String.isKomica() =
-    boards().map { it.url }.contains(this.toHttpUrlOrNull()!!.host)
+    boards().map { it.url }.contains(this.withFolder())
 
 fun String.toKomicaBoard() =
     boards().first { this.contains(it.url) }
