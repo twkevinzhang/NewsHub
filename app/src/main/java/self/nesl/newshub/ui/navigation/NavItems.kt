@@ -61,5 +61,5 @@ sealed class NewsNavItems(
     override val icon: Int,
     override val route: String
 ): NavItems(resourceId, icon, route) {
-    object NewsThread : NavItems(0, 0, "news_thread")
+    object Thread : NavItems(0, 0, "thread")
 }

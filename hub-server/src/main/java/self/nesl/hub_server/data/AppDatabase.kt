@@ -5,13 +5,13 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONObject
-import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
-import self.nesl.hub_server.data.news_head.komica.KomicaTopNewsDao
+import self.nesl.hub_server.data.post.Host
+import self.nesl.hub_server.data.post.komica.KomicaPost
+import self.nesl.hub_server.data.post.komica.KomicaPostDao
 
 @Database(
     entities = [
-        KomicaTopNews::class,
+        KomicaPost::class,
     ],
     version = 1
 )
@@ -86,5 +86,5 @@ abstract class AppDatabase: RoomDatabase() {
         }
     }
 
-    abstract fun komicaTopNewsDao(): KomicaTopNewsDao
+    abstract fun komicaPostDao(): KomicaPostDao
 }

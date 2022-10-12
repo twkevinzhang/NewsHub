@@ -1,31 +1,28 @@
-package self.nesl.hub_server.data.news_thread
+package self.nesl.hub_server.data.thread
 
 import self.nesl.hub_server.data.Paragraph
+import self.nesl.hub_server.data.post.News
 import self.nesl.hub_server.trySubstring
 
-interface RePost {
+interface Post: News {
 
     /**
      * Returns the id in the discussion thread.
      */
     val id: String
-
-    val url: String
-
-    val content: List<Paragraph>
 }
 
-fun List<RePost>.parentIs(parentId: String): List<RePost> {
+fun List<Post>.parentIs(parentId: String): List<Post> {
     return this.filter { it.parent().contains(parentId) }
 }
 
-fun RePost.parent(): List<String> {
+fun Post.parent(): List<String> {
     return content
         .filterIsInstance<Paragraph.ReplyTo>()
         .map { paragraph -> paragraph.id }
 }
 
-fun RePost.toText(): String {
+fun Post.toText(): String {
     return content
         .filterIsInstance<Paragraph.Text>()
         .first()

@@ -23,19 +23,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             bindAppScreen(navController = navController)
-            bindNewsThreadListener(navController)
+            bindThreadListener(navController)
         }
     }
 
     @Composable
-    private fun bindNewsThreadListener(navController: NavHostController) {
+    private fun bindThreadListener(navController: NavHostController) {
         DisposableEffect(Unit) {
             intent.dataString?.let { uri ->
-                navController.navigate(NewsNavItems.NewsThread.route.plus("/${uri.encode()}"))
+                navController.navigate(NewsNavItems.Thread.route.plus("/${uri.encode()}"))
             }
             val listener = Consumer<Intent> {
                 it.dataString?.let { uri ->
-                    navController.navigate(NewsNavItems.NewsThread.route.plus("/${uri.encode()}"))
+                    navController.navigate(NewsNavItems.Thread.route.plus("/${uri.encode()}"))
                 }
             }
             addOnNewIntentListener(listener)

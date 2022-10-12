@@ -1,4 +1,4 @@
-package self.nesl.newshub.ui.news_thread
+package self.nesl.newshub.ui.thread
 
 import android.content.Intent
 import android.net.Uri
@@ -14,25 +14,27 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
-import self.nesl.hub_server.data.news_thread.*
+import self.nesl.hub_server.data.post.komica.KomicaPost
+import self.nesl.hub_server.data.thread.*
+import self.nesl.newshub.encode
 import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
+import self.nesl.newshub.ui.navigation.NewsNavItems
 import self.nesl.newshub.ui.news.KomicaRePostCard
-import self.nesl.newshub.ui.news.KomicaTopNewsCard
+import self.nesl.newshub.ui.news.KomicaPostCard
 
 @Composable
-fun NewsThreadRoute(
-    newsThreadViewModel: NewsThreadViewModel,
+fun ThreadRoute(
+    threadViewModel: ThreadViewModel,
     navController: NavHostController,
 ){
-    val newsThread by newsThreadViewModel.newsThread.collectAsState(null)
-    val loading by newsThreadViewModel.loading.collectAsState(false)
-    val replyStack = remember { mutableStateListOf<RePost>() }
+    val thread by threadViewModel.thread.collectAsState(null)
+    val loading by threadViewModel.loading.collectAsState(false)
+    val replyStack = remember { mutableStateListOf<Post>() }
     val context = LocalContext.current
 
     fun onKomicaReplyToClick(replyTo: Paragraph.ReplyTo) {
-        newsThread?.rePost
+        thread?.rePosts
             ?.findLast { it.url.contains(replyTo.id) }
             ?.let { replyStack.add(it) }
     }
@@ -43,19 +45,24 @@ fun NewsThreadRoute(
     }
 
     fun onPreviewReplyTo(replyTo: Paragraph.ReplyTo): String {
-        return newsThread?.rePost?.findLast { it.id ==  replyTo.id }?.toText() ?: ""
+        return thread?.rePosts?.findLast { it.id ==  replyTo.id }?.toText() ?: ""
     }
 
-    NewsThreadScreen(
+    fun onRePostClick(rePost: Post) {
+        thread?.let {
+            navController.navigate(NewsNavItems.Thread.route.plus("/${it.url.encode()}/re_post/${rePost.id}"))
+        }
+    }
+
+    ThreadScreen(
         refreshState = rememberSwipeRefreshState(loading),
-        newsThread = newsThread,
-        onRefresh = {
-            newsThreadViewModel.refresh()
-        },
+        thread = thread,
+        onRefresh = { threadViewModel.refresh() },
         navigateUp = { navController.navigateUp() },
         onLinkClick = { onLinkClick(it) },
         onKomicaReplyToClick = { onKomicaReplyToClick(it) },
         onPreviewReplyTo = { onPreviewReplyTo(it) },
+        onRePostClick = { onRePostClick(it) },
     )
 
     if (replyStack.isNotEmpty()) {
@@ -65,7 +72,8 @@ fun NewsThreadRoute(
             },
         ) {
             RePostCard(
-                rePost = replyStack.lastOrNull(),
+                post = replyStack.lastOrNull(),
+                onClick = { onRePostClick(replyStack.last()) },
                 onLinkClick = { onLinkClick(it) },
                 onKomicaReplyToClick = { onKomicaReplyToClick(it) },
                 onPreviewReplyTo = { onPreviewReplyTo(it) },
@@ -83,20 +91,21 @@ fun NewsThreadRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewsThreadScreen(
+fun ThreadScreen(
     refreshState: SwipeRefreshState,
-    newsThread: NewsThread? = null,
+    thread: Thread? = null,
     onRefresh: () -> Unit,
     navigateUp: () -> Unit = {},
     onLinkClick: (Paragraph.Link) -> Unit = {},
     onKomicaReplyToClick: (Paragraph.ReplyTo) -> Unit = {},
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
+    onRePostClick: (Post) -> Unit,
 ){
     Scaffold(
         topBar = {
             NewsHubTopBar(
                 onBackPressed = { navigateUp() },
-                title = newsThread?.post?.title ?: "",
+                title = thread?.post?.title ?: "",
             )
         },
     ) {
@@ -109,20 +118,21 @@ fun NewsThreadScreen(
                 state = refreshState,
                 onRefresh = onRefresh,
             ) {
-                if (newsThread != null) {
+                if (thread != null) {
                     LazyColumn {
                         item {
-                            when (val head = newsThread.post) {
-                                is KomicaTopNews -> KomicaTopNewsCard(
-                                    topNews = head,
+                            when (val head = thread.post) {
+                                is KomicaPost -> KomicaPostCard(
+                                    news = head,
                                     onLinkClick = onLinkClick,
                                 )
                             }
                         }
-                        newsThread.rePost.forEach { rePost ->
+                        thread.rePosts.forEach { rePost ->
                             item {
                                 RePostCard(
-                                    rePost = rePost,
+                                    post = rePost,
+                                    onClick = { onRePostClick(rePost) },
                                     onLinkClick = onLinkClick,
                                     onKomicaReplyToClick = onKomicaReplyToClick,
                                     onPreviewReplyTo = onPreviewReplyTo,
@@ -138,14 +148,16 @@ fun NewsThreadScreen(
 
 @Composable
 fun RePostCard(
-    rePost: RePost?,
+    post: Post?,
+    onClick: () -> Unit = {},
     onLinkClick: (Paragraph.Link) -> Unit = {},
     onKomicaReplyToClick: (Paragraph.ReplyTo) -> Unit = {},
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
-    when (rePost) {
-        is KomicaTopNews -> KomicaRePostCard(
-            rePost = rePost,
+    when (post) {
+        is KomicaPost -> KomicaRePostCard(
+            rePost = post,
+            onClick = onClick,
             onLinkClick = onLinkClick,
             onReplyToClick = onKomicaReplyToClick,
             onPreviewReplyTo = onPreviewReplyTo,

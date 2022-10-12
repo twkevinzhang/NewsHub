@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
-import self.nesl.hub_server.data.news_head.komica.mockKomicaTopNews
+import self.nesl.hub_server.data.post.komica.KomicaPost
+import self.nesl.hub_server.data.post.komica.mockKomicaPost
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.component.ParagraphBlock
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
@@ -20,8 +20,8 @@ import self.nesl.newshub.ui.theme.PreviewTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KomicaTopNewsCard(
-    topNews: KomicaTopNews,
+fun KomicaPostCard(
+    news: KomicaPost,
     onLinkClick: (Paragraph.Link) -> Unit,
     onClick: (() -> Unit)? = null,
 ) {
@@ -30,9 +30,9 @@ fun KomicaTopNewsCard(
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
         ) {
-            KomicaTopNewsCardHeader(topNews)
-            KomicaTopNewsCardContent(
-                topNews = topNews,
+            KomicaPostCardHeader(news)
+            KomicaPostCardContent(
+                news = news,
                 onLinkClick = onLinkClick,
                 onReplyToClick = { },
                 onPreviewReplyTo = { "" },
@@ -59,10 +59,10 @@ fun KomicaTopNewsCard(
 
 @Preview
 @Composable
-fun PreviewKomicaTopNewsCard() {
+fun PreviewKomicaPostCard() {
     PreviewTheme {
-        KomicaTopNewsCard(
-            topNews = mockKomicaTopNews(),
+        KomicaPostCard(
+            news = mockKomicaPost(),
             onLinkClick = { },
             onClick = { },
         )
@@ -72,7 +72,7 @@ fun PreviewKomicaTopNewsCard() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KomicaRePostCard(
-    rePost: KomicaTopNews,
+    rePost: KomicaPost,
     onLinkClick: (Paragraph.Link) -> Unit = { },
     onReplyToClick: (Paragraph.ReplyTo) -> Unit = { },
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String  = { "" },
@@ -115,7 +115,7 @@ fun KomicaRePostCard(
 fun PreviewKomicaRePostCard() {
     PreviewTheme {
         KomicaRePostCard(
-            rePost = mockKomicaTopNews(),
+            rePost = mockKomicaPost(),
             onLinkClick = { },
             onReplyToClick = { },
             onPreviewReplyTo = { "" },
@@ -124,24 +124,24 @@ fun PreviewKomicaRePostCard() {
 }
 
 @Composable
-private fun KomicaTopNewsCardHeader(topNews: KomicaTopNews) {
+private fun KomicaPostCardHeader(news: KomicaPost) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row {
-            CardHeadPosterBlock(topNews.poster)
-            CardHeadTimeBlock(topNews.createdAt)
-            CardHeadTextBlock("${topNews.id}@Komica")
+            CardHeadPosterBlock(news.poster)
+            CardHeadTimeBlock(news.createdAt)
+            CardHeadTextBlock("${news.id}@Komica")
         }
         Row {
-            CardHeadRepliesBlock(topNews.replies)
+            CardHeadRepliesBlock(news.replies)
         }
     }
 }
 
 @Composable
-private fun KomicaRePostCardHeader(rePost: KomicaTopNews) {
+private fun KomicaRePostCardHeader(rePost: KomicaPost) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
@@ -158,19 +158,19 @@ private fun KomicaRePostCardHeader(rePost: KomicaTopNews) {
 }
 
 @Composable
-private fun KomicaTopNewsCardContent(
-    topNews: KomicaTopNews,
+private fun KomicaPostCardContent(
+    news: KomicaPost,
     onLinkClick: (Paragraph.Link) -> Unit,
     onReplyToClick: (Paragraph.ReplyTo) -> Unit,
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
     Column {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
-        if (topNews.title.isNullOrEmpty().not()) {
-            KomicaNewsCardTitle(topNews.title!!)
+        if (news.title.isNullOrEmpty().not()) {
+            KomicaNewsCardTitle(news.title!!)
         }
         ParagraphBlock(
-            topNews.content,
+            news.content,
             100,
             onLinkClick,
             onReplyToClick,

@@ -19,8 +19,6 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.HiltViewModelFactory
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -34,20 +32,19 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.flowOf
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.TopNews
-import self.nesl.hub_server.data.news_head.komica.KomicaTopNews
-import self.nesl.hub_server.data.news_head.komica.mockKomicaTopNews
+import self.nesl.hub_server.data.post.Host
+import self.nesl.hub_server.data.post.News
+import self.nesl.hub_server.data.post.komica.KomicaPost
+import self.nesl.hub_server.data.post.komica.mockKomicaPost
 import self.nesl.newshub.R
 import self.nesl.newshub.encode
 import self.nesl.newshub.ui.component.AppBottomBar
 import self.nesl.newshub.ui.component.NewsHubTopBar
-import self.nesl.newshub.ui.navigation.NewsNavItems
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import self.nesl.newshub.ui.navigation.bottomNavItems
-import self.nesl.newshub.ui.news.KomicaTopNewsCard
-import self.nesl.newshub.ui.news_thread.NewsThreadRoute
-import self.nesl.newshub.ui.news_thread.NewsThreadViewModel
+import self.nesl.newshub.ui.news.KomicaPostCard
+import self.nesl.newshub.ui.thread.ThreadRoute
+import self.nesl.newshub.ui.thread.ThreadViewModel
 import self.nesl.newshub.ui.theme.PreviewTheme
 
 @Composable
@@ -73,12 +70,27 @@ fun TopicRoute(
 
         swipeable("thread/{url}") {
             val factory = HiltViewModelFactory(LocalContext.current, it)
-            val newsThreadViewModel = viewModel<NewsThreadViewModel>(factory = factory)
+            val threadViewModel = viewModel<ThreadViewModel>(factory = factory)
             it.arguments?.getString("url")?.let { url ->
-                newsThreadViewModel.newsThreadUrl(url)
+                threadViewModel.threadUrl(url)
             }
-            NewsThreadRoute(
-                newsThreadViewModel = newsThreadViewModel,
+            ThreadRoute(
+                threadViewModel = threadViewModel,
+                navController = navController,
+            )
+        }
+
+        swipeable("thread/{url}/re_post/{rePostId}") {
+            val factory = HiltViewModelFactory(LocalContext.current, it)
+            val threadViewModel = viewModel<ThreadViewModel>(factory = factory)
+            it.arguments?.getString("url")?.let { url ->
+                threadViewModel.threadUrl(url)
+            }
+            it.arguments?.getString("replyTo")?.let { rePostId ->
+                threadViewModel.rePostId(rePostId)
+            }
+            ThreadRoute(
+                threadViewModel = threadViewModel,
                 navController = navController,
             )
         }
@@ -92,11 +104,11 @@ fun NewsListRoute(
     openDrawer: () -> Unit,
 ){
     val topic by newsListViewModel.topic.collectAsState()
-    val pagingTopNews = newsListViewModel.pagingTopNews.collectAsLazyPagingItems()
+    val pagingNews = newsListViewModel.pagingNews.collectAsLazyPagingItems()
     val enableHosts by newsListViewModel.enableHosts.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
     val refreshState = rememberSwipeRefreshState(loading)
-    val navigateToNews = { topNews: TopNews -> navController.navigate("thread/${topNews.url.encode()}") }
+    val navigateToNews = { news: News -> navController.navigate("thread/${news.url.encode()}") }
     val context = LocalContext.current
 
     fun onLinkClick(link: Paragraph.Link) {
@@ -106,14 +118,14 @@ fun NewsListRoute(
 
     TopicScreen(
         refreshState = refreshState,
-        lazyColumnState = pagingTopNews.rememberLazyListState(),
+        lazyColumnState = pagingNews.rememberLazyListState(),
         topic = topic,
-        pagingTopNews = pagingTopNews,
+        pagingNews = pagingNews,
         enableHosts = enableHosts,
         openDrawer = openDrawer,
         onRefresh = {
-            newsListViewModel.clearAllTopNews()
-            pagingTopNews.refresh()
+            newsListViewModel.clearAllNews()
+            pagingNews.refresh()
         },
         onHostActiveClick = {
             newsListViewModel.disableHost(it)
@@ -145,12 +157,12 @@ fun NewsListRoute(
                 }
             }
         },
-        topNews = { topNews ->
-            when (topNews) {
-                is KomicaTopNews -> KomicaTopNewsCard(
-                    topNews = topNews,
+        news = { news ->
+            when (news) {
+                is KomicaPost -> KomicaPostCard(
+                    news = news,
                     onLinkClick = { onLinkClick(it) },
-                    onClick = { navigateToNews(topNews) },
+                    onClick = { navigateToNews(news) },
                 )
                 else -> Text(text = "not support")
             }
@@ -164,14 +176,14 @@ fun TopicScreen(
     topic: TopicNavItems,
     refreshState: SwipeRefreshState,
     lazyColumnState: LazyListState,
-    pagingTopNews: LazyPagingItems<TopNews>,
+    pagingNews: LazyPagingItems<News>,
     enableHosts: List<Host>,
     onHostActiveClick: (Host) -> Unit,
     onHostInactiveClick: (Host) -> Unit,
     openDrawer: () -> Unit,
     onRefresh: () -> Unit,
     onLoadStateChange: (CombinedLoadStates) -> Unit = { },
-    topNews: @Composable (TopNews?) -> Unit,
+    news: @Composable (News?) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -201,12 +213,12 @@ fun TopicScreen(
                             onInactiveClick = { onHostInactiveClick(it) },
                         )
                     }
-                    pagingTopNews.apply {
+                    pagingNews.apply {
                         item {
                             onLoadStateChange(loadState)
                         }
-                        items(this) { topNews ->
-                            topNews(topNews)
+                        items(this) { news ->
+                            news(news)
                         }
                     }
                 }
@@ -219,23 +231,23 @@ fun TopicScreen(
 @Preview
 @Composable
 fun PreviewTopicScreen() {
-    val mockNewsfeed = flowOf(PagingData.from(listOf<TopNews>(mockKomicaTopNews()))).collectAsLazyPagingItems()
+    val mockNewsfeed = flowOf(PagingData.from(listOf<News>(mockKomicaPost()))).collectAsLazyPagingItems()
 
     PreviewTheme {
         TopicScreen(
             topic = TopicNavItems.Square,
             refreshState = rememberSwipeRefreshState(isRefreshing = false),
-            pagingTopNews = mockNewsfeed,
+            pagingNews = mockNewsfeed,
             lazyColumnState = mockNewsfeed.rememberLazyListState(),
             enableHosts = emptyList(),
             openDrawer = { },
             onRefresh = { },
             onHostActiveClick = { },
             onHostInactiveClick = { },
-            topNews = { topNews ->
-                when (topNews) {
-                    is KomicaTopNews -> KomicaTopNewsCard(
-                        topNews = topNews,
+            news = { news ->
+                when (news) {
+                    is KomicaPost -> KomicaPostCard(
+                        news = news,
                         onLinkClick = { },
                         onClick = { }
                     )

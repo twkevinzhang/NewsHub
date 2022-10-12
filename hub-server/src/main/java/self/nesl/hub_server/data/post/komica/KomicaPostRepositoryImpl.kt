@@ -1,36 +1,36 @@
-package self.nesl.hub_server.data.news_head.komica
+package self.nesl.hub_server.data.post.komica
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import self.nesl.hub_server.data.news_head.*
+import self.nesl.hub_server.data.post.*
 import self.nesl.komica_api.KomicaApi
 import self.nesl.komica_api.model.KBoard
 import self.nesl.newshub.di.IoDispatcher
 import self.nesl.hub_server.di.TransactionProvider
-import self.nesl.hub_server.toKomicaTopNews
+import self.nesl.hub_server.toKomicaPost
 import javax.inject.Inject
 
-class KomicaTopNewsRepositoryImpl @Inject constructor(
-    private val dao: KomicaTopNewsDao,
+class KomicaPostRepositoryImpl @Inject constructor(
+    private val dao: KomicaPostDao,
     private val api: KomicaApi,
     private val transactionProvider: TransactionProvider,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-): KomicaTopNewsRepository {
+): KomicaPostRepository {
 
-    override suspend fun getAllTopNews(topic: Topic, page: Int): List<KomicaTopNews> = withContext(ioDispatcher) {
+    override suspend fun getAllNews(topic: Topic, page: Int): List<KomicaPost> = withContext(ioDispatcher) {
         val news = dao.readAll(page)
         if (news.isNotEmpty()) {
             news
         } else {
             try {
-                val remote = api.getAllThreadHead(topic.toKBoard(), page.takeIf { it != 0 }).map { it.toKomicaTopNews(page) }
+                val remote = api.getAllThreadHead(topic.toKBoard(), page.takeIf { it != 0 }).map { it.toKomicaPost(page) }
                 transactionProvider.invoke {
                     dao.upsertAll(remote)
                 }
                 remote
             } catch (e: Exception) {
-                Log.e("KomicaTopNewsRepo", e.stackTraceToString())
+                Log.e("KomicaPostRepo", e.stackTraceToString())
                 emptyList()
             }
         }
@@ -42,7 +42,7 @@ class KomicaTopNewsRepositoryImpl @Inject constructor(
             else -> throw NotImplementedError()
         }
 
-    override suspend fun clearAllTopNews(topic: Topic) = withContext(ioDispatcher) {
+    override suspend fun clearAllNews(topic: Topic) = withContext(ioDispatcher) {
         dao.clearAll()
     }
 }

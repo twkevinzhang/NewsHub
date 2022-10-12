@@ -1,14 +1,14 @@
-package self.nesl.hub_server.data.news_thread
+package self.nesl.hub_server.data.thread
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import self.nesl.hub_server.data.Paragraph
 
-internal class RePostExtensionsTest {
+internal class PostExtensionsTest {
 
     @Test
     fun `Test RePostList filterReplyToIs extensions with correct target expect successful`() {
-        val rePost1 = object: RePost {
+        val post1 = object: Post {
             override val id = "D"
             override val url = "https://example.org?id=D"
             override val content = listOf(
@@ -18,7 +18,7 @@ internal class RePostExtensionsTest {
             )
         }
 
-        val rePost2 = object: RePost {
+        val post2 = object: Post {
             override val id = "C"
             override val url = "https://example.org?id=C"
             override val content = listOf(
@@ -27,7 +27,7 @@ internal class RePostExtensionsTest {
             )
         }
 
-        val rePost3 = object: RePost {
+        val post3 = object: Post {
             override val id = "B"
             override val url = "https://example.org?id=B"
             override val content = listOf(
@@ -35,6 +35,6 @@ internal class RePostExtensionsTest {
             )
         }
 
-        assertEquals(2, listOf(rePost1, rePost2, rePost3).parentIs("B").size)
+        assertEquals(2, listOf(post1, post2, post3).parentIs("B").size)
     }
 }

@@ -1,15 +1,15 @@
-package self.nesl.hub_server.data.news_head.komica
+package self.nesl.hub_server.data.post.komica
 
 import androidx.room.*
 
 @Dao
-interface KomicaTopNewsDao {
+interface KomicaPostDao {
 
     @Query("SELECT * FROM komica_news where page = :page")
-    suspend fun readAll(page: Int): List<KomicaTopNews>
+    suspend fun readAll(page: Int): List<KomicaPost>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertAll(list: List<KomicaTopNews>)
+    suspend fun upsertAll(list: List<KomicaPost>)
 
     @Query("DELETE FROM komica_news")
     suspend fun clearAll()

@@ -1,25 +1,21 @@
 package self.nesl.newshub.ui.topic
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.filter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.TopNews
-import self.nesl.newshub.interactor.ClearAllTopNews
-import self.nesl.newshub.interactor.GetAllTopNews
+import self.nesl.hub_server.data.post.Host
+import self.nesl.newshub.interactor.ClearAllNews
+import self.nesl.newshub.interactor.GetAllNews
 import self.nesl.newshub.ui.navigation.TopicNavItems
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsListViewModel @Inject constructor(
-    private val getAllTopNews: GetAllTopNews,
-    private val clearAllTopNews: ClearAllTopNews,
+    private val getAllNews: GetAllNews,
+    private val clearAllNews: ClearAllNews,
 ) : ViewModel() {
     companion object {
         val defaultTopic = TopicNavItems.Square
@@ -33,8 +29,8 @@ class NewsListViewModel @Inject constructor(
         Host.values().toList().minus(it.toSet())
     }
 
-    val pagingTopNews = _topic.combine(enableHosts) { it, it2 ->
-        getAllTopNews.invoke(it, it2)
+    val pagingNews = _topic.combine(enableHosts) { it, it2 ->
+        getAllNews.invoke(it, it2)
     }
         .flatMapLatest { it }
         .cachedIn(viewModelScope)
@@ -51,9 +47,9 @@ class NewsListViewModel @Inject constructor(
         this._excludeHosts.update { it.minus(host).toSet().toList() }
     }
 
-    fun clearAllTopNews() {
+    fun clearAllNews() {
         viewModelScope.launch {
-            clearAllTopNews.invoke(_topic.value)
+            clearAllNews.invoke(_topic.value)
         }
     }
 }

@@ -1,14 +1,13 @@
-package self.nesl.hub_server.data.news_head.komica
+package self.nesl.hub_server.data.post.komica
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.news_head.Host
-import self.nesl.hub_server.data.news_head.TopNews
-import self.nesl.hub_server.data.news_thread.RePost
+import self.nesl.hub_server.data.post.Host
+import self.nesl.hub_server.data.thread.Post
 
 @Entity(tableName = "komica_news")
-data class KomicaTopNews (
+data class KomicaPost (
     @PrimaryKey override val url: String,
     override val id: String,
     override val host: Host,
@@ -21,10 +20,10 @@ data class KomicaTopNews (
     override val content: List<Paragraph>,
     override val favorite: String?,
     val page: Int,
-): TopNews, RePost
+): Post
 
-fun mockKomicaTopNews() =
-    KomicaTopNews(
+fun mockKomicaPost() =
+    KomicaPost(
         url = "https://www.google.com",
         title = "How to Google?",
         host = Host.KOMICA,
