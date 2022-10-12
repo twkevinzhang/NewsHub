@@ -20,8 +20,10 @@ class ThreadViewModel @Inject constructor(
         _loading.update { true }
         if (url.isNotBlank() && rePostId.isNotBlank()) {
             getThread.invoke(url, rePostId)
-        } else {
+        } else if (url.isNotBlank()) {
             getThread.invoke(url)
+        } else {
+            null
         }
     }
         .onEach {

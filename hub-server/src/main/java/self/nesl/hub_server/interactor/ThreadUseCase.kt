@@ -4,6 +4,7 @@ import self.nesl.hub_server.data.thread.Thread
 import self.nesl.hub_server.data.thread.komica.KomicaThread
 import self.nesl.hub_server.data.thread.komica.KomicaThreadRepository
 import self.nesl.hub_server.data.thread.parent
+import self.nesl.komica_api.isKomica
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,16 +15,24 @@ class ThreadUseCase @Inject constructor(
     suspend fun getThread(
         url: String,
     ): Thread {
-        return komicaThreadRepository.getThread(url)
+        return if (url.isKomica()) {
+            komicaThreadRepository.getThread(url)
+        } else {
+            throw NotImplementedError("ThreadRepository not implement")
+        }
     }
 
     suspend fun getRePostThread(
         url: String,
         rePostId: String,
     ): Thread {
-        val thread = komicaThreadRepository.getThread(url)
+        val thread = getThread(url)
         val head = thread.rePosts.findLast { it.id == rePostId }!!
         val rePosts = thread.rePosts.filter { it.parent().contains(rePostId) }
-        return KomicaThread(thread.url, head, rePosts)
+        return if (url.isKomica()) {
+            KomicaThread(thread.url, head, rePosts)
+        } else {
+            throw NotImplementedError("Thread constructor not implement")
+        }
     }
 }

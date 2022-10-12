@@ -86,7 +86,7 @@ fun TopicRoute(
             it.arguments?.getString("url")?.let { url ->
                 threadViewModel.threadUrl(url)
             }
-            it.arguments?.getString("replyTo")?.let { rePostId ->
+            it.arguments?.getString("rePostId")?.let { rePostId ->
                 threadViewModel.rePostId(rePostId)
             }
             ThreadRoute(
