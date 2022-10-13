@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TopicListViewModel @Inject constructor(
-    private val getAllTopic: GetAllTopic,
+    private val topicInteractor: TopicInteractor,
 ) : ViewModel() {
     private val _topicList = MutableStateFlow(emptyList<Topic>())
 
@@ -25,6 +25,6 @@ class TopicListViewModel @Inject constructor(
     }
 
     suspend fun refresh() {
-        _topicList.update { getAllTopic.invoke() }
+        _topicList.update { topicInteractor.getAll() }
     }
 }

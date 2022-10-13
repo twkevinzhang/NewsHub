@@ -2,19 +2,22 @@ package self.nesl.newshub.interactor
 
 import android.util.Log
 import androidx.paging.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
 import self.nesl.hub_server.data.post.Board
-import self.nesl.hub_server.data.post.Host
 import self.nesl.hub_server.data.post.News
 import self.nesl.hub_server.interactor.NewsUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetAllNews @Inject constructor(
+class NewsInteractor @Inject constructor(
     private val newsUseCase: NewsUseCase,
 ) {
-    fun invoke(boards: Set<Board>): Flow<PagingData<News>> {
+    suspend fun clearAll(boards: Set<Board>) {
+        newsUseCase.clearAllNews(boards)
+    }
+
+    fun getAll(boards: Set<Board>): Flow<PagingData<News>> {
         return Pager(
             config = PagingConfig(pageSize = 30, enablePlaceholders = false),
             pagingSourceFactory = { NewsPagingSource(newsUseCase, boards) },

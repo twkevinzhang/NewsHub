@@ -6,10 +6,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetAllBoard @Inject constructor(
+class BoardInteractor @Inject constructor(
 ) {
-    suspend fun invoke(id: String): List<Board> {
-        return when (id) {
+    suspend fun getAll(topicId: String): List<Board> {
+        return when (topicId) {
             "Square" -> listOf(
                 Board("綜合", "http://2cat.komica.org/~tedc21thc/new", Host.KOMICA)
             )

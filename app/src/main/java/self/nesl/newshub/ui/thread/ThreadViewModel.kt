@@ -4,12 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import self.nesl.newshub.interactor.GetThread
+import self.nesl.newshub.interactor.ThreadInteractor
 import javax.inject.Inject
 
 @HiltViewModel
 class ThreadViewModel @Inject constructor(
-    private val getThread: GetThread,
+    private val threadInteractor: ThreadInteractor,
 ) : ViewModel() {
     private val _threadUrl = MutableStateFlow("")
     private val _rePostId = MutableStateFlow("")
@@ -19,9 +19,9 @@ class ThreadViewModel @Inject constructor(
     val thread = _threadUrl.combine(_rePostId) { url, rePostId ->
         _loading.update { true }
         if (url.isNotBlank() && rePostId.isNotBlank()) {
-            getThread.invoke(url, rePostId)
+            threadInteractor.get(url, rePostId)
         } else if (url.isNotBlank()) {
-            getThread.invoke(url)
+            threadInteractor.get(url)
         } else {
             null
         }

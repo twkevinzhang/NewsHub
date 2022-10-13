@@ -6,13 +6,17 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetTopic @Inject constructor(
+class TopicInteractor @Inject constructor(
 ) {
-    suspend fun invoke(id: String): Topic {
-        return when (id) {
+    suspend fun get(topicId: String): Topic {
+        return when (topicId) {
             "Square" -> Square()
             else -> throw NotImplementedError()
         }
+    }
+
+    suspend fun getAll(): List<Topic> {
+        return listOf(Square())
     }
 }
 
