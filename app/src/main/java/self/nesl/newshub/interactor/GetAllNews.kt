@@ -3,11 +3,10 @@ package self.nesl.newshub.interactor
 import android.util.Log
 import androidx.paging.*
 import kotlinx.coroutines.flow.*
+import self.nesl.hub_server.data.post.Board
 import self.nesl.hub_server.data.post.Host
 import self.nesl.hub_server.data.post.News
-import self.nesl.hub_server.data.post.Topic
 import self.nesl.hub_server.interactor.NewsUseCase
-import self.nesl.newshub.ui.navigation.TopicNavItems
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,22 +14,19 @@ import javax.inject.Singleton
 class GetAllNews @Inject constructor(
     private val newsUseCase: NewsUseCase,
 ) {
-    fun invoke(topicNavItems: TopicNavItems, hosts: List<Host>): Flow<PagingData<News>> {
+    fun invoke(boards: Set<Board>): Flow<PagingData<News>> {
         return Pager(
             config = PagingConfig(pageSize = 30, enablePlaceholders = false),
-            pagingSourceFactory = {
-                NewsPagingSource(newsUseCase, topicNavItems.toTopic(), hosts.toSet())
-            },
+            pagingSourceFactory = { NewsPagingSource(newsUseCase, boards) },
         ).flow
     }
 
     private class NewsPagingSource(
         val newsUseCase: NewsUseCase,
-        val topic: Topic,
-        val hosts: Set<Host>,
+        val boards: Set<Board>,
     ) : PagingSource<Int, News>() {
         override suspend fun load(params: LoadParams<Int>): LoadResult<Int, News> {
-            if (hosts.isEmpty()) {
+            if (boards.isEmpty()) {
                 return LoadResult.Page(
                     data = emptyList(),
                     prevKey = null,
@@ -40,14 +36,14 @@ class GetAllNews @Inject constructor(
             val first = params.key == null
             val prev = if (first) null else params.key
             val next = if (first) 1 else params.key!! + 1
-            val nextPageParameter = if (first) {
-                hosts.toMap(1)
+            val boardsWithNextPage = if (first) {
+                boards.toMap(1)
             } else {
-                hosts.toMap(params.key!! + 1)
+                boards.toMap(params.key!! + 1)
             }
-            Log.d("NewsPagingSource", "is first? ${first}, prev: ${prev}, next: ${next}, nextPageParameter: ${nextPageParameter}")
+            Log.d("NewsPagingSource", "is first? ${first}, prev: ${prev}, next: ${next}, boardsWithNextPage: ${boardsWithNextPage}")
 
-            val response = newsUseCase.getAllNews(topic, nextPageParameter)
+            val response = newsUseCase.getAllNews(boardsWithNextPage)
             return if (response.isEmpty()) {
                 LoadResult.Page(
                     data = response,
@@ -76,9 +72,3 @@ class GetAllNews @Inject constructor(
         }
     }
 }
-
-fun TopicNavItems.toTopic() =
-    when (this) {
-        TopicNavItems.Square -> Topic.Square
-        TopicNavItems.Movie -> Topic.Movie
-    }

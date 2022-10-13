@@ -18,13 +18,13 @@ class KomicaPostRepositoryImpl @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ): KomicaPostRepository {
 
-    override suspend fun getAllNews(topic: Topic, page: Int): List<KomicaPost> = withContext(ioDispatcher) {
+    override suspend fun getAllNews(board: KBoard, page: Int): List<KomicaPost> = withContext(ioDispatcher) {
         val news = dao.readAll(page)
         if (news.isNotEmpty()) {
             news
         } else {
             try {
-                val remote = api.getAllThreadHead(topic.toKBoard(), page.takeIf { it != 0 }).map { it.toKomicaPost(page) }
+                val remote = api.getAllThreadHead(board, page.takeIf { it != 0 }).map { it.toKomicaPost(page) }
                 transactionProvider.invoke {
                     dao.upsertAll(remote)
                 }
@@ -36,13 +36,7 @@ class KomicaPostRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun Topic.toKBoard() =
-        when (this) {
-            Topic.Square -> KBoard.Sora.綜合
-            else -> throw NotImplementedError()
-        }
-
-    override suspend fun clearAllNews(topic: Topic) = withContext(ioDispatcher) {
+    override suspend fun clearAllNews() = withContext(ioDispatcher) {
         dao.clearAll()
     }
 }

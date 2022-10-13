@@ -2,10 +2,11 @@ package self.nesl.newshub.ui.navigation
 
 import self.nesl.newshub.R
 
-sealed class NavItems(
-    open val resourceId: Int,
+open class NavItems(
+    open val resourceId: Int? = null,
     open val icon: Int,
     open val route: String,
+    open val title: String? = null,
 )
 
 sealed class DrawerNavItems(
@@ -22,24 +23,6 @@ fun drawerNavItems() = listOf(
     DrawerNavItems.History,
 )
 
-sealed class TopicNavItems(
-    override val resourceId: Int,
-    override val icon: Int,
-    override val route: String
-): NavItems(resourceId, icon, route) {
-    object Square : TopicNavItems(R.string.square, R.drawable.ic_outline_globe_24, "topic/square")
-    object Movie : TopicNavItems(R.string.movie, R.drawable.ic_outline_globe_24, "topic/movie")
-}
-
-fun topicNavItems() = listOf(
-    TopicNavItems.Square,
-    TopicNavItems.Movie,
-)
-
-fun String.toTopicNavItem() = checkNotNull(topicNavItems().findLast { this == it.route }) {
-    "$this not implement yet"
-}
-
 sealed class BottomNavItems(
     override val resourceId: Int,
     override val icon: Int,
@@ -55,11 +38,3 @@ fun bottomNavItems() = listOf(
     BottomNavItems.Newest,
     BottomNavItems.Hot,
 )
-
-sealed class NewsNavItems(
-    override val resourceId: Int,
-    override val icon: Int,
-    override val route: String
-): NavItems(resourceId, icon, route) {
-    object Thread : NavItems(0, 0, "thread")
-}

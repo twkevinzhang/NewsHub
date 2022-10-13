@@ -32,9 +32,7 @@ fun AppBottomBar(
                 },
                 selected = selectedItem == item,
                 onClick = { onNavItemClick(item) },
-                label = {
-                    Text(text = stringResource(id = item.resourceId))
-                }
+                label = { NavItemText(item = item) }
             )
         }
     }

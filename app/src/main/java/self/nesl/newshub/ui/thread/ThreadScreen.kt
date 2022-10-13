@@ -19,7 +19,6 @@ import self.nesl.hub_server.data.thread.*
 import self.nesl.newshub.encode
 import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
-import self.nesl.newshub.ui.navigation.NewsNavItems
 import self.nesl.newshub.ui.news.KomicaRePostCard
 import self.nesl.newshub.ui.news.KomicaPostCard
 
@@ -50,7 +49,7 @@ fun ThreadRoute(
 
     fun onRePostClick(rePost: Post) {
         thread?.let {
-            navController.navigate(NewsNavItems.Thread.route.plus("/${it.url.encode()}/re_post/${rePost.id}"))
+            navController.navigate("thread/${it.url.encode()}/re_post/${rePost.id}")
         }
     }
 

@@ -1,7 +1,7 @@
 package self.nesl.newshub.interactor
 
+import self.nesl.hub_server.data.post.Board
 import self.nesl.hub_server.interactor.NewsUseCase
-import self.nesl.newshub.ui.navigation.TopicNavItems
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -9,7 +9,7 @@ import javax.inject.Singleton
 class ClearAllNews @Inject constructor(
     private val newsUseCase: NewsUseCase,
 ) {
-    suspend fun invoke(topicNavItems: TopicNavItems) {
-        newsUseCase.clearAllNews(topicNavItems.toTopic())
+    suspend fun invoke(boards: Set<Board>) {
+        newsUseCase.clearAllNews(boards)
     }
 }

@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.navigation.NavItems
 import self.nesl.newshub.ui.navigation.drawerNavItems
-import self.nesl.newshub.ui.navigation.topicNavItems
 import self.nesl.newshub.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +37,7 @@ fun AppDrawerContent(
                 AppDrawerHeader(name = "NewsHub")
                 topNavItems.forEach {
                     NavigationDrawerItem(
-                        label = { Text(stringResource(id = it.resourceId),) },
+                        label = { NavItemText(it) },
                         icon = { Icon(painterResource(id = it.icon), null) },
                         selected = currentRoute == it.route,
                         onClick = { onTopNavItemClick(it) },
@@ -55,7 +54,7 @@ fun AppDrawerContent(
             Column {
                 bottomNavItems.forEach {
                     NavigationDrawerItem(
-                        label = { Text(stringResource(id = it.resourceId),) },
+                        label = { NavItemText(it) },
                         icon = { Icon(painterResource(id = it.icon), null) },
                         selected = currentRoute == it.route,
                         onClick = { onBottomNavItemClick(it) },
@@ -95,8 +94,13 @@ private fun PreviewDrawer() {
     PreviewTheme {
         AppDrawerContent(
             currentRoute = "",
-            topNavItems = topicNavItems(),
+            topNavItems = drawerNavItems(),
             bottomNavItems = drawerNavItems(),
         )
     }
+}
+
+@Composable
+fun NavItemText(item: NavItems) {
+    Text(text = item.resourceId?.takeIf { it != 0 }?.let { stringResource(id = it) } ?: item.title!!)
 }

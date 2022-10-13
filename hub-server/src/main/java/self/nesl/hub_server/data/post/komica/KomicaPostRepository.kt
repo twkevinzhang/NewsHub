@@ -1,8 +1,8 @@
 package self.nesl.hub_server.data.post.komica
 
-import self.nesl.hub_server.data.post.Topic
+import self.nesl.komica_api.model.KBoard
 
 interface KomicaPostRepository {
-    suspend fun getAllNews(topic: Topic, page: Int): List<KomicaPost>
-    suspend fun clearAllNews(topic: Topic)
+    suspend fun getAllNews(board: KBoard, page: Int): List<KomicaPost>
+    suspend fun clearAllNews()
 }
