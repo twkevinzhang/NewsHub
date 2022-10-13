@@ -2,7 +2,7 @@ package self.nesl.komica_api.model
 
 sealed class KBoard(val name: String, val url: String) {
     sealed class Sora(name: String, url: String) : KBoard(name, url) {
-        object 綜合 : Sora("綜合", "https://sora.komica.org/00")
+        object 綜合 : Sora("綜合", "https://gaia.komica.org/00")
         object 男性角色 : Sora("男性角色", "https://sora.komica.org/38")
         object 短片2 : Sora("短片2", "https://sora.komica.org/69")
         object 寫真 : Sora("寫真", "https://sora.komica.org/16")
