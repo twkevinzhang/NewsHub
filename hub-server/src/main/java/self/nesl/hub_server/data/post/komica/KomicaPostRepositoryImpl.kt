@@ -8,7 +8,6 @@ import self.nesl.komica_api.KomicaApi
 import self.nesl.komica_api.model.KBoard
 import self.nesl.newshub.di.IoDispatcher
 import self.nesl.hub_server.di.TransactionProvider
-import self.nesl.hub_server.toKomicaPost
 import javax.inject.Inject
 
 class KomicaPostRepositoryImpl @Inject constructor(

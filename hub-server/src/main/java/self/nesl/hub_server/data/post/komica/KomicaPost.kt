@@ -4,6 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.post.Post
+import self.nesl.hub_server.data.toBoard
+import self.nesl.hub_server.data.toParagraph
+import self.nesl.komica_api.model.KPost
 
 @Entity(tableName = "komica_news")
 data class KomicaPost (
@@ -19,6 +22,21 @@ data class KomicaPost (
     override val content: List<Paragraph>,
     val page: Int,
 ): Post
+
+fun KPost.toKomicaPost(page: Int) =
+    KomicaPost(
+        boardUrl = url.toBoard().url,
+        url = url,
+        title = title,
+        createdAt = createdAt,
+        poster = poster,
+        visits = visits,
+        replies = replies,
+        readAt = readAt,
+        content = content.map { it.toParagraph() },
+        page = page,
+        id = id,
+    )
 
 fun mockKomicaPost() =
     KomicaPost(
