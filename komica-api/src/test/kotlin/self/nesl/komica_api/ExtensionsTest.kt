@@ -3,8 +3,6 @@ package self.nesl.komica_api
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import self.nesl.komica_api.model.KPostBuilder
-import self.nesl.komica_api.model.KReplyTo
 
 
 internal class ExtensionsTest {
@@ -56,8 +54,8 @@ internal class ExtensionsTest {
         assertEquals("http://example.com", "example.com".withHttp())
 
     @Test
-    fun `Test withFolder extension expect successful`() {
-        assertEquals("http://example.com/path", "http://example.com/path/page.php".withFolder())
+    fun `Test toFolder extension expect successful`() {
+        assertEquals("http://example.com/path", "http://example.com/path/page.php".toFolder())
     }
 
     @Test

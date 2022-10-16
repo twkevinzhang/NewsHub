@@ -1,11 +1,8 @@
 package self.nesl.komica_api
 
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
-import self.nesl.komica_api.model.KPost
 import self.nesl.komica_api.model.boards
-import self.nesl.komica_api.model.replyTo
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -67,7 +64,7 @@ fun String.withHttp(): String {
     }
 }
 
-fun String.withFolder(): String {
+fun String.toFolder(): String {
     val url = this.toHttpUrlOrNull()!!
     val pathSegments = url.pathSegments.dropLast(1)
     val hostWithHttps = if (url.isHttps) url.host.withHttps() else url.host.withHttp()
@@ -135,7 +132,7 @@ fun String.toMillTimestamp(): Long {
 }
 
 fun String.isKomica() =
-    boards().map { it.url }.contains(this.withFolder())
+    boards().map { it.url }.contains(this.toFolder())
 
 fun String.toKomicaBoard() =
     boards().first { this.contains(it.url) }
