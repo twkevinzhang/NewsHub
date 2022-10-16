@@ -5,7 +5,7 @@ import self.nesl.komica_api.model.boards
 data class Board(val name: String, val url: String, val host: Host)
 
 fun Board.toKBoard() =
-    boards().findLast { it.url == url }!!
+    boards().first { it.url == url }
 
 fun String.toBoard(): Board {
     val kBoard = boards().findLast { this.startsWith(it.url) }

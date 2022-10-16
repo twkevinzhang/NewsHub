@@ -27,7 +27,7 @@ class ThreadUseCase @Inject constructor(
         rePostId: String,
     ): Thread {
         val thread = getThread(url)
-        val head = thread.rePosts.findLast { it.id == rePostId }!!
+        val head = thread.rePosts.first { it.id == rePostId }
         val rePosts = thread.rePosts.filter { it.parent().contains(rePostId) }
         return if (url.isKomica()) {
             KomicaThread(thread.url, head, rePosts)
