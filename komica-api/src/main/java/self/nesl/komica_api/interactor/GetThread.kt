@@ -15,7 +15,7 @@ import self.nesl.komica_api.toKomicaBoard
 class GetThread(
     private val client: OkHttpClient,
 ) {
-    suspend operator fun invoke(url: String): Pair<KPost, List<KPost>> = withContext(Dispatchers.IO) {
+    suspend fun invoke(url: String): Pair<KPost, List<KPost>> = withContext(Dispatchers.IO) {
         val response = client.newCall(
             Request.Builder()
             .url(url)

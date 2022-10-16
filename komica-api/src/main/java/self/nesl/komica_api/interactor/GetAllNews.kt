@@ -19,10 +19,10 @@ import self.nesl.komica_api.parser.sora.SoraUrlParser
 import self.nesl.komica_api.request._2cat._2catBoardRequestBuilder
 import self.nesl.komica_api.request.sora.SoraBoardRequestBuilder
 
-class GetAllThreadHead(
+class GetAllNews(
     private val client: OkHttpClient,
 ) {
-    suspend operator fun invoke(board: KBoard, page: Int?= null): List<KPost> = withContext(Dispatchers.IO) {
+    suspend fun invoke(board: KBoard, page: Int?= null): List<KPost> = withContext(Dispatchers.IO) {
         val req = processPage(board, page)
         val response = client.newCall(req).await()
 
