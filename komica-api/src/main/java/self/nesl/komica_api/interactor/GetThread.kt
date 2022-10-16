@@ -10,7 +10,7 @@ import self.nesl.komica_api.model.KPost
 import self.nesl.komica_api.model.KBoard
 import self.nesl.komica_api.parser._2cat.*
 import self.nesl.komica_api.parser.sora.*
-import self.nesl.komica_api.toKomicaBoard
+import self.nesl.komica_api.toKBoard
 
 class GetThread(
     private val client: OkHttpClient,
@@ -22,7 +22,7 @@ class GetThread(
             .build()
         ).await()
 
-        when (url.toKomicaBoard()) {
+        when (url.toKBoard()) {
             is KBoard.Sora, KBoard.人外, KBoard.格鬥遊戲, KBoard.Idolmaster, KBoard.`3D-STG`, KBoard.魔物獵人, KBoard.`TYPE-MOON` ->
                 SoraThreadParser(SoraPostParser(SoraUrlParser(), SoraPostHeadParser()))
             is KBoard._2catKomica ->

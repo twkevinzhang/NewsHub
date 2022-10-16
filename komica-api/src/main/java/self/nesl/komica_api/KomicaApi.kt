@@ -16,7 +16,7 @@ class KomicaApi (
         GetAllNews(client).invoke(board = board, page = page)
 
     suspend fun getAllThreadHead(url: String) =
-        GetAllNews(client).invoke(url.toKomicaBoard())
+        GetAllNews(client).invoke(url.toKBoard())
 
     suspend fun getThread(url: String) =
         GetThread(client).invoke(url)
