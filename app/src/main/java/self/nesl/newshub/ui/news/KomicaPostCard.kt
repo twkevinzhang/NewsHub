@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.mockKomicaPost
+import self.nesl.hub_server.data.toBoard
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.component.ParagraphBlock
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
@@ -132,7 +133,7 @@ private fun KomicaPostCardHeader(news: KomicaPost) {
         Row {
             CardHeadPosterBlock(news.poster)
             CardHeadTimeBlock(news.createdAt)
-            CardHeadTextBlock("${news.id}@Komica")
+            CardHeadTextBlock("${news.id}@Komica/${news.boardUrl.toBoard().name}")
         }
         Row {
             CardHeadRepliesBlock(news.replies)
@@ -188,6 +189,7 @@ private fun KomicaNewsCardTitle(text: String) {
                 style = NewshubTheme.typography.titleMedium.copy(),
                 color = LocalContentColor.current.copy(alpha = AppDisabledAlpha),
             )
+        "" -> KomicaNewsCardTitle("無題")
         else ->
             Text(
                 text = text,
