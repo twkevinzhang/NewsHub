@@ -17,7 +17,10 @@ import self.nesl.gamer_api.request.BoardRequestBuilder
 class GetAllNews(
     private val client: OkHttpClient,
 ) {
-    suspend operator fun invoke(board: GBoard, page: Int?= null): List<GNews> = withContext(Dispatchers.IO) {
+    /**
+     * 取得指定 Board 底下的 News，這些 News 與 Thread 不同，News 只是 Thread 的簡單資訊，而 Thread 內包含了整個討論串的原 PO 及回文 (RePost)
+     */
+    suspend fun invoke(board: GBoard, page: Int?= null): List<GNews> = withContext(Dispatchers.IO) {
         val req = processPage(board, page)
         val response = client.newCall(req).await()
         BoardParser().parse(Jsoup.parse(response.body()?.string()), board.url)
