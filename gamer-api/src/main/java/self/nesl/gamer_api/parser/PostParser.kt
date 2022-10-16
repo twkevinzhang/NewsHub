@@ -1,6 +1,7 @@
 package self.nesl.gamer_api.parser
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
@@ -23,7 +24,7 @@ class PostParser(
         setUnlike(source)
         setContent(source)
         builder.setUrl(url)
-        builder.setPostId(urlParser.parsePostId(HttpUrl.parse(url)!!)!!)
+        builder.setPostId(urlParser.parsePostId(url.toHttpUrlOrNull()!!)!!)
         return builder.build()
     }
 

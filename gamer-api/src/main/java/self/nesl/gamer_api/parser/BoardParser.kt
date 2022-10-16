@@ -1,6 +1,7 @@
 package self.nesl.gamer_api.parser
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import self.nesl.gamer_api.model.GBoard
 import self.nesl.gamer_api.model.GNews
@@ -13,7 +14,7 @@ class BoardParser: Parser<List<GNews>> {
             val title = it.selectFirst("p.b-list__main__title").text()
             val preview = it.selectFirst("p.b-list__brief").text()
             val href = it.selectFirst("a[href^=\"C.php?bsn=\"]").attr("href")
-            val threadUrl = "${HttpUrl.parse(url)?.host()}/$href"
+            val threadUrl = "${url.toHttpUrlOrNull()?.host}/$href"
             GNews(
                 title = title,
                 preview = preview,

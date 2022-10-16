@@ -1,9 +1,9 @@
 package self.nesl.hub_server.interactor
 
+import self.nesl.hub_server.data.post.parent
 import self.nesl.hub_server.data.thread.Thread
 import self.nesl.hub_server.data.thread.komica.KomicaThread
 import self.nesl.hub_server.data.thread.komica.KomicaThreadRepository
-import self.nesl.hub_server.data.thread.parent
 import self.nesl.komica_api.isKomica
 import javax.inject.Inject
 import javax.inject.Singleton

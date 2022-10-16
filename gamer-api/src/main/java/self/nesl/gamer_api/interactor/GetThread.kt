@@ -23,6 +23,6 @@ class GetThread(
             .build()
         ).await()
 
-        ThreadParser(PostParser(UrlParserImpl())).parse(Jsoup.parse(response.body()?.string()), news.url)
+        ThreadParser(PostParser(UrlParserImpl())).parse(Jsoup.parse(response.body?.string()), news.url)
     }
 }
