@@ -1,13 +1,10 @@
-package self.nesl.hub_server.data.post.gamer
+package self.nesl.hub_server.data.news.gamer
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import self.nesl.gamer_api.model.GNews
-import self.nesl.gamer_api.model.GPost
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news.News
-import self.nesl.hub_server.data.post.Post
-import self.nesl.hub_server.data.toParagraph
 
 @Entity(tableName = "gamer_news")
 data class GamerNews (

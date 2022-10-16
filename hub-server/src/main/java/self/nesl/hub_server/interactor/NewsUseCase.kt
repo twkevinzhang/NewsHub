@@ -4,7 +4,7 @@ import self.nesl.hub_server.data.Host
 import self.nesl.hub_server.data.board.Board
 import self.nesl.hub_server.data.board.toGBoard
 import self.nesl.hub_server.data.board.toKBoard
-import self.nesl.hub_server.data.post.gamer.GamerNewsRepository
+import self.nesl.hub_server.data.news.gamer.GamerNewsRepository
 import self.nesl.hub_server.data.post.komica.KomicaPostRepository
 import javax.inject.Inject
 import javax.inject.Singleton

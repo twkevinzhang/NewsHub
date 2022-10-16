@@ -1,4 +1,4 @@
-package self.nesl.hub_server.data.post.gamer
+package self.nesl.hub_server.data.news.gamer
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher

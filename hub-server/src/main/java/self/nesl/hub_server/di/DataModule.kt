@@ -11,8 +11,8 @@ import dagger.hilt.components.SingletonComponent
 import self.nesl.hub_server.data.AppDatabase
 import self.nesl.hub_server.data.board.BoardRepository
 import self.nesl.hub_server.data.board.BoardRepositoryImpl
-import self.nesl.hub_server.data.post.gamer.GamerNewsRepository
-import self.nesl.hub_server.data.post.gamer.GamerNewsRepositoryImpl
+import self.nesl.hub_server.data.news.gamer.GamerNewsRepository
+import self.nesl.hub_server.data.news.gamer.GamerNewsRepositoryImpl
 import self.nesl.hub_server.data.post.komica.KomicaPostRepository
 import self.nesl.hub_server.data.post.komica.KomicaPostRepositoryImpl
 import self.nesl.hub_server.data.thread.komica.KomicaThreadRepository
