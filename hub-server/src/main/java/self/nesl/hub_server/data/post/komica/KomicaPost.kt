@@ -3,14 +3,13 @@ package self.nesl.hub_server.data.post.komica
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.Host
 import self.nesl.hub_server.data.post.Post
 
 @Entity(tableName = "komica_news")
 data class KomicaPost (
     @PrimaryKey override val url: String,
     override val id: String,
-    override val host: Host,
+    override val boardUrl: String,
     override val title: String?,
     override val createdAt: Long?,
     override val poster: String?,
@@ -23,9 +22,9 @@ data class KomicaPost (
 
 fun mockKomicaPost() =
     KomicaPost(
-        url = "https://www.google.com",
+        url = "https://gaia.komica.org/00/pixmicat.php?res=29683783",
         title = "How to Google?",
-        host = Host.KOMICA,
+        boardUrl = "https://gaia.komica.org/00",
         createdAt = 0,
         poster = "Zhen Long",
         visits = 0,

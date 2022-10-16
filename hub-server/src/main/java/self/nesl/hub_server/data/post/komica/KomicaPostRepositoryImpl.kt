@@ -19,7 +19,7 @@ class KomicaPostRepositoryImpl @Inject constructor(
 ): KomicaPostRepository {
 
     override suspend fun getAllNews(board: KBoard, page: Int): List<KomicaPost> = withContext(ioDispatcher) {
-        val news = dao.readAll(page)
+        val news = dao.readAll(board.url, page)
         if (news.isNotEmpty()) {
             news
         } else {

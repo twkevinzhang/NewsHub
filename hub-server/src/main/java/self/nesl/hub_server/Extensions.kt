@@ -1,14 +1,14 @@
 package self.nesl.hub_server
 
-import self.nesl.hub_server.data.Host
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.thread.komica.KomicaThread
+import self.nesl.hub_server.data.toBoard
 import self.nesl.hub_server.data.toParagraph
 import self.nesl.komica_api.model.KPost
 
 fun KPost.toKomicaPost(page: Int) =
     KomicaPost(
-        host = Host.KOMICA,
+        boardUrl = url.toBoard().url,
         url = url,
         title = title,
         createdAt = createdAt,

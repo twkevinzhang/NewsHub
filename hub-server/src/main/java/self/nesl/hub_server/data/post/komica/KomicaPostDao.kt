@@ -5,8 +5,8 @@ import androidx.room.*
 @Dao
 interface KomicaPostDao {
 
-    @Query("SELECT * FROM komica_news where page = :page")
-    suspend fun readAll(page: Int): List<KomicaPost>
+    @Query("SELECT * FROM komica_news where page = :page and boardUrl = :boardUrl")
+    suspend fun readAll(boardUrl: String, page: Int): List<KomicaPost>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(list: List<KomicaPost>)

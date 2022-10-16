@@ -5,7 +5,7 @@ import self.nesl.hub_server.data.Host
 
 interface News {
     val url: String
-    val host: Host
+    val boardUrl: String
     val title: String?
     val createdAt: Long?
     val poster: String?
