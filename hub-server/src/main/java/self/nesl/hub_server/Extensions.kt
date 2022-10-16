@@ -1,6 +1,6 @@
 package self.nesl.hub_server
 
-import self.nesl.hub_server.data.post.Host
+import self.nesl.hub_server.data.Host
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.thread.komica.KomicaThread
 import self.nesl.hub_server.data.toParagraph
@@ -17,7 +17,6 @@ fun KPost.toKomicaPost(page: Int) =
         replies = replies,
         readAt = readAt,
         content = content.map { it.toParagraph() },
-        favorite = null,
         page = page,
         id = id,
     )

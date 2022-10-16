@@ -1,7 +1,9 @@
 package self.nesl.hub_server.interactor
 
-import self.nesl.hub_server.data.post.*
+import self.nesl.hub_server.data.Board
+import self.nesl.hub_server.data.Host
 import self.nesl.hub_server.data.post.komica.KomicaPostRepository
+import self.nesl.hub_server.data.toKBoard
 import javax.inject.Inject
 import javax.inject.Singleton
 

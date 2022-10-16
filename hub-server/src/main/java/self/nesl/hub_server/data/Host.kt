@@ -1,4 +1,4 @@
-package self.nesl.hub_server.data.post
+package self.nesl.hub_server.data
 
 enum class Host {
     KOMICA,

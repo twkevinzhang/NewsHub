@@ -1,9 +1,9 @@
-package self.nesl.hub_server.data.thread
+package self.nesl.hub_server.data.post
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.post.Host
+import self.nesl.hub_server.data.Host
 
 internal class PostExtensionsTest {
 
@@ -24,7 +24,6 @@ internal class PostExtensionsTest {
                 Paragraph.ReplyTo("B"),
                 Paragraph.ReplyTo("C"),
             )
-            override val favorite = "favorite"
         }
 
         val post2 = object: Post {
@@ -41,7 +40,6 @@ internal class PostExtensionsTest {
                 Paragraph.ReplyTo("A"),
                 Paragraph.ReplyTo("B"),
             )
-            override val favorite = "favorite"
         }
 
         val post3 = object: Post {
@@ -57,7 +55,6 @@ internal class PostExtensionsTest {
             override val content = listOf(
                 Paragraph.ReplyTo("A"),
             )
-            override val favorite = "favorite"
         }
 
         assertEquals(2, listOf(post1, post2, post3).parentIs("B").size)

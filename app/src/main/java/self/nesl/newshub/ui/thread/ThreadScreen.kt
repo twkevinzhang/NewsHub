@@ -14,7 +14,9 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import self.nesl.hub_server.data.Paragraph
+import self.nesl.hub_server.data.post.Post
 import self.nesl.hub_server.data.post.komica.KomicaPost
+import self.nesl.hub_server.data.post.toText
 import self.nesl.hub_server.data.thread.*
 import self.nesl.newshub.encode
 import self.nesl.newshub.ui.component.AppDialog

@@ -1,7 +1,7 @@
-package self.nesl.hub_server.data.thread
+package self.nesl.hub_server.data.post
 
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.post.News
+import self.nesl.hub_server.data.news.News
 import self.nesl.hub_server.trySubstring
 
 interface Post: News {

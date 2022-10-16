@@ -1,7 +1,7 @@
 package self.nesl.newshub.interactor
 
-import self.nesl.hub_server.data.post.Board
-import self.nesl.hub_server.data.post.Host
+import self.nesl.hub_server.data.Board
+import self.nesl.hub_server.data.Host
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -1,9 +1,6 @@
-package self.nesl.hub_server.data.post
+package self.nesl.hub_server.data
 
-import self.nesl.komica_api.isKomica
-import self.nesl.komica_api.model.KBoard
 import self.nesl.komica_api.model.boards
-import self.nesl.komica_api.withFolder
 
 data class Board(val name: String, val url: String, val host: Host)
 

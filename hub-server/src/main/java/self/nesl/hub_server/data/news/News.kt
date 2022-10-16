@@ -1,6 +1,7 @@
-package self.nesl.hub_server.data.post
+package self.nesl.hub_server.data.news
 
 import self.nesl.hub_server.data.Paragraph
+import self.nesl.hub_server.data.Host
 
 interface News {
     val url: String
@@ -12,5 +13,4 @@ interface News {
     val replies: Int?
     val readAt: Int?
     val content: List<Paragraph>
-    val favorite: String?
 }
