@@ -13,13 +13,13 @@ import self.nesl.hub_server.data.toParagraph
 data class GamerNews (
     @PrimaryKey override val url: String,
     override val boardUrl: String,
-    override val title: String?,
-    override val createdAt: Long?,
-    override val poster: String?,
-    override val visits: Int?,
-    override val replies: Int?,
-    override val readAt: Int?,
-    override val content: List<Paragraph>,
+    val title: String?,
+    val createdAt: Long?,
+    val poster: String?,
+    val visits: Int?,
+    val replies: Int?,
+    val readAt: Int?,
+    val content: List<Paragraph>,
     val page: Int,
 ): News
 

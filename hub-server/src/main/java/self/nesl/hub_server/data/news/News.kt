@@ -6,11 +6,4 @@ import self.nesl.hub_server.data.Host
 interface News {
     val url: String
     val boardUrl: String
-    val title: String?
-    val createdAt: Long?
-    val poster: String?
-    val visits: Int?
-    val replies: Int?
-    val readAt: Int?
-    val content: List<Paragraph>
 }

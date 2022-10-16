@@ -14,11 +14,6 @@ internal class PostExtensionsTest {
             override val url = "https://gaia.komica.org/00"
             override val boardUrl = "https://gaia.komica.org/00/pixmicat.php?res=29683783"
             override val title = "title"
-            override val createdAt = 0L
-            override val poster = "poster"
-            override val visits = 0
-            override val replies = 0
-            override val readAt = 0
             override val content = listOf(
                 Paragraph.ReplyTo("A"),
                 Paragraph.ReplyTo("B"),
@@ -31,11 +26,6 @@ internal class PostExtensionsTest {
             override val url = "https://gaia.komica.org/00"
             override val boardUrl = "https://gaia.komica.org/00/pixmicat.php?res=29683783"
             override val title = "title"
-            override val createdAt = 0L
-            override val poster = "poster"
-            override val visits = 0
-            override val replies = 0
-            override val readAt = 0
             override val content = listOf(
                 Paragraph.ReplyTo("A"),
                 Paragraph.ReplyTo("B"),
@@ -47,11 +37,6 @@ internal class PostExtensionsTest {
             override val url = "https://gaia.komica.org/00"
             override val boardUrl = "https://gaia.komica.org/00/pixmicat.php?res=29683783"
             override val title = "title"
-            override val createdAt = 0L
-            override val poster = "poster"
-            override val visits = 0
-            override val replies = 0
-            override val readAt = 0
             override val content = listOf(
                 Paragraph.ReplyTo("A"),
             )

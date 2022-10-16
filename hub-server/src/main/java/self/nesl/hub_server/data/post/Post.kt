@@ -10,6 +10,13 @@ interface Post: News {
      * Returns the id in the discussion thread.
      */
     val id: String
+
+    /**
+     * Returns the content and it's contain the reply target [Paragraph.ReplyTo]
+     */
+    val content: List<Paragraph>
+
+    val title: String
 }
 
 fun List<Post>.parentIs(parentId: String): List<Post> {
