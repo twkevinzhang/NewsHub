@@ -15,7 +15,8 @@ class BoardParser: Parser<List<GNews>> {
             val title = it.selectFirst("p.b-list__main__title").text()
             val preview = it.selectFirst("p.b-list__brief").text()
             val href = it.selectFirst("a[href^=\"C.php?bsn=\"]").attr("href")
-            val threadUrl = "${url.toHttpUrl()?.host}/$href"
+            val httpUrl = url.toHttpUrl()
+            val threadUrl = "${httpUrl.scheme}://${httpUrl.host}/$href"
             GNews(
                 title = title,
                 preview = preview,

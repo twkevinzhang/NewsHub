@@ -33,3 +33,24 @@ fun GNews.toGamerPost(page: Int, boardUrl: String) =
         page = page,
         visits = null,
     )
+
+fun mockGamerNews() =
+    GamerNews(
+        url = "https://gaia.komica.org/00/pixmicat.php?res=29683783",
+        title = "How to Google?",
+        boardUrl = "https://gaia.komica.org/00",
+        createdAt = 0,
+        poster = "Zhen Long",
+        visits = 0,
+        replies = 0,
+        readAt = 0,
+        content = listOf(
+            Paragraph.Text("Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui."),
+            Paragraph.ImageInfo(
+                "https://pic-go-bed.oss-cn-beijing.aliyuncs.com/img/20220316151929.png",
+                "https://pic-go-bed.oss-cn-beijing.aliyuncs.com/img/20220316151929.png"
+            ),
+            Paragraph.Text("This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique."),
+        ),
+        page = 1,
+    )

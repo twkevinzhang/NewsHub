@@ -34,6 +34,7 @@ import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.Host
 import self.nesl.hub_server.data.board.Board
 import self.nesl.hub_server.data.news.News
+import self.nesl.hub_server.data.news.gamer.GamerNews
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.mockKomicaPost
 import self.nesl.newshub.R
@@ -42,6 +43,7 @@ import self.nesl.newshub.interactor.Topic
 import self.nesl.newshub.ui.component.AppBottomBar
 import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.navigation.bottomNavItems
+import self.nesl.newshub.ui.news.GamerNewsCard
 import self.nesl.newshub.ui.news.KomicaPostCard
 import self.nesl.newshub.ui.thread.ThreadRoute
 import self.nesl.newshub.ui.thread.ThreadViewModel
@@ -162,6 +164,11 @@ fun NewsListRoute(
         news = { news ->
             when (news) {
                 is KomicaPost -> KomicaPostCard(
+                    news = news,
+                    onLinkClick = { onLinkClick(it) },
+                    onClick = { navigateToNews(news) },
+                )
+                is GamerNews -> GamerNewsCard(
                     news = news,
                     onLinkClick = { onLinkClick(it) },
                     onClick = { navigateToNews(news) },
