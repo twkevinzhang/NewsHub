@@ -1,5 +1,6 @@
 package self.nesl.komica_api
 
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import self.nesl.komica_api.model.boards
@@ -65,7 +66,7 @@ fun String.withHttp(): String {
 }
 
 fun String.toFolder(): String {
-    val url = this.toHttpUrlOrNull()!!
+    val url = this.toHttpUrl()
     val pathSegments = url.pathSegments.dropLast(1)
     val hostWithHttps = if (url.isHttps) url.host.withHttps() else url.host.withHttp()
     return hostWithHttps + pathSegments.joinToString("/", prefix = "/")

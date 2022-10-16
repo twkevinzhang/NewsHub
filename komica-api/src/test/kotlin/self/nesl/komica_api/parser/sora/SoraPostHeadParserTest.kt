@@ -14,7 +14,7 @@ internal class SoraPostHeadParserTest {
         val parser = SoraPostHeadParser()
         val title = parser.parseTitle(
             Jsoup.parse(loadFile("./src/test/html/org/komica/sora/HeadPost.html")),
-            "https://sora.komica.org/00/pixmicat.php?res=25208017".toHttpUrlOrNull()!!
+            "https://sora.komica.org/00/pixmicat.php?res=25208017".toHttpUrl()
         )
         assertEquals("無題", title)
     }
@@ -24,7 +24,7 @@ internal class SoraPostHeadParserTest {
         val parser = SoraPostHeadParser()
         val time = parser.parseCreatedAt(
             Jsoup.parse(loadFile("./src/test/html/org/komica/sora/HeadPost.html")),
-            "https://sora.komica.org/00/pixmicat.php?res=25208017".toHttpUrlOrNull()!!
+            "https://sora.komica.org/00/pixmicat.php?res=25208017".toHttpUrl()
         )
         assertEquals(1638460800000L, time)
     }
@@ -34,7 +34,7 @@ internal class SoraPostHeadParserTest {
         val parser = SoraPostHeadParser()
         val title = parser.parseTitle(
             Jsoup.parse(loadFile("./src/test/html/org/komica/2cat/HeadPost.html")),
-            "https://2cat.komica.org/~tedc21thc/new/pixmicat.php?res=4003068".toHttpUrlOrNull()!!
+            "https://2cat.komica.org/~tedc21thc/new/pixmicat.php?res=4003068".toHttpUrl()
         )
         assertEquals("巴突克戰舞131", title)
     }
@@ -44,7 +44,7 @@ internal class SoraPostHeadParserTest {
         val parser = SoraPostHeadParser()
         val time = parser.parseCreatedAt(
             Jsoup.parse(loadFile("./src/test/html/org/komica/2cat/HeadPost.html")),
-            "https://2cat.komica.org/~tedc21thc/new/pixmicat.php?res=4003068".toHttpUrlOrNull()!!
+            "https://2cat.komica.org/~tedc21thc/new/pixmicat.php?res=4003068".toHttpUrl()
         )
         assertEquals(0, time)
     }

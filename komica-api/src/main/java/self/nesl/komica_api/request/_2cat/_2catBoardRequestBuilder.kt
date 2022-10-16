@@ -1,6 +1,7 @@
 package self.nesl.komica_api.request._2cat
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import self.nesl.komica_api.request.RequestBuilder
@@ -9,7 +10,7 @@ class _2catBoardRequestBuilder: RequestBuilder {
     private lateinit var url: HttpUrl
 
     override fun url(url: String): RequestBuilder {
-        this.url= url.toHttpUrlOrNull()!!
+        this.url= url.toHttpUrl()
         return this
     }
 

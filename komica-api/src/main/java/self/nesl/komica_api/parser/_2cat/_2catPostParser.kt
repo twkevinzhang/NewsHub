@@ -1,6 +1,7 @@
 package self.nesl.komica_api.parser._2cat
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
@@ -18,7 +19,7 @@ class _2catPostParser(
     private val builder = KPostBuilder()
 
     override fun parse(source: Element, url: String): KPost {
-        val httpUrl = url.toHttpUrlOrNull()!!
+        val httpUrl = url.toHttpUrl()
         setDetail(source, httpUrl)
         setContent(source)
         setPicture(source, httpUrl)
