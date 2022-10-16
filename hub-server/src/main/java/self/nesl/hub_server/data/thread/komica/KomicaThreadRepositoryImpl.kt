@@ -12,7 +12,7 @@ class KomicaThreadRepositoryImpl @Inject constructor(
 ): KomicaThreadRepository {
 
     override suspend fun getThread(url: String): KomicaThread = withContext(ioDispatcher) {
-        val remote = api.getThread(url).toKomicaThread(url)
+        val remote = api.getThread(url).toKomicaThread(url, url)
         return@withContext remote
     }
 }

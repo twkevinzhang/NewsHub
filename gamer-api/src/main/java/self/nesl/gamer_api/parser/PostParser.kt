@@ -58,13 +58,14 @@ class PostParser(
         val parent = source.selectFirst("div.c-article__content")
         for (child in parent.childNodes().flatDiv()) {
             if (child is TextNode) {
-                list.add(GParagraph(child.text(), GParagraphType.TEXT))
+                list.add(GText(child.text()))
             }
             if (child is Element) {
                 if (child.`is`("a.photoswipe-image[href^=\"https://truth.bahamut.com.tw/\"]")) {
-                    list.add(GParagraph(child.attr("href"), GParagraphType.IMAGE))
+                    val href = child.attr("href")
+                    list.add(GImageInfo(href, href))
                 } else if (child.`is`("a[href^=\"http://\"], a[href^=\"https://\"]")) {
-                    list.add(GParagraph(child.ownText(), GParagraphType.LINK))
+                    list.add(GLink(child.ownText()))
                 }
             }
         }

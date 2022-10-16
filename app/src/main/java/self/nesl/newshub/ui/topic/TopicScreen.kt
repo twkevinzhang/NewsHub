@@ -31,12 +31,11 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.flowOf
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.Board
 import self.nesl.hub_server.data.Host
+import self.nesl.hub_server.data.board.Board
 import self.nesl.hub_server.data.news.News
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.mockKomicaPost
-import self.nesl.hub_server.data.toBoard
 import self.nesl.newshub.R
 import self.nesl.newshub.encode
 import self.nesl.newshub.interactor.Topic
@@ -295,11 +294,11 @@ fun BoardFilter(
 @Composable
 fun PreviewBoardFilter() {
     val boards = listOf(
-        "https://2cat.komica.org/~tedc21thc/new".toBoard(),
-        "https://2cat.komica.org/~tedc21thc/new".toBoard(),
-        "https://2cat.komica.org/~tedc21thc/new".toBoard(),
-        "https://2cat.komica.org/~tedc21thc/new".toBoard(),
-        "https://2cat.komica.org/~tedc21thc/new".toBoard(),
+        Board(name = "A", url = "a.com", host = Host.KOMICA),
+        Board(name = "B", url = "b.com", host = Host.GAMER),
+        Board(name = "C", url = "c.com", host = Host.GAMER),
+        Board(name = "D", url = "d.com", host = Host.GAMER),
+        Board(name = "E", url = "e.com", host = Host.GAMER),
     )
     PreviewTheme {
         BoardFilter(

@@ -6,7 +6,7 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import self.nesl.hub_server.data.Board
+import self.nesl.hub_server.data.board.Board
 import self.nesl.newshub.interactor.NewsInteractor
 import self.nesl.newshub.interactor.BoardInteractor
 import self.nesl.newshub.interactor.TopicInteractor

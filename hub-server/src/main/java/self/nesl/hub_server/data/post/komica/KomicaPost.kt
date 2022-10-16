@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.post.Post
-import self.nesl.hub_server.data.toBoard
 import self.nesl.hub_server.data.toParagraph
 import self.nesl.komica_api.model.KPost
 
@@ -23,9 +22,9 @@ data class KomicaPost (
     val page: Int,
 ): Post
 
-fun KPost.toKomicaPost(page: Int) =
+fun KPost.toKomicaPost(page: Int, boardUrl: String) =
     KomicaPost(
-        boardUrl = url.toBoard().url,
+        boardUrl = boardUrl,
         url = url,
         title = title,
         createdAt = createdAt,

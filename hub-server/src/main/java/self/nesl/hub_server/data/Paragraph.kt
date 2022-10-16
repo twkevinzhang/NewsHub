@@ -1,5 +1,6 @@
 package self.nesl.hub_server.data
 
+import self.nesl.gamer_api.model.*
 import self.nesl.komica_api.model.*
 import java.lang.IllegalArgumentException
 
@@ -39,6 +40,19 @@ fun KParagraph.toParagraph(): Paragraph {
         is KText -> Paragraph.Text(content)
         is KImageInfo -> Paragraph.ImageInfo(thumb, raw)
         is KLink -> Paragraph.Link(content)
+        else -> {
+            throw IllegalArgumentException("Unknown paragraph type")
+        }
+    }
+}
+
+fun GParagraph.toParagraph(): Paragraph {
+    return when (this) {
+        is GQuote -> Paragraph.Quote(content)
+        is GReplyTo -> Paragraph.ReplyTo(content)
+        is GText -> Paragraph.Text(content)
+        is GImageInfo -> Paragraph.ImageInfo(thumb, raw)
+        is GLink -> Paragraph.Link(content)
         else -> {
             throw IllegalArgumentException("Unknown paragraph type")
         }

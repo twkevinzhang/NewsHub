@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import self.nesl.gamer_api.GamerApi
 import self.nesl.hub_server.BuildConfig
 import self.nesl.komica_api.KomicaApi
 import java.util.concurrent.TimeUnit
@@ -32,4 +33,8 @@ object ApiModule {
     @Provides
     @Singleton
     fun provideKomicaNewsApi(client: OkHttpClient) = KomicaApi(client)
+
+    @Provides
+    @Singleton
+    fun provideGamerApi(client: OkHttpClient) = GamerApi(client)
 }

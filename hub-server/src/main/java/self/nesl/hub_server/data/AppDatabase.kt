@@ -5,12 +5,18 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONObject
+import self.nesl.hub_server.data.board.Board
+import self.nesl.hub_server.data.board.BoardDao
+import self.nesl.hub_server.data.post.gamer.GamerNews
+import self.nesl.hub_server.data.post.gamer.GamerNewsDao
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.KomicaPostDao
 
 @Database(
     entities = [
         KomicaPost::class,
+        GamerNews::class,
+        Board::class,
     ],
     version = 1
 )
@@ -86,4 +92,6 @@ abstract class AppDatabase: RoomDatabase() {
     }
 
     abstract fun komicaPostDao(): KomicaPostDao
+    abstract fun gamerNewsDao(): GamerNewsDao
+    abstract fun boardDao(): BoardDao
 }

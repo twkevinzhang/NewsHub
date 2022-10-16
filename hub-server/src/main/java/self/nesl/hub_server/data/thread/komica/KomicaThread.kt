@@ -11,9 +11,9 @@ data class KomicaThread (
     override val rePosts: List<Post>,
 ): Thread
 
-fun Pair<KPost, List<KPost>>.toKomicaThread(url: String) =
+fun Pair<KPost, List<KPost>>.toKomicaThread(url: String, boardUrl: String) =
     KomicaThread(
         url = url,
-        post = first.toKomicaPost(0),
-        rePosts = second.map { it.toKomicaPost(0) },
+        post = first.toKomicaPost(0, boardUrl),
+        rePosts = second.map { it.toKomicaPost(0, boardUrl) },
     )

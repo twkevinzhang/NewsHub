@@ -1,14 +1,24 @@
 package self.nesl.gamer_api.model
 
-class GParagraph(
-    val content: String,
-    val type: GParagraphType
-) {
-    override fun toString(): String {
-        return "GParagraph(content = $content, type = $type)"
-    }
-}
+interface GParagraph
 
-enum class GParagraphType {
-    QUOTE, REPLY_TO, TEXT, IMAGE, LINK
-}
+class GImageInfo(
+    val thumb: String? = null,
+    val raw: String,
+): GParagraph
+
+class GText(
+    val content: String,
+): GParagraph
+
+class GQuote(
+    val content: String,
+): GParagraph
+
+class GReplyTo(
+    val content: String,
+): GParagraph
+
+class GLink(
+    val content: String,
+): GParagraph

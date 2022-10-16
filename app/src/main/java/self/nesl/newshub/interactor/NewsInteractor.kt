@@ -3,7 +3,7 @@ package self.nesl.newshub.interactor
 import android.util.Log
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
-import self.nesl.hub_server.data.Board
+import self.nesl.hub_server.data.board.Board
 import self.nesl.hub_server.data.news.News
 import self.nesl.hub_server.interactor.NewsUseCase
 import javax.inject.Inject
