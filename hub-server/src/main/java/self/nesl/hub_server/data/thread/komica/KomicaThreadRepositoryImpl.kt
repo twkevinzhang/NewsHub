@@ -12,8 +12,8 @@ class KomicaThreadRepositoryImpl @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ): ThreadRepository<KomicaThread> {
 
-    override suspend fun getThread(url: String): KomicaThread = withContext(ioDispatcher) {
-        val remote = api.getThread(url).toKomicaThread(url, url)
+    override suspend fun getThread(url: String, boardUrl: String): KomicaThread = withContext(ioDispatcher) {
+        val remote = api.getThread(url).toKomicaThread(url, boardUrl)
         return@withContext remote
     }
 }

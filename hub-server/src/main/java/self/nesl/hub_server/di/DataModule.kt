@@ -17,6 +17,8 @@ import self.nesl.hub_server.data.news.gamer.GamerNews
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.KomicaNewsRepositoryImpl
 import self.nesl.hub_server.data.thread.ThreadRepository
+import self.nesl.hub_server.data.thread.gamer.GamerThread
+import self.nesl.hub_server.data.thread.gamer.GamerThreadRepositoryImpl
 import self.nesl.hub_server.data.thread.komica.KomicaThread
 import self.nesl.hub_server.data.thread.komica.KomicaThreadRepositoryImpl
 import javax.inject.Singleton
@@ -64,9 +66,12 @@ object DataModule {
         abstract fun bindKomicaNewsRepository(impl: KomicaNewsRepositoryImpl): NewsRepository<KomicaPost>
 
         @Binds
+        abstract fun bindGamerNewsRepository(impl: GamerNewsRepositoryImpl): NewsRepository<GamerNews>
+
+        @Binds
         abstract fun bindKomicaThreadRepository(impl: KomicaThreadRepositoryImpl): ThreadRepository<KomicaThread>
 
         @Binds
-        abstract fun bindGamerNewsRepository(impl: GamerNewsRepositoryImpl): NewsRepository<GamerNews>
+        abstract fun bindGamerThreadRepository(impl: GamerThreadRepositoryImpl): ThreadRepository<GamerThread>
     }
 }

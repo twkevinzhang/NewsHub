@@ -20,9 +20,10 @@ class ThreadUseCase @Inject constructor(
     suspend fun getThread(
         url: String,
     ): Thread {
-        return when (url.toBoard().host) {
-            Host.KOMICA -> komicaThreadRepository.getThread(url)
-            Host.GAMER -> gamerThreadRepository.getThread(url)
+        val board = url.toBoard()
+        return when (board.host) {
+            Host.KOMICA -> komicaThreadRepository.getThread(url, board.url)
+            Host.GAMER -> gamerThreadRepository.getThread(url, board.url)
             else -> throw NotImplementedError("ThreadRepository not implement")
         }
     }
