@@ -11,11 +11,13 @@ import dagger.hilt.components.SingletonComponent
 import self.nesl.hub_server.data.AppDatabase
 import self.nesl.hub_server.data.board.BoardRepository
 import self.nesl.hub_server.data.board.BoardRepositoryImpl
-import self.nesl.hub_server.data.news.gamer.GamerNewsRepository
 import self.nesl.hub_server.data.news.gamer.GamerNewsRepositoryImpl
-import self.nesl.hub_server.data.post.komica.KomicaPostRepository
-import self.nesl.hub_server.data.post.komica.KomicaPostRepositoryImpl
-import self.nesl.hub_server.data.thread.komica.KomicaThreadRepository
+import self.nesl.hub_server.data.news.NewsRepository
+import self.nesl.hub_server.data.news.gamer.GamerNews
+import self.nesl.hub_server.data.post.komica.KomicaPost
+import self.nesl.hub_server.data.post.komica.KomicaNewsRepositoryImpl
+import self.nesl.hub_server.data.thread.ThreadRepository
+import self.nesl.hub_server.data.thread.komica.KomicaThread
 import self.nesl.hub_server.data.thread.komica.KomicaThreadRepositoryImpl
 import javax.inject.Singleton
 
@@ -59,12 +61,12 @@ object DataModule {
         abstract fun bindBoardRepository(impl: BoardRepositoryImpl): BoardRepository
 
         @Binds
-        abstract fun bindKomicaNewsRepository(impl: KomicaPostRepositoryImpl): KomicaPostRepository
+        abstract fun bindKomicaNewsRepository(impl: KomicaNewsRepositoryImpl): NewsRepository<KomicaPost>
 
         @Binds
-        abstract fun bindKomicaThreadRepository(impl: KomicaThreadRepositoryImpl): KomicaThreadRepository
+        abstract fun bindKomicaThreadRepository(impl: KomicaThreadRepositoryImpl): ThreadRepository<KomicaThread>
 
         @Binds
-        abstract fun bindGamerNewsRepository(impl: GamerNewsRepositoryImpl): GamerNewsRepository
+        abstract fun bindGamerNewsRepository(impl: GamerNewsRepositoryImpl): NewsRepository<GamerNews>
     }
 }

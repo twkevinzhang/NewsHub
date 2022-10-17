@@ -4,7 +4,9 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import self.nesl.gamer_api.GamerApi
-import self.nesl.gamer_api.model.GBoard
+import self.nesl.hub_server.data.board.Board
+import self.nesl.hub_server.data.board.toGBoard
+import self.nesl.hub_server.data.news.NewsRepository
 import self.nesl.newshub.di.IoDispatcher
 import self.nesl.hub_server.di.TransactionProvider
 import javax.inject.Inject
@@ -14,15 +16,15 @@ class GamerNewsRepositoryImpl @Inject constructor(
     private val api: GamerApi,
     private val transactionProvider: TransactionProvider,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-): GamerNewsRepository {
+): NewsRepository<GamerNews> {
 
-    override suspend fun getAllNews(board: GBoard, page: Int): List<GamerNews> = withContext(ioDispatcher) {
+    override suspend fun getAllNews(board: Board, page: Int): List<GamerNews> = withContext(ioDispatcher) {
         val news = dao.readAll(board.url, page)
         if (news.isNotEmpty()) {
             news
         } else {
             try {
-                val remote = api.getAllNews(board, page.takeIf { it != 0 }).map { it.toGamerPost(page, board.url) }
+                val remote = api.getAllNews(board.toGBoard(), page.takeIf { it != 0 }).map { it.toGamerPost(page, board.url) }
                 transactionProvider.invoke {
                     dao.upsertAll(remote)
                 }
