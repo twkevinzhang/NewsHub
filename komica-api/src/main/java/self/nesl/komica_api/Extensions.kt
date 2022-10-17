@@ -132,8 +132,5 @@ fun String.toMillTimestamp(): Long {
     return 0L
 }
 
-fun String.isKomica() =
-    boards().map { it.url }.contains(this.toFolder())
-
 fun String.toKBoard() =
     boards().first { this.contains(it.url) }
