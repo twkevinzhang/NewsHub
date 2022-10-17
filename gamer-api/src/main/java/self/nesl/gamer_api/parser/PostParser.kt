@@ -75,14 +75,12 @@ class PostParser(
 
     private fun setLike(source: Element) {
         val string = source.selectFirst("div.gp a.count.tippy-gpbp-list").ownText()
-        if (string.isNullOrBlank().not())
-            builder.setLike(string.toInt())
+        builder.setUnlike(string.toIntOrNull() ?: 0)
     }
 
     private fun setUnlike(source: Element) {
         val string = source.selectFirst("div.bp a.count.tippy-gpbp-list").ownText()
-        if (string.isNullOrBlank().not())
-            builder.setUnlike(string.toInt())
+        builder.setUnlike(string.toIntOrNull() ?: 0)
     }
 
     private fun List<Node>.flatDiv(): List<Node> {
