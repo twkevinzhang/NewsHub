@@ -16,13 +16,13 @@ import self.nesl.gamer_api.parser.UrlParserImpl
 class GetThread(
     private val client: OkHttpClient,
 ) {
-    suspend fun invoke(news: GNews): Pair<GPost, List<GPost>> = withContext(Dispatchers.IO) {
+    suspend fun invoke(url: String): Pair<GPost, List<GPost>> = withContext(Dispatchers.IO) {
         val response = client.newCall(
             Request.Builder()
-            .url(news.url)
+            .url(url)
             .build()
         ).await()
 
-        ThreadParser(PostParser(UrlParserImpl())).parse(Jsoup.parse(response.body?.string()), news.url)
+        ThreadParser(PostParser(UrlParserImpl())).parse(Jsoup.parse(response.body?.string()), url)
     }
 }

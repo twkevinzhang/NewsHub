@@ -16,6 +16,6 @@ class GamerApi (
     suspend fun getAllNews(board: GBoard, page: Int?= null) =
         GetAllNews(client).invoke(board = board, page = page)
 
-    suspend fun getThread(news: GNews) =
-        GetThread(client).invoke(news)
+    suspend fun getThread(url: String) =
+        GetThread(client).invoke(url)
 }
