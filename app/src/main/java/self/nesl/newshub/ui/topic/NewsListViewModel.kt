@@ -60,4 +60,8 @@ class NewsListViewModel @Inject constructor(
             newsInteractor.clearAll(_enableBoards.value.toSet())
         }
     }
+
+    suspend fun readBoardName(boardUrl: String): String {
+        return boardInteractor.get(boardUrl).name
+    }
 }

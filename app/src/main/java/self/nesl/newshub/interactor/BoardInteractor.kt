@@ -20,4 +20,8 @@ class BoardInteractor @Inject constructor(
             else -> throw NotImplementedError()
         }
     }
+
+    suspend fun get(url: String): Board {
+        return boardUseCase.getBoard(url)
+    }
 }

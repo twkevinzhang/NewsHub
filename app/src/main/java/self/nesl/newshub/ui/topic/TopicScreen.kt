@@ -30,6 +30,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.Host
 import self.nesl.hub_server.data.board.Board
@@ -162,14 +163,20 @@ fun NewsListRoute(
             }
         },
         news = { news ->
+            var boardName by remember { mutableStateOf("") }
+            LaunchedEffect(news) {
+                news?.let { boardName = newsListViewModel.readBoardName(it.boardUrl) }
+            }
             when (news) {
                 is KomicaPost -> KomicaPostCard(
                     news = news,
+                    boardName = boardName,
                     onLinkClick = { onLinkClick(it) },
                     onClick = { navigateToNews(news) },
                 )
                 is GamerNews -> GamerNewsCard(
                     news = news,
+                    boardName = boardName,
                     onLinkClick = { onLinkClick(it) },
                     onClick = { navigateToNews(news) },
                 )
@@ -256,14 +263,12 @@ fun PreviewTopicScreen() {
             onActiveBoardClick = { },
             onInactiveBoardClick = { },
             news = { news ->
-                when (news) {
-                    is KomicaPost -> KomicaPostCard(
-                        news = news,
-                        onLinkClick = { },
-                        onClick = { }
-                    )
-                    else -> Text(text = "not support")
-                }
+                KomicaPostCard(
+                    news = news as KomicaPost,
+                    boardName = "Board",
+                    onLinkClick = { },
+                    onClick = { }
+                )
             },
         )
     }

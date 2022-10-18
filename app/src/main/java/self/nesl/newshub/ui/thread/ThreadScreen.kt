@@ -31,6 +31,7 @@ fun ThreadRoute(
 ){
     val thread by threadViewModel.thread.collectAsState(null)
     val loading by threadViewModel.loading.collectAsState(false)
+    val boardName by threadViewModel.boardName.collectAsState("")
     val replyStack = remember { mutableStateListOf<Post>() }
     val context = LocalContext.current
 
@@ -58,6 +59,7 @@ fun ThreadRoute(
     ThreadScreen(
         refreshState = rememberSwipeRefreshState(loading),
         thread = thread,
+        boardName = boardName,
         onRefresh = { threadViewModel.refresh() },
         navigateUp = { navController.navigateUp() },
         onLinkClick = { onLinkClick(it) },
@@ -95,6 +97,7 @@ fun ThreadRoute(
 fun ThreadScreen(
     refreshState: SwipeRefreshState,
     thread: Thread? = null,
+    boardName: String,
     onRefresh: () -> Unit,
     navigateUp: () -> Unit = {},
     onLinkClick: (Paragraph.Link) -> Unit = {},
@@ -125,6 +128,7 @@ fun ThreadScreen(
                             when (val head = thread.post) {
                                 is KomicaPost -> KomicaPostCard(
                                     news = head,
+                                    boardName = boardName,
                                     onLinkClick = onLinkClick,
                                 )
                             }

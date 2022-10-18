@@ -22,6 +22,7 @@ import self.nesl.newshub.ui.theme.PreviewTheme
 @Composable
 fun GamerNewsCard(
     news: GamerNews,
+    boardName: String,
     onLinkClick: (Paragraph.Link) -> Unit,
     onClick: (() -> Unit)? = null,
 ) {
@@ -30,7 +31,7 @@ fun GamerNewsCard(
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
         ) {
-            GamerNewsCardHeader(news)
+            GamerNewsCardHeader(news, boardName)
             GamerNewsCardContent(
                 news = news,
                 onLinkClick = onLinkClick,
@@ -63,6 +64,7 @@ fun PreviewGamerNewsCard() {
     PreviewTheme {
         GamerNewsCard(
             news = mockGamerNews(),
+            boardName = "Board",
             onLinkClick = { },
             onClick = { },
         )
@@ -124,14 +126,14 @@ fun PreviewGamerReNewsCard() {
 }
 
 @Composable
-private fun GamerNewsCardHeader(news: GamerNews) {
+private fun GamerNewsCardHeader(news: GamerNews, boardName: String) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row {
             CardHeadTimeBlock(news.createdAt)
-            CardHeadTextBlock("${news.poster}@巴哈/")
+            CardHeadTextBlock("${news.poster}@巴哈/$boardName")
         }
         Row {
             CardHeadRepliesBlock(news.replies)

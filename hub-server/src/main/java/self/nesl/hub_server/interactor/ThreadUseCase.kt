@@ -20,7 +20,7 @@ class ThreadUseCase @Inject constructor(
     suspend fun getThread(
         url: String,
     ): Thread {
-        val board = url.toBoard()
+        val board = boardUseCase.getBoard(url)
         return when (board.host) {
             Host.KOMICA -> komicaThreadRepository.getThread(url, board.url)
             Host.GAMER -> gamerThreadRepository.getThread(url, board.url)
@@ -35,25 +35,9 @@ class ThreadUseCase @Inject constructor(
         val thread = getThread(url)
         val head = thread.rePosts.first { it.id == rePostId }
         val rePosts = thread.rePosts.filter { it.parent().contains(rePostId) }
-        return when (url.toBoard().host) {
+        return when (boardUseCase.getBoard(url).host) {
             Host.KOMICA -> KomicaThread(thread.url, head, rePosts)
             else -> throw NotImplementedError("Thread constructor not implement")
         }
-    }
-
-    private suspend fun String.toBoard(): Board {
-        val boards = boardUseCase.getAllBoards()
-        for (board in boards) {
-            when (board.host) {
-                Host.KOMICA -> {
-                    if (this.startsWith(board.url)) return board
-                }
-                Host.GAMER -> {
-                    if (board.url.toHttpUrl().host == this.toHttpUrl().host) return board
-                }
-                else -> continue
-            }
-        }
-        throw NotImplementedError("Board host not implement")
     }
 }

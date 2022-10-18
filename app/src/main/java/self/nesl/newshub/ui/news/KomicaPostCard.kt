@@ -22,6 +22,7 @@ import self.nesl.newshub.ui.theme.PreviewTheme
 @Composable
 fun KomicaPostCard(
     news: KomicaPost,
+    boardName: String,
     onLinkClick: (Paragraph.Link) -> Unit,
     onClick: (() -> Unit)? = null,
 ) {
@@ -30,7 +31,7 @@ fun KomicaPostCard(
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
         ) {
-            KomicaPostCardHeader(news)
+            KomicaPostCardHeader(news, boardName)
             KomicaPostCardContent(
                 news = news,
                 onLinkClick = onLinkClick,
@@ -63,6 +64,7 @@ fun PreviewKomicaPostCard() {
     PreviewTheme {
         KomicaPostCard(
             news = mockKomicaPost(),
+            boardName = "Board",
             onLinkClick = { },
             onClick = { },
         )
@@ -124,7 +126,7 @@ fun PreviewKomicaRePostCard() {
 }
 
 @Composable
-private fun KomicaPostCardHeader(news: KomicaPost) {
+private fun KomicaPostCardHeader(news: KomicaPost, boardName: String) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
@@ -132,7 +134,7 @@ private fun KomicaPostCardHeader(news: KomicaPost) {
         Row {
             CardHeadPosterBlock(news.poster)
             CardHeadTimeBlock(news.createdAt)
-            CardHeadTextBlock("${news.id}@Komica/")
+            CardHeadTextBlock("${news.id}@Komica/$boardName")
         }
         Row {
             CardHeadRepliesBlock(news.replies)
