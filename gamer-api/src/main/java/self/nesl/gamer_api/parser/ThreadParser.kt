@@ -23,7 +23,7 @@ class ThreadParser(
 
     private fun parseReplies(source: Element, threadUrl: String): List<GPost> {
         val allPosts = source.select("section.c-section[id^=\"post_\"]")
-        return allPosts.map { parseHead(source, threadUrl) }.subList(1, allPosts.size)
+        return allPosts.map { parseHead(it, threadUrl) }.subList(1, allPosts.size)
     }
 }
 

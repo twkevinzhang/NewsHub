@@ -33,13 +33,13 @@ class GPostBuilder {
         return this
     }
 
-    fun setPosterName(posterId: String): GPostBuilder {
-        this.posterId = posterId
+    fun setPosterName(posterName: String): GPostBuilder {
+        this.posterName = posterName
         return this
     }
 
-    fun setPosterId(posterName: String): GPostBuilder {
-        this.posterName = posterName
+    fun setPosterId(posterId: String): GPostBuilder {
+        this.posterId = posterId
         return this
     }
 

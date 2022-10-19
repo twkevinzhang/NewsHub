@@ -14,6 +14,11 @@ internal class ThreadParserTest {
             Jsoup.parse(loadFile("./src/test/html/ThreadPage.html")),
             "https://forum.gamer.com.tw/C.php?bsn=60076&snA=4166175",
         )
+        assertEquals(
+            listOf("路過的雞蛋糕", "哈哈哈哈哈", "玫瑰捅你眼", "chi", "我是佑佑"),
+            pair.second.map { it.posterName }.subList(0, 5),
+        )
+
         assertEquals(17, pair.second.size)
     }
 }

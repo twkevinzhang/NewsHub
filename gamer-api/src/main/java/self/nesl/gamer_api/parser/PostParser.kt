@@ -30,9 +30,9 @@ class PostParser(
     }
 
     private fun setTitle(source: Element) {
-        val text = source.selectFirst("div.c-post__header h1.c-post__header__title").text()
+        val text = source.selectFirst("div.c-post__header h1.c-post__header__title")?.text()
         if (text.isNullOrBlank().not())
-            builder.setTitle(text)
+            builder.setTitle(text!!)
     }
 
     private fun setCreatedAt(source: Element) {
