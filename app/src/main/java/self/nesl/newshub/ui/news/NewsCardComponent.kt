@@ -61,7 +61,7 @@ fun CardHeadTextBlock(
 ) {
     CardHeadBlock(
         modifier = Modifier
-            .doIf(onClick != null) { clickable { onClick!!.invoke() } },
+            .then { clickable { onClick?.invoke() }.takeIf { onClick != null } }
     ) {
         Text(
             text = text,
