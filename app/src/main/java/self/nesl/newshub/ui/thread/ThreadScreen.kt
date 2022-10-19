@@ -15,12 +15,14 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.post.Post
+import self.nesl.hub_server.data.post.gamer.GamerPost
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.toText
 import self.nesl.hub_server.data.thread.*
 import self.nesl.newshub.encode
 import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
+import self.nesl.newshub.ui.news.GamerPostCard
 import self.nesl.newshub.ui.news.KomicaRePostCard
 import self.nesl.newshub.ui.news.KomicaPostCard
 
@@ -125,13 +127,11 @@ fun ThreadScreen(
                 if (thread != null) {
                     LazyColumn {
                         item {
-                            when (val head = thread.post) {
-                                is KomicaPost -> KomicaPostCard(
-                                    news = head,
-                                    boardName = boardName,
-                                    onLinkClick = onLinkClick,
-                                )
-                            }
+                            PostCard(
+                                post = thread.post,
+                                boardName = boardName,
+                                onLinkClick = onLinkClick,
+                            )
                         }
                         thread.rePosts.forEach { rePost ->
                             item {
@@ -152,6 +152,25 @@ fun ThreadScreen(
 }
 
 @Composable
+fun PostCard(
+    post: Post?,
+    boardName: String,
+    onLinkClick: (Paragraph.Link) -> Unit = {},
+) {
+    when (post) {
+        is KomicaPost -> KomicaPostCard(
+            news = post,
+            boardName = boardName,
+            onLinkClick = onLinkClick,
+        )
+        is GamerPost -> GamerPostCard(
+            post = post,
+            onLinkClick = onLinkClick,
+        )
+    }
+}
+
+@Composable
 fun RePostCard(
     post: Post?,
     onClick: () -> Unit = {},
@@ -167,6 +186,9 @@ fun RePostCard(
             onReplyToClick = onKomicaReplyToClick,
             onPreviewReplyTo = onPreviewReplyTo,
         )
-        else -> {}
+        is GamerPost -> GamerPostCard(
+            post = post,
+            onLinkClick = onLinkClick,
+        )
     }
 }

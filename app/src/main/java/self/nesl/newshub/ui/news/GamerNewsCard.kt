@@ -2,7 +2,6 @@ package self.nesl.newshub.ui.news
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,7 +15,6 @@ import self.nesl.hub_server.data.post.gamer.GamerPost
 import self.nesl.hub_server.data.post.gamer.mockGamerPost
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.component.ParagraphBlock
-import self.nesl.newshub.ui.theme.AppDisabledAlpha
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 
@@ -68,8 +66,8 @@ fun PreviewGamerNewsCard() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GamerRePostCard(
-    rePost: GamerPost,
+fun GamerPostCard(
+    post: GamerPost,
     onLinkClick: (Paragraph.Link) -> Unit = { },
     onClick: (() -> Unit)? = null,
 ) {
@@ -78,8 +76,8 @@ fun GamerRePostCard(
             tonalElevation = dimensionResource(id = R.dimen.space_2),
             onClick = onClick,
         ) {
-            GamerRePostCardContent(
-                post = rePost,
+            GamerPostCardContent(
+                post = post,
                 onLinkClick = onLinkClick,
             )
         }
@@ -87,8 +85,8 @@ fun GamerRePostCard(
         Surface(
             tonalElevation = dimensionResource(id = R.dimen.space_2),
         ) {
-            GamerRePostCardContent(
-                post = rePost,
+            GamerPostCardContent(
+                post = post,
                 onLinkClick = onLinkClick,
             )
         }
@@ -98,10 +96,10 @@ fun GamerRePostCard(
 
 @Preview
 @Composable
-fun PreviewGamerRePostCard() {
+fun PreviewGamerPostCard() {
     PreviewTheme {
-        GamerRePostCard(
-            rePost = mockGamerPost(),
+        GamerPostCard(
+            post = mockGamerPost(),
             onLinkClick = { },
         )
     }
@@ -124,17 +122,17 @@ private fun GamerNewsCardHeader(news: GamerNews, boardName: String) {
 }
 
 @Composable
-private fun GamerRePostCardHeader(rePost: GamerPost) {
+private fun GamerPostCardHeader(post: GamerPost) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row {
-            GamerNewsCardTitle(rePost.title)
+            GamerNewsCardTitle(post.title)
         }
         Row {
-            CardHeadTimeBlock(rePost.createdAt)
-            CardHeadTextBlock(rePost.posterName ?: "")
+            CardHeadTimeBlock(post.createdAt)
+            CardHeadTextBlock(post.posterName ?: "")
         }
     }
 }
@@ -164,14 +162,14 @@ private fun GamerNewsCardContent(
 }
 
 @Composable
-private fun GamerRePostCardContent(
+private fun GamerPostCardContent(
     post: GamerPost,
     onLinkClick: (Paragraph.Link) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
     ) {
-        GamerRePostCardHeader(post)
+        GamerPostCardHeader(post)
         ParagraphBlock(
             post.content,
             100,
