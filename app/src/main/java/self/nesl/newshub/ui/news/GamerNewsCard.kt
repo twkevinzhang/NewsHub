@@ -12,6 +12,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news.gamer.GamerNews
 import self.nesl.hub_server.data.news.gamer.mockGamerNews
+import self.nesl.hub_server.data.post.gamer.GamerPost
+import self.nesl.hub_server.data.post.gamer.mockGamerPost
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.component.ParagraphBlock
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
@@ -26,35 +28,28 @@ fun GamerNewsCard(
     onLinkClick: (Paragraph.Link) -> Unit,
     onClick: (() -> Unit)? = null,
 ) {
-    @Composable
-    fun content() {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
-        ) {
-            GamerNewsCardHeader(news, boardName)
-            GamerNewsCardContent(
-                news = news,
-                onLinkClick = onLinkClick,
-                onReplyToClick = { },
-                onPreviewReplyTo = { "" },
-            )
-        }
-    }
     if (onClick != null) {
         Surface(
             tonalElevation = dimensionResource(id = R.dimen.space_2),
             onClick = onClick,
         ) {
-            content()
+            GamerNewsCardContent(
+                news = news,
+                boardName = boardName,
+                onLinkClick = onLinkClick,
+            )
         }
     } else {
         Surface(
             tonalElevation = dimensionResource(id = R.dimen.space_2),
         ) {
-            content()
+            GamerNewsCardContent(
+                news = news,
+                boardName = boardName,
+                onLinkClick = onLinkClick,
+            )
         }
     }
-
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
 }
 
@@ -73,40 +68,29 @@ fun PreviewGamerNewsCard() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GamerReNewsCard(
-    reNews: GamerNews,
+fun GamerRePostCard(
+    rePost: GamerPost,
     onLinkClick: (Paragraph.Link) -> Unit = { },
-    onReplyToClick: (Paragraph.ReplyTo) -> Unit = { },
-    onPreviewReplyTo: (Paragraph.ReplyTo) -> String  = { "" },
     onClick: (() -> Unit)? = null,
 ) {
-    @Composable
-    fun content() {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
-        ) {
-            GamerReNewsCardHeader(reNews)
-            ParagraphBlock(
-                reNews.content,
-                100,
-                onLinkClick = onLinkClick,
-                onReplyToClick = onReplyToClick,
-                onPreviewReplyTo = onPreviewReplyTo,
-            )
-        }
-    }
     if (onClick != null) {
         Surface(
             tonalElevation = dimensionResource(id = R.dimen.space_2),
             onClick = onClick,
         ) {
-            content()
+            GamerRePostCardContent(
+                post = rePost,
+                onLinkClick = onLinkClick,
+            )
         }
     } else {
         Surface(
             tonalElevation = dimensionResource(id = R.dimen.space_2),
         ) {
-            content()
+            GamerRePostCardContent(
+                post = rePost,
+                onLinkClick = onLinkClick,
+            )
         }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
@@ -114,13 +98,11 @@ fun GamerReNewsCard(
 
 @Preview
 @Composable
-fun PreviewGamerReNewsCard() {
+fun PreviewGamerRePostCard() {
     PreviewTheme {
-        GamerReNewsCard(
-            reNews = mockGamerNews(),
+        GamerRePostCard(
+            rePost = mockGamerPost(),
             onLinkClick = { },
-            onReplyToClick = { },
-            onPreviewReplyTo = { "" },
         )
     }
 }
@@ -142,17 +124,17 @@ private fun GamerNewsCardHeader(news: GamerNews, boardName: String) {
 }
 
 @Composable
-private fun GamerReNewsCardHeader(reNews: GamerNews) {
+private fun GamerRePostCardHeader(rePost: GamerPost) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row {
-            GamerNewsCardTitle(reNews.title!!)
+            GamerNewsCardTitle(rePost.title)
         }
         Row {
-            CardHeadTimeBlock(reNews.createdAt)
-            CardHeadTextBlock(reNews.poster ?: "")
+            CardHeadTimeBlock(rePost.createdAt)
+            CardHeadTextBlock(rePost.posterName ?: "")
         }
     }
 }
@@ -160,21 +142,42 @@ private fun GamerReNewsCardHeader(reNews: GamerNews) {
 @Composable
 private fun GamerNewsCardContent(
     news: GamerNews,
+    boardName: String,
     onLinkClick: (Paragraph.Link) -> Unit,
-    onReplyToClick: (Paragraph.ReplyTo) -> Unit,
-    onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
-    Column {
+    Column(
+        modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
+    ) {
+        GamerNewsCardHeader(news, boardName)
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
-        if (news.title.isNullOrEmpty().not()) {
-            GamerNewsCardTitle(news.title!!)
+        if (news.title.isEmpty().not()) {
+            GamerNewsCardTitle(news.title)
         }
         ParagraphBlock(
-            news.content,
+            article = news.content,
+            max = 100,
+            onLinkClick = onLinkClick,
+            onReplyToClick = { },
+            onPreviewReplyTo = { _ -> "" },
+        )
+    }
+}
+
+@Composable
+private fun GamerRePostCardContent(
+    post: GamerPost,
+    onLinkClick: (Paragraph.Link) -> Unit,
+) {
+    Column(
+        modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
+    ) {
+        GamerRePostCardHeader(post)
+        ParagraphBlock(
+            post.content,
             100,
-            onLinkClick,
-            onReplyToClick,
-            onPreviewReplyTo,
+            onLinkClick = onLinkClick,
+            onReplyToClick = { },
+            onPreviewReplyTo = { "" },
         )
     }
 }

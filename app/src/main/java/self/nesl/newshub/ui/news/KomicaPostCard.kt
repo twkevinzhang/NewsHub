@@ -26,32 +26,30 @@ fun KomicaPostCard(
     onLinkClick: (Paragraph.Link) -> Unit,
     onClick: (() -> Unit)? = null,
 ) {
-    @Composable
-    fun content() {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
-        ) {
-            KomicaPostCardHeader(news, boardName)
-            KomicaPostCardContent(
-                news = news,
-                onLinkClick = onLinkClick,
-                onReplyToClick = { },
-                onPreviewReplyTo = { "" },
-            )
-        }
-    }
     if (onClick != null) {
         Surface(
             tonalElevation = dimensionResource(id = R.dimen.space_2),
             onClick = onClick,
         ) {
-            content()
+            KomicaPostCardContent(
+                news = news,
+                boardName = boardName,
+                onLinkClick = onLinkClick,
+                onReplyToClick = { },
+                onPreviewReplyTo = { "" },
+            )
         }
     } else {
         Surface(
             tonalElevation = dimensionResource(id = R.dimen.space_2),
         ) {
-            content()
+            KomicaPostCardContent(
+                news = news,
+                boardName = boardName,
+                onLinkClick = onLinkClick,
+                onReplyToClick = { },
+                onPreviewReplyTo = { "" },
+            )
         }
     }
 
@@ -80,33 +78,28 @@ fun KomicaRePostCard(
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String  = { "" },
     onClick: (() -> Unit)? = null,
 ) {
-    @Composable
-    fun content() {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
-        ) {
-            KomicaRePostCardHeader(rePost)
-            ParagraphBlock(
-                rePost.content,
-                100,
-                onLinkClick = onLinkClick,
-                onReplyToClick = onReplyToClick,
-                onPreviewReplyTo = onPreviewReplyTo,
-            )
-        }
-    }
     if (onClick != null) {
         Surface(
             tonalElevation = dimensionResource(id = R.dimen.space_2),
             onClick = onClick,
         ) {
-            content()
+            KomicaRePostCardContent(
+                rePost = rePost,
+                onLinkClick = onLinkClick,
+                onReplyToClick = onReplyToClick,
+                onPreviewReplyTo = onPreviewReplyTo,
+            )
         }
     } else {
         Surface(
             tonalElevation = dimensionResource(id = R.dimen.space_2),
         ) {
-            content()
+            KomicaRePostCardContent(
+                rePost = rePost,
+                onLinkClick = onLinkClick,
+                onReplyToClick = onReplyToClick,
+                onPreviewReplyTo = onPreviewReplyTo,
+            )
         }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
@@ -149,7 +142,7 @@ private fun KomicaRePostCardHeader(rePost: KomicaPost) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Row {
-            KomicaNewsCardTitle(rePost.title!!)
+            KomicaNewsCardTitle(rePost.title)
         }
         Row {
             CardHeadPosterBlock(rePost.poster)
@@ -162,14 +155,18 @@ private fun KomicaRePostCardHeader(rePost: KomicaPost) {
 @Composable
 private fun KomicaPostCardContent(
     news: KomicaPost,
+    boardName: String,
     onLinkClick: (Paragraph.Link) -> Unit,
     onReplyToClick: (Paragraph.ReplyTo) -> Unit,
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
-    Column {
+    Column(
+        modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
+    ) {
+        KomicaPostCardHeader(news, boardName)
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
-        if (news.title.isNullOrEmpty().not()) {
-            KomicaNewsCardTitle(news.title!!)
+        if (news.title.isEmpty().not()) {
+            KomicaNewsCardTitle(news.title)
         }
         ParagraphBlock(
             news.content,
@@ -177,6 +174,27 @@ private fun KomicaPostCardContent(
             onLinkClick,
             onReplyToClick,
             onPreviewReplyTo,
+        )
+    }
+}
+
+@Composable
+fun KomicaRePostCardContent(
+    rePost: KomicaPost,
+    onLinkClick: (Paragraph.Link) -> Unit,
+    onReplyToClick: (Paragraph.ReplyTo) -> Unit,
+    onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
+) {
+    Column(
+        modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
+    ) {
+        KomicaRePostCardHeader(rePost)
+        ParagraphBlock(
+            rePost.content,
+            100,
+            onLinkClick = onLinkClick,
+            onReplyToClick = onReplyToClick,
+            onPreviewReplyTo = onPreviewReplyTo,
         )
     }
 }

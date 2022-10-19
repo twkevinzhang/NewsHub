@@ -10,7 +10,7 @@ import self.nesl.hub_server.data.news.News
 data class GamerNews (
     @PrimaryKey override val url: String,
     override val boardUrl: String,
-    val title: String?,
+    val title: String,
     val createdAt: Long?,
     val poster: String?,
     val visits: Int?,
