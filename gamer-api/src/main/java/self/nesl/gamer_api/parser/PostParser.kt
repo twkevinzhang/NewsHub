@@ -14,7 +14,7 @@ import java.util.*
 class PostParser(
     private val urlParser: UrlParser,
 ): Parser<GPost> {
-    private val builder = GPostBuilder()
+    private var builder = GPostBuilder()
 
     override fun parse(source: Element, url: String): GPost {
         setTitle(source)
@@ -26,7 +26,9 @@ class PostParser(
         setContent(source)
         builder.setUrl(url)
         builder.setPostId(urlParser.parsePostId(url.toHttpUrl())!!)
-        return builder.build()
+        val post = builder.build()
+        builder = GPostBuilder()
+        return post
     }
 
     private fun setTitle(source: Element) {
