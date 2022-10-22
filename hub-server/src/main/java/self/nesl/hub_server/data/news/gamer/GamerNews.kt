@@ -11,39 +11,44 @@ data class GamerNews (
     @PrimaryKey override val url: String,
     override val boardUrl: String,
     val title: String,
-    val createdAt: Long?,
-    val poster: String?,
-    val visits: Int?,
-    val replies: Int?,
-    val readAt: Int?,
+    val createdAt: String,
+    val posterName: String?,
     val content: List<Paragraph>,
+    val gp: Int,
+    val interactions: Int,
+    val popularity: Int,
     val page: Int,
 ): News
 
-fun GNews.toGamerPost(page: Int, boardUrl: String) =
-    GamerNews(
+fun GNews.toGamerPost(page: Int, boardUrl: String): GamerNews {
+    val content2 = mutableListOf<Paragraph>()
+    if (preview != null) {
+        content2.add(Paragraph.Text(preview))
+    }
+    if (thumb != null) {
+        content2.add(Paragraph.ImageInfo(thumb = thumb!!, raw = ""))
+    }
+    return GamerNews(
         boardUrl = boardUrl,
         url = url,
         title = title,
-        createdAt = null,
-        poster = null,
-        replies = null,
-        readAt = null,
-        content = listOf(Paragraph.Text(preview)),
+        createdAt = createdAt,
+        posterName = posterName,
+        content = content2,
+        gp = gp,
+        interactions = interactions,
+        popularity = popularity,
         page = page,
-        visits = null,
     )
+}
 
 fun mockGamerNews() =
     GamerNews(
         url = "https://gaia.komica.org/00/pixmicat.php?res=29683783",
         title = "How to Google?",
         boardUrl = "https://gaia.komica.org/00",
-        createdAt = 0,
-        poster = "Zhen Long",
-        visits = 0,
-        replies = 0,
-        readAt = 0,
+        createdAt = "今日 15:19",
+        posterName = "Zhen Long",
         content = listOf(
             Paragraph.Text("Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui."),
             Paragraph.ImageInfo(
@@ -53,4 +58,7 @@ fun mockGamerNews() =
             Paragraph.Text("This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique."),
         ),
         page = 1,
+        gp = 0,
+        interactions = 0,
+        popularity = 0,
     )
