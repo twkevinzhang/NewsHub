@@ -171,9 +171,9 @@ private fun KomicaPostCardContent(
         ParagraphBlock(
             news.content,
             100,
-            onLinkClick,
-            onReplyToClick,
-            onPreviewReplyTo,
+            onLinkClick = onLinkClick,
+            onReplyToClick = onReplyToClick,
+            onPreviewReplyTo = onPreviewReplyTo,
         )
     }
 }

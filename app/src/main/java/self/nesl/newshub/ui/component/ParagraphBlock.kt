@@ -1,27 +1,32 @@
 package self.nesl.newshub.ui.component
 
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
+import coil.size.Scale
+import coil.size.Size
 import self.nesl.hub_server.data.*
 import self.nesl.newshub.R
+import self.nesl.newshub.then
 import self.nesl.newshub.ui.theme.*
 
 @Composable
 fun ParagraphBlock(
     article: List<Paragraph>,
     max: Int? = null,
+    imageWidthMax: Int? = null,
     onLinkClick: (Paragraph.Link) -> Unit,
     onReplyToClick: (Paragraph.ReplyTo) -> Unit,
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
@@ -30,7 +35,7 @@ fun ParagraphBlock(
         article.map {
             when (it) {
                 is Paragraph.Text -> TextParagraph(it)
-                is Paragraph.ImageInfo -> ImageParagraph(it)
+                is Paragraph.ImageInfo -> ImageParagraph(it, imageWidthMax)
                 is Paragraph.Link -> LinkParagraph(it) { onLinkClick(it) }
                 is Paragraph.ReplyTo -> ReplyToParagraph(it, onPreviewReplyTo) { onReplyToClick(it) }
                 is Paragraph.Quote -> QuoteParagraph(it)
@@ -71,7 +76,7 @@ fun TextParagraph(paragraph: Paragraph.Text) {
 }
 
 @Composable
-fun ImageParagraph(paragraph: Paragraph.ImageInfo) {
+fun ImageParagraph(paragraph: Paragraph.ImageInfo, imageWidthMax: Int? = null) {
     SubcomposeAsyncImage(
         model = paragraph.thumb,
         contentDescription = null,

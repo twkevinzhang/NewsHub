@@ -112,28 +112,22 @@ private fun GamerNewsCardHeader(news: GamerNews, boardName: String) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Row {
-            CardHeadTimeBlock(news.createdAt)
-            CardHeadTextBlock("${news.poster}@巴哈/$boardName")
+            CardHeadTextBlock(news.createdAt)
+            CardHeadTextBlock("${news.posterName}@巴哈/$boardName")
         }
         Row {
-            CardHeadRepliesBlock(news.replies)
+            CardHeadTextBlock("${news.interactions}/${news.popularity}")
         }
     }
 }
 
 @Composable
 private fun GamerPostCardHeader(post: GamerPost) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+    Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Row {
-            GamerNewsCardTitle(post.title)
-        }
-        Row {
-            CardHeadTimeBlock(post.createdAt)
-            CardHeadTextBlock(post.posterName ?: "")
-        }
+        CardHeadTextBlock(post.posterName)
+        CardHeadTimeBlock(post.createdAt)
     }
 }
 
@@ -170,6 +164,9 @@ private fun GamerPostCardContent(
         modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
     ) {
         GamerPostCardHeader(post)
+        if (post.title.isNotEmpty()) {
+            GamerNewsCardTitle(post.title)
+        }
         ParagraphBlock(
             post.content,
             100,
