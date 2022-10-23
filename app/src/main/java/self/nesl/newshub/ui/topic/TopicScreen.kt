@@ -83,7 +83,7 @@ fun TopicRoute(
             )
         }
 
-        swipeable("thread/{url}/re_post/{rePostId}") {
+        swipeable("thread/{url}/re-post/{rePostId}") {
             val factory = HiltViewModelFactory(LocalContext.current, it)
             val threadViewModel = viewModel<ThreadViewModel>(factory = factory)
             it.arguments?.getString("url")?.let { url ->

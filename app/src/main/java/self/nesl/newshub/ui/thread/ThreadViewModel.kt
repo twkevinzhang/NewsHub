@@ -4,13 +4,15 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import self.nesl.hub_server.data.news.News
 import self.nesl.newshub.interactor.BoardInteractor
-import self.nesl.newshub.interactor.ThreadInteractor
+import self.nesl.newshub.interactor.NewsInteractor
+import self.nesl.newshub.interactor.PostInteractor
 import javax.inject.Inject
 
 @HiltViewModel
 class ThreadViewModel @Inject constructor(
-    private val threadInteractor: ThreadInteractor,
+    private val postInteractor: PostInteractor,
     private val boardInteractor: BoardInteractor,
 ) : ViewModel() {
     private val _threadUrl = MutableStateFlow("")
@@ -20,17 +22,25 @@ class ThreadViewModel @Inject constructor(
     val loading = _loading.asStateFlow()
     val boardName = _boardName.asStateFlow()
 
-    val thread = _threadUrl.combine(_rePostId) { url, rePostId ->
-        _loading.update { true }
-        readBoardName(url)
-        if (url.isNotBlank() && rePostId.isNotBlank()) {
-            threadInteractor.get(url, rePostId)
-        } else if (url.isNotBlank()) {
-            threadInteractor.get(url)
-        } else {
-            null
+    val pagingPosts = _threadUrl
+        .mapLatest { url ->
+            _loading.update { true }
+            if (url.isNotBlank()) {
+                readBoardName(url)
+            }
+            url
+        }.combine(_rePostId) { url, rePostId ->
+            Pair(url, rePostId)
         }
-    }
+        .flatMapLatest { (url, rePostId) ->
+            if (url.isNotBlank() && rePostId.isNotBlank()) {
+                postInteractor.getAll(url, rePostId)
+            } else if (url.isNotBlank()) {
+                postInteractor.getAll(url)
+            } else {
+                flowOf()
+            }
+        }
         .onEach {
             _loading.update { false }
         }
