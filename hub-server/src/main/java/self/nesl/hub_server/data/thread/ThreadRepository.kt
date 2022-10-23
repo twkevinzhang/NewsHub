@@ -1,5 +1,0 @@
-package self.nesl.hub_server.data.thread
-
-interface ThreadRepository<T: Thread> {
-    suspend fun getThread(url: String, boardUrl: String): T
-}

@@ -14,13 +14,12 @@ import self.nesl.hub_server.data.board.BoardRepositoryImpl
 import self.nesl.hub_server.data.news.gamer.GamerNewsRepositoryImpl
 import self.nesl.hub_server.data.news.NewsRepository
 import self.nesl.hub_server.data.news.gamer.GamerNews
+import self.nesl.hub_server.data.post.PostRepository
+import self.nesl.hub_server.data.post.gamer.GamerPost
+import self.nesl.hub_server.data.post.gamer.GamerPostRepositoryImpl
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.KomicaNewsRepositoryImpl
-import self.nesl.hub_server.data.thread.ThreadRepository
-import self.nesl.hub_server.data.thread.gamer.GamerThread
-import self.nesl.hub_server.data.thread.gamer.GamerThreadRepositoryImpl
-import self.nesl.hub_server.data.thread.komica.KomicaThread
-import self.nesl.hub_server.data.thread.komica.KomicaThreadRepositoryImpl
+import self.nesl.hub_server.data.post.komica.KomicaPostRepositoryImpl
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -69,9 +68,9 @@ object DataModule {
         abstract fun bindGamerNewsRepository(impl: GamerNewsRepositoryImpl): NewsRepository<GamerNews>
 
         @Binds
-        abstract fun bindKomicaThreadRepository(impl: KomicaThreadRepositoryImpl): ThreadRepository<KomicaThread>
+        abstract fun bindKomicaPostRepository(impl: KomicaPostRepositoryImpl): PostRepository<KomicaPost>
 
         @Binds
-        abstract fun bindGamerThreadRepository(impl: GamerThreadRepositoryImpl): ThreadRepository<GamerThread>
+        abstract fun bindGamerPostRepository(impl: GamerPostRepositoryImpl): PostRepository<GamerPost>
     }
 }
