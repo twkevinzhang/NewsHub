@@ -8,12 +8,9 @@ import org.jsoup.Jsoup
 import ru.gildor.coroutines.okhttp.await
 import self.nesl.gamer_api.model.GBoard
 import self.nesl.gamer_api.model.GNews
-import self.nesl.gamer_api.model.GPost
 import self.nesl.gamer_api.parser.BoardParser
 import self.nesl.gamer_api.parser.NewsParser
-import self.nesl.gamer_api.parser.PostParser
-import self.nesl.gamer_api.parser.UrlParserImpl
-import self.nesl.gamer_api.request.BoardRequestBuilder
+import self.nesl.gamer_api.request.RequestBuilderImpl
 
 class GetAllNews(
     private val client: OkHttpClient,
@@ -28,7 +25,7 @@ class GetAllNews(
     }
 
     private fun processPage(board: GBoard, page: Int?= null): Request {
-        return BoardRequestBuilder()
+        return RequestBuilderImpl()
             .url(board.url)
             .setPageReq(page)
             .build()

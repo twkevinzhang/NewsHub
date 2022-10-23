@@ -2,16 +2,15 @@ package self.nesl.gamer_api.request
 
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 
-class BoardRequestBuilder: RequestBuilder {
-    private lateinit var url: HttpUrl
+class RequestBuilderImpl: RequestBuilder {
+    private lateinit var _httpUrl: HttpUrl
     private lateinit var builder: HttpUrl.Builder
 
     override fun url(url: String): RequestBuilder {
-        this.url= url.toHttpUrl()
-        this.builder = this.url.newBuilder()
+        this._httpUrl= url.toHttpUrl()
+        this.builder = this._httpUrl.newBuilder()
         return this
     }
 
@@ -34,7 +33,7 @@ class BoardRequestBuilder: RequestBuilder {
     }
 
     private fun hasPageReq(): Boolean {
-        return url.queryParameter("page").isNullOrBlank().not()
+        return _httpUrl.queryParameter("page").isNullOrBlank().not()
     }
 
     override fun build(): Request {
