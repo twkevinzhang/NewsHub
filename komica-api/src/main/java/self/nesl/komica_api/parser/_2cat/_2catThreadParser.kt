@@ -7,12 +7,9 @@ import self.nesl.komica_api.parser.Parser
 
 class _2catThreadParser(
     private val postParser: Parser<KPost>,
-): Parser<Pair<KPost, List<KPost>>> {
-    override fun parse(source: Element, url: String): Pair<KPost, List<KPost>> {
-        return Pair(
-            parseHead(source, url),
-            parseReplies(source, url),
-        )
+): Parser<List<KPost>> {
+    override fun parse(source: Element, url: String): List<KPost> {
+        return listOf(parseHead(source, url)).plus(parseReplies(source, url))
     }
 
     private fun parseHead(source: Element, url: String): KPost {

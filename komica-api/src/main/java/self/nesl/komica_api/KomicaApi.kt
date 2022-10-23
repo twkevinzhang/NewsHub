@@ -3,7 +3,7 @@ package self.nesl.komica_api
 import okhttp3.OkHttpClient
 import self.nesl.komica_api.interactor.GetAllBoard
 import self.nesl.komica_api.interactor.GetAllNews
-import self.nesl.komica_api.interactor.GetThread
+import self.nesl.komica_api.interactor.GetAllPost
 import self.nesl.komica_api.model.KBoard
 
 class KomicaApi (
@@ -18,6 +18,6 @@ class KomicaApi (
     suspend fun getAllThreadHead(url: String) =
         GetAllNews(client).invoke(url.toKBoard())
 
-    suspend fun getThread(url: String) =
-        GetThread(client).invoke(url)
+    suspend fun getAllPost(url: String) =
+        GetAllPost(client).invoke(url)
 }
