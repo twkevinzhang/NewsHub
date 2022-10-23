@@ -9,16 +9,16 @@ internal class ThreadParserTest {
 
     @Test
     fun `Test ThreadParser expect successful`() {
-        val parser = ThreadParser(PostParser(UrlParserImpl()))
-        val pair = parser.parse(
+        val parser = ThreadParser(PostParser(UrlParserImpl()), UrlParserImpl())
+        val list = parser.parse(
             Jsoup.parse(loadFile("./src/test/html/ThreadPage.html")),
             "https://forum.gamer.com.tw/C.php?bsn=60076&snA=4166175",
         )
         assertEquals(
-            listOf("路過的雞蛋糕", "哈哈哈哈哈", "玫瑰捅你眼", "chi", "我是佑佑"),
-            pair.second.map { it.posterName }.subList(0, 5),
+            listOf("夕立醬的潛水魚雷", "路過的雞蛋糕", "哈哈哈哈哈", "玫瑰捅你眼", "chi", "我是佑佑"),
+            list.map { it.posterName }.subList(0, 6),
         )
 
-        assertEquals(17, pair.second.size)
+        assertEquals(18, list.size)
     }
 }

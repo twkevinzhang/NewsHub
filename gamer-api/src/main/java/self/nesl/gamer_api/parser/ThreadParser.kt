@@ -1,17 +1,27 @@
 package self.nesl.gamer_api.parser
 
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.jsoup.nodes.Element
 import self.nesl.gamer_api.model.GPost
 
 class ThreadParser(
     private val postParser: Parser<GPost>,
-): Parser<Pair<GPost, List<GPost>>> {
-    override fun parse(source: Element, url: String): Pair<GPost, List<GPost>> {
-        return Pair(
-            parseHead(source, url),
-            parseReplies(source, url),
-        )
+    private val urlParser: UrlParser,
+): Parser<List<GPost>> {
+    override fun parse(source: Element, url: String): List<GPost> {
+        val httpUrl = url.toHttpUrl()
+        val requestPage = urlParser.parsePage(httpUrl)
+        val threadUrl = urlParser.parseThreadUrl(httpUrl)
+        val responsePage = currentPage(source)
+        if (requestPage != responsePage) {
+            return emptyList()
+        }
+        return listOf(parseHead(source, threadUrl)).plus(parseReplies(source, url))
+    }
+
+    private fun currentPage(source: Element): Int {
+        val page = source.selectFirst("p.BH-pagebtnA a.pagenow")?.text()
+        return page?.toInt() ?: 1
     }
 
     private fun parseHead(source: Element, threadUrl: String): GPost {
