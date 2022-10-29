@@ -64,7 +64,7 @@ class PostParser(
                 list.add(GText(child.text()))
             }
             if (child is Element) {
-                if (child.`is`("a.photoswipe-image[href^=\"https://truth.bahamut.com.tw/\"]")) {
+                if (child.`is`("a.photoswipe-image")) {
                     val href = child.attr("href")
                     list.add(GImageInfo(href, href))
                 } else if (child.`is`("a[href^=\"http://\"], a[href^=\"https://\"]")) {
