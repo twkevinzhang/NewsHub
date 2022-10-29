@@ -72,7 +72,7 @@ class PostParser(
                 }
             }
         }
-        builder.setContent(list)
+        builder.setContent(list.trim())
     }
 
     private fun setLike(source: Element) {

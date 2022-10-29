@@ -1,24 +1,37 @@
 package self.nesl.gamer_api.model
 
-interface GParagraph
+interface GParagraph {
+    val content: String
+}
 
 class GImageInfo(
     val thumb: String? = null,
     val raw: String,
-): GParagraph
+): GParagraph {
+    override val content = thumb ?: raw
+}
 
 class GText(
-    val content: String,
+    override val content: String,
 ): GParagraph
 
 class GQuote(
-    val content: String,
+    override val content: String,
 ): GParagraph
 
 class GReplyTo(
-    val content: String,
+    override val content: String,
 ): GParagraph
 
 class GLink(
-    val content: String,
+    override val content: String,
 ): GParagraph
+
+fun List<GParagraph>.trim(): List<GParagraph> {
+    val first = this.indexOfFirst { it.content.trim().isNotBlank() }
+    val last = this.indexOfLast { it.content.trim().isNotBlank() }
+    return if (first == -1 || last == -1)
+        emptyList()
+    else
+        this.subList(first, last + 1)
+}
