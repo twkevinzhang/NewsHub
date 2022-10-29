@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.SpanStyle
@@ -79,6 +81,8 @@ fun TextParagraph(paragraph: Paragraph.Text) {
 fun ImageParagraph(paragraph: Paragraph.ImageInfo, imageWidthMax: Int? = null) {
     SubcomposeAsyncImage(
         model = paragraph.thumb,
+        modifier = Modifier
+            .size(80.dp, 80.dp),
         contentDescription = null,
         loading = {
             CircularProgressIndicator()
