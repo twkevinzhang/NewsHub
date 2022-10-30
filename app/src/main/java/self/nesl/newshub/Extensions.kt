@@ -41,10 +41,9 @@ fun String.encode() = URLEncoder.encode(this, "utf-8")
 
 fun Int?.isZeroOrNull() = this == 0 || this == null
 
-fun Modifier.then(callback: Modifier.() -> Modifier?): Modifier {
-    val modifier = callback()
-    return if (modifier != null) {
-        then(modifier)
+fun <T> Modifier.thenIfNotNull(any: T?, callback: Modifier.(T) -> Modifier): Modifier {
+    return if (any != null) {
+        then(callback(any))
     } else {
         this
     }

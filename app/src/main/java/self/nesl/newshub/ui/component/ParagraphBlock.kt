@@ -21,7 +21,6 @@ import coil.size.Scale
 import coil.size.Size
 import self.nesl.hub_server.data.*
 import self.nesl.newshub.R
-import self.nesl.newshub.then
 import self.nesl.newshub.ui.theme.*
 
 @Composable

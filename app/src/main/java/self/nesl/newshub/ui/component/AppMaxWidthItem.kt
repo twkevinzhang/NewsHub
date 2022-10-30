@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import self.nesl.newshub.R
-import self.nesl.newshub.then
+import self.nesl.newshub.thenIfNotNull
 import self.nesl.newshub.ui.theme.*
 
 
@@ -23,7 +23,7 @@ fun AppMaxWidthItem(
 ) {
     Row(
         modifier = Modifier
-            .then { clickable { onClick?.invoke() }.takeIf { onClick != null } }
+            .thenIfNotNull(onClick) { clickable(onClick = it) }
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.space_16)),
         verticalAlignment = Alignment.CenterVertically
