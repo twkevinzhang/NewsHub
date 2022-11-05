@@ -2,6 +2,7 @@ package self.nesl.newshub.ui.topic
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -120,6 +121,9 @@ fun NewsListRoute(
         ContextCompat.startActivity(context, intent, null)
     }
 
+    fun onImageClick(image: Paragraph.ImageInfo) {
+    }
+
     TopicScreen(
         refreshState = refreshState,
         lazyColumnState = pagingNews.rememberLazyListState(),
@@ -174,6 +178,7 @@ fun NewsListRoute(
                     onParagraphClick = {
                         when (it) {
                             is Paragraph.Link -> onLinkClick(it)
+                            is Paragraph.ImageInfo -> onImageClick(it)
                             else -> { }
                         }
                     },

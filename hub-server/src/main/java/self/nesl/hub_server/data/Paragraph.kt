@@ -33,6 +33,9 @@ enum class ParagraphType {
     QUOTE, REPLY_TO, TEXT, IMAGE, LINK
 }
 
+fun List<Paragraph>.rawImages() =
+    filterIsInstance<Paragraph.ImageInfo>().map { it.raw }
+
 fun KParagraph.toParagraph(): Paragraph {
     return when (this) {
         is KQuote -> Paragraph.Quote(content)

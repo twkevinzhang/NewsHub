@@ -22,9 +22,11 @@ import self.nesl.hub_server.data.post.gamer.GamerPost
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.parentIs
 import self.nesl.hub_server.data.post.toText
+import self.nesl.hub_server.data.rawImages
 import self.nesl.newshub.encode
 import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
+import self.nesl.newshub.ui.component.gallery.AsyncGallery
 import self.nesl.newshub.ui.news.GamerPostCard
 import self.nesl.newshub.ui.news.KomicaRePostCard
 import self.nesl.newshub.ui.news.KomicaPostCard
@@ -38,6 +40,8 @@ fun ThreadRoute(
     val loading by threadViewModel.loading.collectAsState(false)
     val boardName by threadViewModel.boardName.collectAsState("")
     val replyStack = remember { mutableStateListOf<Post>() }
+    val galleryStack = remember { mutableStateListOf<String>() }
+    var galleryIndex by remember { mutableStateOf(-1) }
     val context = LocalContext.current
 
     fun onReplyToClick(replyTo: Paragraph.ReplyTo) {
@@ -50,10 +54,18 @@ fun ThreadRoute(
         startActivity(context, intent, null)
     }
 
+    fun onImageClick(image: Paragraph.ImageInfo) {
+        val images = pagingPosts.itemSnapshotList.flatMap { it?.content?.rawImages() ?: emptyList() }
+        galleryStack.clear()
+        galleryStack.addAll(images)
+        galleryIndex = images.indexOf(image.raw)
+    }
+
     fun onParagraphClick(p: Paragraph) {
         when (p) {
             is Paragraph.Link -> onLinkClick(p)
             is Paragraph.ReplyTo -> onReplyToClick(p)
+            is Paragraph.ImageInfo -> onImageClick(p)
             else -> { }
         }
     }
@@ -102,6 +114,14 @@ fun ThreadRoute(
                 }
             }
         }
+    }
+
+    if (galleryIndex >= 0) {
+        AsyncGallery(
+            urls = galleryStack,
+            startIndex = galleryIndex,
+            onDismissRequest = { galleryIndex = -1 }
+        )
     }
 }
 
