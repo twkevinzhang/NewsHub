@@ -171,13 +171,23 @@ fun NewsListRoute(
                 is KomicaPost -> KomicaPostCard(
                     news = news,
                     boardName = boardName,
-                    onLinkClick = { onLinkClick(it) },
+                    onParagraphClick = {
+                        when (it) {
+                            is Paragraph.Link -> onLinkClick(it)
+                            else -> { }
+                        }
+                    },
                     onClick = { navigateToNews(news) },
                 )
                 is GamerNews -> GamerNewsCard(
                     news = news,
                     boardName = boardName,
-                    onLinkClick = { onLinkClick(it) },
+                    onParagraphClick = {
+                        when (it) {
+                        is Paragraph.Link -> onLinkClick(it)
+                        else -> { }
+                        }
+                    },
                     onClick = { navigateToNews(news) },
                 )
                 else -> Text(text = "not support")
@@ -266,7 +276,7 @@ fun PreviewTopicScreen() {
                 KomicaPostCard(
                     news = news as KomicaPost,
                     boardName = "Board",
-                    onLinkClick = { },
+                    onParagraphClick = { },
                     onClick = { }
                 )
             },

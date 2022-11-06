@@ -1,5 +1,6 @@
 package self.nesl.newshub.ui.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.foundation.text.ClickableText
@@ -26,19 +27,17 @@ import self.nesl.newshub.ui.theme.*
 @Composable
 fun ParagraphBlock(
     article: List<Paragraph>,
-    max: Int? = null,
-    imageWidthMax: Int? = null,
-    onLinkClick: (Paragraph.Link) -> Unit,
-    onReplyToClick: (Paragraph.ReplyTo) -> Unit,
+    textLengthMax: Int? = null,
+    onParagraphClick: (Paragraph) -> Unit,
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
     Column {
         article.map {
             when (it) {
                 is Paragraph.Text -> TextParagraph(it)
-                is Paragraph.ImageInfo -> ImageParagraph(it, imageWidthMax)
-                is Paragraph.Link -> LinkParagraph(it) { onLinkClick(it) }
-                is Paragraph.ReplyTo -> ReplyToParagraph(it, onPreviewReplyTo) { onReplyToClick(it) }
+                is Paragraph.ImageInfo -> ImageParagraph(it) { onParagraphClick(it) }
+                is Paragraph.Link -> LinkParagraph(it) { onParagraphClick(it) }
+                is Paragraph.ReplyTo -> ReplyToParagraph(it, onPreviewReplyTo) { onParagraphClick(it) }
                 is Paragraph.Quote -> QuoteParagraph(it)
             }
         }
@@ -61,8 +60,7 @@ fun PreviewParagraphBlock() {
                 Paragraph.Text("see about us:"),
                 Paragraph.Link("https://www.google.com")
             ),
-            onLinkClick = { },
-            onReplyToClick = { },
+            onParagraphClick = { },
             onPreviewReplyTo = { "" }
         )
     }
@@ -77,11 +75,12 @@ fun TextParagraph(paragraph: Paragraph.Text) {
 }
 
 @Composable
-fun ImageParagraph(paragraph: Paragraph.ImageInfo, imageWidthMax: Int? = null) {
+fun ImageParagraph(paragraph: Paragraph.ImageInfo, onClick: () -> Unit = { }) {
     SubcomposeAsyncImage(
         model = paragraph.thumb,
         modifier = Modifier
-            .size(80.dp, 80.dp),
+            .size(80.dp, 80.dp)
+            .clickable(onClick = onClick),
         contentDescription = null,
         loading = {
             CircularProgressIndicator()

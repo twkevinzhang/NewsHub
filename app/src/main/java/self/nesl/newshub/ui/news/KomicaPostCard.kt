@@ -23,7 +23,7 @@ import self.nesl.newshub.ui.theme.PreviewTheme
 fun KomicaPostCard(
     news: KomicaPost,
     boardName: String,
-    onLinkClick: (Paragraph.Link) -> Unit,
+    onParagraphClick: (Paragraph) -> Unit,
     onClick: (() -> Unit)? = null,
 ) {
     if (onClick != null) {
@@ -34,8 +34,7 @@ fun KomicaPostCard(
             KomicaPostCardContent(
                 news = news,
                 boardName = boardName,
-                onLinkClick = onLinkClick,
-                onReplyToClick = { },
+                onParagraphClick = onParagraphClick,
                 onPreviewReplyTo = { "" },
             )
         }
@@ -46,8 +45,7 @@ fun KomicaPostCard(
             KomicaPostCardContent(
                 news = news,
                 boardName = boardName,
-                onLinkClick = onLinkClick,
-                onReplyToClick = { },
+                onParagraphClick = onParagraphClick,
                 onPreviewReplyTo = { "" },
             )
         }
@@ -63,7 +61,7 @@ fun PreviewKomicaPostCard() {
         KomicaPostCard(
             news = mockKomicaPost(),
             boardName = "Board",
-            onLinkClick = { },
+            onParagraphClick = { },
             onClick = { },
         )
     }
@@ -73,8 +71,7 @@ fun PreviewKomicaPostCard() {
 @Composable
 fun KomicaRePostCard(
     rePost: KomicaPost,
-    onLinkClick: (Paragraph.Link) -> Unit = { },
-    onReplyToClick: (Paragraph.ReplyTo) -> Unit = { },
+    onParagraphClick: (Paragraph) -> Unit = { },
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String  = { "" },
     onClick: (() -> Unit)? = null,
 ) {
@@ -85,8 +82,7 @@ fun KomicaRePostCard(
         ) {
             KomicaRePostCardContent(
                 rePost = rePost,
-                onLinkClick = onLinkClick,
-                onReplyToClick = onReplyToClick,
+                onParagraphClick = onParagraphClick,
                 onPreviewReplyTo = onPreviewReplyTo,
             )
         }
@@ -96,8 +92,7 @@ fun KomicaRePostCard(
         ) {
             KomicaRePostCardContent(
                 rePost = rePost,
-                onLinkClick = onLinkClick,
-                onReplyToClick = onReplyToClick,
+                onParagraphClick = onParagraphClick,
                 onPreviewReplyTo = onPreviewReplyTo,
             )
         }
@@ -111,8 +106,7 @@ fun PreviewKomicaRePostCard() {
     PreviewTheme {
         KomicaRePostCard(
             rePost = mockKomicaPost(),
-            onLinkClick = { },
-            onReplyToClick = { },
+            onParagraphClick = { },
             onPreviewReplyTo = { "" },
         )
     }
@@ -156,8 +150,7 @@ private fun KomicaRePostCardHeader(rePost: KomicaPost) {
 private fun KomicaPostCardContent(
     news: KomicaPost,
     boardName: String,
-    onLinkClick: (Paragraph.Link) -> Unit,
-    onReplyToClick: (Paragraph.ReplyTo) -> Unit,
+    onParagraphClick: (Paragraph) -> Unit,
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
     Column(
@@ -171,8 +164,7 @@ private fun KomicaPostCardContent(
         ParagraphBlock(
             news.content,
             100,
-            onLinkClick = onLinkClick,
-            onReplyToClick = onReplyToClick,
+            onParagraphClick = onParagraphClick,
             onPreviewReplyTo = onPreviewReplyTo,
         )
     }
@@ -181,8 +173,7 @@ private fun KomicaPostCardContent(
 @Composable
 fun KomicaRePostCardContent(
     rePost: KomicaPost,
-    onLinkClick: (Paragraph.Link) -> Unit,
-    onReplyToClick: (Paragraph.ReplyTo) -> Unit,
+    onParagraphClick: (Paragraph) -> Unit,
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
     Column(
@@ -192,8 +183,7 @@ fun KomicaRePostCardContent(
         ParagraphBlock(
             rePost.content,
             100,
-            onLinkClick = onLinkClick,
-            onReplyToClick = onReplyToClick,
+            onParagraphClick = onParagraphClick,
             onPreviewReplyTo = onPreviewReplyTo,
         )
     }

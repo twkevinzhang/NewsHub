@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.paging.compose.items
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
@@ -18,7 +17,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.news.News
 import self.nesl.hub_server.data.post.Post
 import self.nesl.hub_server.data.post.gamer.GamerPost
 import self.nesl.hub_server.data.post.komica.KomicaPost
@@ -42,7 +40,7 @@ fun ThreadRoute(
     val replyStack = remember { mutableStateListOf<Post>() }
     val context = LocalContext.current
 
-    fun onKomicaReplyToClick(replyTo: Paragraph.ReplyTo) {
+    fun onReplyToClick(replyTo: Paragraph.ReplyTo) {
         pagingPosts.itemSnapshotList.findLast { it?.url?.contains(replyTo.id) ?: false }
             ?.let { replyStack.add(it) }
     }
@@ -50,6 +48,14 @@ fun ThreadRoute(
     fun onLinkClick(link: Paragraph.Link) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link.content))
         startActivity(context, intent, null)
+    }
+
+    fun onParagraphClick(p: Paragraph) {
+        when (p) {
+            is Paragraph.Link -> onLinkClick(p)
+            is Paragraph.ReplyTo -> onReplyToClick(p)
+            else -> { }
+        }
     }
 
     fun onPreviewReplyTo(replyTo: Paragraph.ReplyTo): String {
@@ -69,12 +75,11 @@ fun ThreadRoute(
         refreshState = rememberSwipeRefreshState(loading),
         pagingPosts = pagingPosts,
         boardName = boardName,
-        onRefresh = { threadViewModel.refresh() },
-        navigateUp = { navController.navigateUp() },
-        onLinkClick = { onLinkClick(it) },
-        onKomicaReplyToClick = { onKomicaReplyToClick(it) },
-        onPreviewReplyTo = { onPreviewReplyTo(it) },
-        onRePostClick = { onRePostClick(it) },
+        onParagraphClick = ::onParagraphClick,
+        onRefresh = threadViewModel::refresh,
+        navigateUp = navController::navigateUp,
+        onPreviewReplyTo = ::onPreviewReplyTo,
+        onRePostClick = ::onRePostClick,
     )
 
     if (replyStack.isNotEmpty()) {
@@ -86,9 +91,8 @@ fun ThreadRoute(
             RePostCard(
                 post = replyStack.lastOrNull(),
                 onClick = { onRePostClick(replyStack.last()) },
-                onLinkClick = { onLinkClick(it) },
-                onKomicaReplyToClick = { onKomicaReplyToClick(it) },
-                onPreviewReplyTo = { onPreviewReplyTo(it) },
+                onParagraphClick = ::onParagraphClick,
+                onPreviewReplyTo = ::onPreviewReplyTo,
             )
             Row {
                 if (replyStack.size > 1) {
@@ -109,8 +113,7 @@ fun ThreadScreen(
     boardName: String,
     onRefresh: () -> Unit,
     navigateUp: () -> Unit = {},
-    onLinkClick: (Paragraph.Link) -> Unit = {},
-    onKomicaReplyToClick: (Paragraph.ReplyTo) -> Unit = {},
+    onParagraphClick: (Paragraph) -> Unit = { },
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
     onRePostClick: (Post) -> Unit,
 ){
@@ -143,14 +146,13 @@ fun ThreadScreen(
                             PostCard(
                                 post = post,
                                 boardName = boardName,
-                                onLinkClick = onLinkClick,
+                                onParagraphClick = onParagraphClick,
                             )
                         } else if (post != null) {
                             RePostCard(
                                 post = post,
                                 onClick = { onRePostClick(post) },
-                                onLinkClick = onLinkClick,
-                                onKomicaReplyToClick = onKomicaReplyToClick,
+                                onParagraphClick = onParagraphClick,
                                 onPreviewReplyTo = onPreviewReplyTo,
                             )
                         }
@@ -165,17 +167,17 @@ fun ThreadScreen(
 fun PostCard(
     post: Post?,
     boardName: String,
-    onLinkClick: (Paragraph.Link) -> Unit = {},
+    onParagraphClick: (Paragraph) -> Unit = {},
 ) {
     when (post) {
         is KomicaPost -> KomicaPostCard(
             news = post,
             boardName = boardName,
-            onLinkClick = onLinkClick,
+            onParagraphClick = onParagraphClick,
         )
         is GamerPost -> GamerPostCard(
             post = post,
-            onLinkClick = onLinkClick,
+            onParagraphClick = onParagraphClick,
         )
     }
 }
@@ -184,21 +186,19 @@ fun PostCard(
 fun RePostCard(
     post: Post?,
     onClick: () -> Unit = {},
-    onLinkClick: (Paragraph.Link) -> Unit = {},
-    onKomicaReplyToClick: (Paragraph.ReplyTo) -> Unit = {},
+    onParagraphClick: (Paragraph) -> Unit = {},
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
     when (post) {
         is KomicaPost -> KomicaRePostCard(
             rePost = post,
             onClick = onClick,
-            onLinkClick = onLinkClick,
-            onReplyToClick = onKomicaReplyToClick,
             onPreviewReplyTo = onPreviewReplyTo,
+            onParagraphClick = onParagraphClick,
         )
         is GamerPost -> GamerPostCard(
             post = post,
-            onLinkClick = onLinkClick,
+            onParagraphClick = onParagraphClick,
         )
     }
 }

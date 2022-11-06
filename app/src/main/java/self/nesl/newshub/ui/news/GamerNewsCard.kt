@@ -23,7 +23,7 @@ import self.nesl.newshub.ui.theme.PreviewTheme
 fun GamerNewsCard(
     news: GamerNews,
     boardName: String,
-    onLinkClick: (Paragraph.Link) -> Unit,
+    onParagraphClick: (Paragraph) -> Unit,
     onClick: (() -> Unit)? = null,
 ) {
     if (onClick != null) {
@@ -34,7 +34,7 @@ fun GamerNewsCard(
             GamerNewsCardContent(
                 news = news,
                 boardName = boardName,
-                onLinkClick = onLinkClick,
+                onParagraphClick = onParagraphClick,
             )
         }
     } else {
@@ -44,7 +44,7 @@ fun GamerNewsCard(
             GamerNewsCardContent(
                 news = news,
                 boardName = boardName,
-                onLinkClick = onLinkClick,
+                onParagraphClick = onParagraphClick,
             )
         }
     }
@@ -58,7 +58,7 @@ fun PreviewGamerNewsCard() {
         GamerNewsCard(
             news = mockGamerNews(),
             boardName = "Board",
-            onLinkClick = { },
+            onParagraphClick = { },
             onClick = { },
         )
     }
@@ -68,7 +68,7 @@ fun PreviewGamerNewsCard() {
 @Composable
 fun GamerPostCard(
     post: GamerPost,
-    onLinkClick: (Paragraph.Link) -> Unit = { },
+    onParagraphClick: (Paragraph) -> Unit = { },
     onClick: (() -> Unit)? = null,
 ) {
     if (onClick != null) {
@@ -78,7 +78,7 @@ fun GamerPostCard(
         ) {
             GamerPostCardContent(
                 post = post,
-                onLinkClick = onLinkClick,
+                onParagraphClick = onParagraphClick,
             )
         }
     } else {
@@ -87,7 +87,7 @@ fun GamerPostCard(
         ) {
             GamerPostCardContent(
                 post = post,
-                onLinkClick = onLinkClick,
+                onParagraphClick = onParagraphClick,
             )
         }
     }
@@ -100,7 +100,7 @@ fun PreviewGamerPostCard() {
     PreviewTheme {
         GamerPostCard(
             post = mockGamerPost(),
-            onLinkClick = { },
+            onParagraphClick = { },
         )
     }
 }
@@ -135,7 +135,7 @@ private fun GamerPostCardHeader(post: GamerPost) {
 private fun GamerNewsCardContent(
     news: GamerNews,
     boardName: String,
-    onLinkClick: (Paragraph.Link) -> Unit,
+    onParagraphClick: (Paragraph) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
@@ -147,10 +147,9 @@ private fun GamerNewsCardContent(
         }
         ParagraphBlock(
             article = news.content,
-            max = 100,
-            onLinkClick = onLinkClick,
-            onReplyToClick = { },
-            onPreviewReplyTo = { _ -> "" },
+            textLengthMax = 100,
+            onParagraphClick = onParagraphClick,
+            onPreviewReplyTo = { "" },
         )
     }
 }
@@ -158,7 +157,7 @@ private fun GamerNewsCardContent(
 @Composable
 private fun GamerPostCardContent(
     post: GamerPost,
-    onLinkClick: (Paragraph.Link) -> Unit,
+    onParagraphClick: (Paragraph) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
@@ -170,8 +169,9 @@ private fun GamerPostCardContent(
         ParagraphBlock(
             post.content,
             100,
-            onLinkClick = onLinkClick,
-            onReplyToClick = { },
+            onParagraphClick = {
+
+            },
             onPreviewReplyTo = { "" },
         )
     }
