@@ -45,7 +45,7 @@ fun ThreadRoute(
     val context = LocalContext.current
 
     fun onReplyToClick(replyTo: Paragraph.ReplyTo) {
-        pagingPosts.itemSnapshotList.findLast { it?.url?.contains(replyTo.id) ?: false }
+        pagingPosts.itemSnapshotList.findLast { it?.id?.equals(replyTo.id) ?: false }
             ?.let { replyStack.add(it) }
     }
 
