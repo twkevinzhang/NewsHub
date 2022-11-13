@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
@@ -24,6 +25,7 @@ import self.nesl.hub_server.data.post.parentIs
 import self.nesl.hub_server.data.post.toText
 import self.nesl.hub_server.data.rawImages
 import self.nesl.newshub.encode
+import self.nesl.newshub.thenIfNotNull
 import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.component.gallery.AsyncGallery
@@ -31,6 +33,7 @@ import self.nesl.newshub.ui.news.GamerPostCard
 import self.nesl.newshub.ui.news.KomicaRePostCard
 import self.nesl.newshub.ui.news.KomicaPostCard
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThreadRoute(
     threadViewModel: ThreadViewModel,
@@ -129,6 +132,7 @@ fun ThreadRoute(
 @Composable
 fun ThreadScreen(
     refreshState: SwipeRefreshState,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     pagingPosts: LazyPagingItems<Post>,
     boardName: String,
     onRefresh: () -> Unit,
@@ -143,15 +147,17 @@ fun ThreadScreen(
                 NewsHubTopBar(
                     onBackPressed = { navigateUp() },
                     title = pagingPosts.peek(0)!!.title,
+                    scrollBehavior = scrollBehavior,
                 )
             } else {
                 NewsHubTopBar(
                     onBackPressed = { navigateUp() },
                     title = "",
+                    scrollBehavior = scrollBehavior,
                 )
             }
         },
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().thenIfNotNull(scrollBehavior) { nestedScroll(it.nestedScrollConnection) }
     ) {
         SwipeRefresh(
             state = refreshState,

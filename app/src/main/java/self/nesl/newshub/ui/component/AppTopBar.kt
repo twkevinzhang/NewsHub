@@ -25,6 +25,7 @@ fun NewsHubTopBar(
     title: String = "",
     onMenuPressed: (() -> Unit)? = null,
     onBackPressed: (() -> Unit)? = null,
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     SmallTopAppBar(
         title = {
@@ -50,9 +51,11 @@ fun NewsHubTopBar(
                 }
             }
         },
+        scrollBehavior = scrollBehavior,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun PreviewNewsHubTopBar() {
@@ -61,6 +64,7 @@ private fun PreviewNewsHubTopBar() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun PreviewNewsHubTopBarWithBack() {
@@ -72,6 +76,7 @@ private fun PreviewNewsHubTopBarWithBack() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun PreviewNewsHubTopBarWithMenu() {

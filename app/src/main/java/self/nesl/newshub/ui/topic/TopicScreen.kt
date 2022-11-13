@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.paging.compose.items
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -42,6 +43,7 @@ import self.nesl.hub_server.data.post.komica.mockKomicaPost
 import self.nesl.newshub.R
 import self.nesl.newshub.encode
 import self.nesl.newshub.interactor.Topic
+import self.nesl.newshub.thenIfNotNull
 import self.nesl.newshub.ui.component.AppBottomBar
 import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.navigation.bottomNavItems
@@ -101,6 +103,7 @@ fun TopicRoute(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsListRoute(
     newsListViewModel: NewsListViewModel,
@@ -113,6 +116,7 @@ fun NewsListRoute(
     val enableBoards by newsListViewModel.enableBoards.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
     val refreshState = rememberSwipeRefreshState(loading)
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val navigateToNews = { news: News -> navController.navigate("thread/${news.url.encode()}") }
     val context = LocalContext.current
 
@@ -125,6 +129,7 @@ fun NewsListRoute(
     }
 
     TopicScreen(
+        scrollBehavior = scrollBehavior,
         refreshState = refreshState,
         lazyColumnState = pagingNews.rememberLazyListState(),
         topic = topic,
@@ -206,6 +211,7 @@ fun NewsListRoute(
 fun TopicScreen(
     topic: Topic? = null,
     refreshState: SwipeRefreshState,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     lazyColumnState: LazyListState,
     pagingNews: LazyPagingItems<News>,
     allBoards: List<Board>,
@@ -221,10 +227,12 @@ fun TopicScreen(
         topBar = {
             NewsHubTopBar(
                 onMenuPressed = { openDrawer() },
-                title = topic?.name ?: ""
+                title = topic?.name ?: "",
+                scrollBehavior = scrollBehavior,
             )
         },
         bottomBar = { AppBottomBar(bottomNavItems()) },
+        modifier = Modifier.thenIfNotNull(scrollBehavior) { nestedScroll(it.nestedScrollConnection) }
     ) {
         Surface(
             modifier = Modifier
@@ -260,6 +268,7 @@ fun TopicScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun PreviewTopicScreen() {
