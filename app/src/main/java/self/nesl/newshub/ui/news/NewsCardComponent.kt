@@ -8,8 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import self.nesl.hub_server.data.Paragraph
+import self.nesl.hub_server.data.news.News
 import self.nesl.newshub.*
 import self.nesl.newshub.R
+import self.nesl.newshub.ui.component.LinkParagraph
+import self.nesl.newshub.ui.component.TextParagraph
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
 import self.nesl.newshub.ui.theme.AppLink
 import self.nesl.newshub.ui.theme.NewshubTheme
@@ -69,4 +73,14 @@ fun CardHeadTextBlock(
             color = color,
         )
     }
+}
+
+@Composable
+fun OriginalLinkParagraph(news: News, onClick: (Paragraph.Link) -> Unit = { }) {
+    val original = Paragraph.Link(news.url)
+    TextParagraph(paragraph = Paragraph.Text("原文連結："))
+    LinkParagraph(
+        paragraph = original,
+        onClick = { onClick(original) },
+    )
 }

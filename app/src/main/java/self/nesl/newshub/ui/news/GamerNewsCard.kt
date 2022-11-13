@@ -151,6 +151,7 @@ private fun GamerNewsCardContent(
             onParagraphClick = onParagraphClick,
             onPreviewReplyTo = { "" },
         )
+        OriginalLinkParagraph(news, onParagraphClick)
     }
 }
 

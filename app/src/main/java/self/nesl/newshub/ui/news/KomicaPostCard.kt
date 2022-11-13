@@ -13,7 +13,9 @@ import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.mockKomicaPost
 import self.nesl.newshub.R
+import self.nesl.newshub.ui.component.LinkParagraph
 import self.nesl.newshub.ui.component.ParagraphBlock
+import self.nesl.newshub.ui.component.TextParagraph
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
 import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
@@ -167,6 +169,7 @@ private fun KomicaPostCardContent(
             onParagraphClick = onParagraphClick,
             onPreviewReplyTo = onPreviewReplyTo,
         )
+        OriginalLinkParagraph(news, onParagraphClick)
     }
 }
 
