@@ -32,9 +32,12 @@ fun bindAppScreen(
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     topicListViewModel: TopicListViewModel,
 ) {
+    val systemUiController = rememberSystemUiController()
     val topicList by topicListViewModel.topicList.collectAsState(emptyList())
 
     NewshubTheme {
+        systemUiController.setSystemBarsColor(color = MaterialTheme.colorScheme.background)
+
         val navigationActions = remember(navController) { AppNavigation(navController) }
         val openDrawer = { scope.launch { drawerState.open() } }
         val closeDrawer = { scope.launch { drawerState.close() } }
