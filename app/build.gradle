@@ -64,6 +64,7 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:$versions.compose_navigation"
     implementation "com.google.accompanist:accompanist-swiperefresh:$versions.compose_accompanist"
     implementation "com.google.accompanist:accompanist-pager:$versions.compose_accompanist"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$versions.compose_accompanist"
     // paging
     implementation "androidx.paging:paging-runtime:$versions.paging"
     implementation "androidx.paging:paging-compose:$versions.compose_paging"

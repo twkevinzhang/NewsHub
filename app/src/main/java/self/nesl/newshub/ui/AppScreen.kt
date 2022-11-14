@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.CoroutineScope
 import self.nesl.newshub.interactor.toNavItem
 import self.nesl.newshub.ui.component.AppDrawerContent
@@ -31,8 +32,10 @@ fun bindAppScreen(
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     topicListViewModel: TopicListViewModel,
 ) {
+    val systemUiController = rememberSystemUiController()
     val topicList by topicListViewModel.topicList.collectAsState(emptyList())
 
+    systemUiController.setSystemBarsColor(color = NewshubTheme.colors.background)
     NewshubTheme {
         val navigationActions = remember(navController) { AppNavigation(navController) }
         val openDrawer = { scope.launch { drawerState.open() } }
