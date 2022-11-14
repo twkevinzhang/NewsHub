@@ -2,7 +2,6 @@ package self.nesl.newshub.ui.topic
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -10,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.paging.compose.items
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -32,7 +32,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.Host
 import self.nesl.hub_server.data.board.Board
@@ -44,8 +43,7 @@ import self.nesl.newshub.R
 import self.nesl.newshub.encode
 import self.nesl.newshub.interactor.Topic
 import self.nesl.newshub.thenIfNotNull
-import self.nesl.newshub.ui.component.AppBottomBar
-import self.nesl.newshub.ui.component.NewsHubTopBar
+import self.nesl.newshub.ui.component.*
 import self.nesl.newshub.ui.navigation.bottomNavItems
 import self.nesl.newshub.ui.news.GamerNewsCard
 import self.nesl.newshub.ui.news.KomicaPostCard
@@ -116,7 +114,10 @@ fun NewsListRoute(
     val enableBoards by newsListViewModel.enableBoards.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
     val refreshState = rememberSwipeRefreshState(loading)
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val topBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    // connection to the nested scroll system and listen to the scroll
+    // happening inside child LazyColumn
+    val bottomBarScrollBehavior = BottomAppBarDefaults.enterAlwaysScrollBehavior(rememberBottomAppBarState())
     val navigateToNews = { news: News -> navController.navigate("thread/${news.url.encode()}") }
     val context = LocalContext.current
 
@@ -129,7 +130,8 @@ fun NewsListRoute(
     }
 
     TopicScreen(
-        scrollBehavior = scrollBehavior,
+        bottomBarScrollBehavior = bottomBarScrollBehavior,
+        topBarScrollBehavior = topBarScrollBehavior,
         refreshState = refreshState,
         lazyColumnState = pagingNews.rememberLazyListState(),
         topic = topic,
@@ -211,7 +213,8 @@ fun NewsListRoute(
 fun TopicScreen(
     topic: Topic? = null,
     refreshState: SwipeRefreshState,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
+    topBarScrollBehavior: TopAppBarScrollBehavior? = null,
+    bottomBarScrollBehavior: BottomAppBarScrollBehavior? = null,
     lazyColumnState: LazyListState,
     pagingNews: LazyPagingItems<News>,
     allBoards: List<Board>,
@@ -228,11 +231,18 @@ fun TopicScreen(
             NewsHubTopBar(
                 onMenuPressed = { openDrawer() },
                 title = topic?.name ?: "",
-                scrollBehavior = scrollBehavior,
+                scrollBehavior = topBarScrollBehavior,
             )
         },
-        bottomBar = { AppBottomBar(bottomNavItems()) },
-        modifier = Modifier.thenIfNotNull(scrollBehavior) { nestedScroll(it.nestedScrollConnection) }
+        bottomBar = {
+            AppBottomBar(
+                navItems = bottomNavItems(),
+                scrollBehavior = bottomBarScrollBehavior
+            )
+        },
+        modifier = Modifier
+            .thenIfNotNull(topBarScrollBehavior) { nestedScroll(it.nestedScrollConnection) }
+            .thenIfNotNull(bottomBarScrollBehavior) { nestedScroll(it.nestedScrollConnection) }
     ) {
         Surface(
             modifier = Modifier

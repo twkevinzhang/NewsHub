@@ -31,7 +31,7 @@ fun NewsHubTopBar(
         title = {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleLarge,
+                style = NewshubTheme.typography.titleLarge,
             )
         },
         navigationIcon = {
