@@ -1,36 +1,32 @@
 package self.nesl.newshub.ui.theme
 
+import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-
-object NewshubTheme {
-    val colors
-        @Composable
-        @ReadOnlyComposable
-        get() = ColorPalette
-
-    val typography
-        @Composable
-        @ReadOnlyComposable
-        get() = Typography
-
-    val shapes
-        @Composable
-        @ReadOnlyComposable
-        get() = Shapes
-}
 
 @Composable
 fun NewshubTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    val colorScheme =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        } else {
+            ColorPalette
+        }
     MaterialTheme(
-        colorScheme = NewshubTheme.colors,
-        typography = NewshubTheme.typography,
-        shapes = NewshubTheme.shapes,
+        colorScheme = colorScheme,
+        typography = MaterialTheme.typography,
+        shapes = MaterialTheme.shapes,
         content = content
     )
 }
@@ -40,7 +36,7 @@ fun NewshubTheme(
 fun PreviewTheme(
     content: @Composable () -> Unit =  {},
 ) {
-    NewshubTheme() {
+    MaterialTheme() {
         Surface {
             content()
         }

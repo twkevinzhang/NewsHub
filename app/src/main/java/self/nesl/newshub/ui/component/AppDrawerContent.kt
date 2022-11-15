@@ -9,7 +9,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.navigation.NavItems
 import self.nesl.newshub.ui.navigation.drawerNavItems
@@ -46,7 +45,7 @@ fun AppDrawerContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(dimensionResource(id = R.dimen.space_1))
-                            .background(color = NewshubTheme.colors.background)
+                            .background(MaterialTheme.colorScheme.background)
                     )
                 }
             }
@@ -65,7 +64,7 @@ fun AppDrawerContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(dimensionResource(id = R.dimen.space_1))
-                            .background(color = NewshubTheme.colors.background)
+                            .background(MaterialTheme.colorScheme.background)
                     )
                 }
             }
@@ -83,7 +82,7 @@ fun AppDrawerHeader(
             .padding(horizontal = dimensionResource(id = R.dimen.space_16))
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_100)))
-        Text(text = name, style = NewshubTheme.typography.displayLarge)
+        Text(text = name, style = MaterialTheme.typography.displayLarge)
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_2)))
     }
 }

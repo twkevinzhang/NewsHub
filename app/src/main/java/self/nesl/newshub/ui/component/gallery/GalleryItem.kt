@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,7 +27,6 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import self.nesl.newshub.R
-import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 import java.lang.Float.min
 import kotlin.math.absoluteValue
@@ -103,7 +103,7 @@ fun ZoomableBox(
     Column(modifier = Modifier
         .fillMaxSize()
         .onSizeChanged { screen = it }
-        .background(NewshubTheme.colors.background)
+        .background(MaterialTheme.colorScheme.background)
         .pointerInput(Unit) {
             detectTransformGesturesWithUnconsumed { event ->
                 val _minScale = minScale ?: initScale

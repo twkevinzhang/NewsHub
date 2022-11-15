@@ -70,7 +70,7 @@ fun PreviewParagraphBlock() {
 fun TextParagraph(paragraph: Paragraph.Text) {
     Text(
         text = paragraph.content,
-        style = NewshubTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodyMedium,
     )
 }
 
@@ -122,7 +122,7 @@ fun ReplyToParagraph(paragraph: Paragraph.ReplyTo, onPreviewReplyTo: (Paragraph.
 fun QuoteParagraph(paragraph: Paragraph.Quote) {
     Text(
         text = paragraph.content,
-        style = NewshubTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodyMedium,
         color = AppQuote,
     )
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))

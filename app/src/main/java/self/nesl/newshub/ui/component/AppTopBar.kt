@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.theme.AppDarkBlue
 import self.nesl.newshub.ui.theme.AppWhite

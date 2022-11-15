@@ -2,6 +2,7 @@ package self.nesl.newshub.ui.news
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,7 +16,6 @@ import self.nesl.hub_server.data.post.gamer.GamerPost
 import self.nesl.hub_server.data.post.gamer.mockGamerPost
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.component.ParagraphBlock
-import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.theme.PreviewTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -182,7 +182,7 @@ private fun GamerPostCardContent(
 private fun GamerNewsCardTitle(text: String) {
     Text(
         text = text,
-        style = NewshubTheme.typography.titleMedium,
+        style = MaterialTheme.typography.titleMedium,
     )
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
 }

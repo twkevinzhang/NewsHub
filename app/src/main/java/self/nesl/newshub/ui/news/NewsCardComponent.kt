@@ -3,6 +3,7 @@ package self.nesl.newshub.ui.news
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +17,6 @@ import self.nesl.newshub.ui.component.LinkParagraph
 import self.nesl.newshub.ui.component.TextParagraph
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
 import self.nesl.newshub.ui.theme.AppLink
-import self.nesl.newshub.ui.theme.NewshubTheme
 
 
 @Composable
@@ -69,7 +69,7 @@ fun CardHeadTextBlock(
     ) {
         Text(
             text = text,
-            style = NewshubTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodySmall,
             color = color,
         )
     }
