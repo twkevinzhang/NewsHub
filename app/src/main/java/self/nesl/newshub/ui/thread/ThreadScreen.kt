@@ -26,6 +26,7 @@ import self.nesl.hub_server.data.post.toText
 import self.nesl.hub_server.data.rawImages
 import self.nesl.newshub.encode
 import self.nesl.newshub.thenIfNotNull
+import self.nesl.newshub.ui.component.AppBarScrollBehavior
 import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.component.gallery.AsyncGallery
@@ -132,7 +133,7 @@ fun ThreadRoute(
 @Composable
 fun ThreadScreen(
     refreshState: SwipeRefreshState,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
+    scrollBehavior: AppBarScrollBehavior? = null,
     pagingPosts: LazyPagingItems<Post>,
     boardName: String,
     onRefresh: () -> Unit,

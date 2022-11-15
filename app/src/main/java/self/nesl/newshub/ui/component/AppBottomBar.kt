@@ -1,6 +1,5 @@
 package self.nesl.newshub.ui.component
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,7 +23,7 @@ fun AppBottomBar(
     navItems: List<NavItems>,
     onNavItemClick: (NavItems) -> Unit = { },
     selectedItem : NavItems? = null,
-    scrollBehavior: BottomAppBarScrollBehavior? = null
+    scrollBehavior: AppBarScrollBehavior? = null
 ) {
     BottomAppBar(
         tonalElevation = dimensionResource(id = R.dimen.space_0),
@@ -61,19 +60,19 @@ fun PreviewAppBottomBar() {
     }
 }
 
-interface BottomAppBarState {
+interface AppBarState {
     var height: Float
     val offsetY: MutableState<Float>
 }
 
-interface BottomAppBarScrollBehavior {
+interface AppBarScrollBehavior {
     val nestedScrollConnection: NestedScrollConnection
-    val state: BottomAppBarState
+    val state: AppBarState
 }
 
 @Composable
-fun rememberBottomAppBarState(): BottomAppBarState {
-    return object : BottomAppBarState {
+fun rememberBottomAppBarState(): AppBarState {
+    return object : AppBarState {
         override var height = 80f
         override val offsetY = remember { mutableStateOf(0f) }
     }
@@ -81,9 +80,9 @@ fun rememberBottomAppBarState(): BottomAppBarState {
 
 @Composable
 fun BottomAppBarDefaults.enterAlwaysScrollBehavior(
-    state: BottomAppBarState = rememberBottomAppBarState(),
-): BottomAppBarScrollBehavior {
-    return object : BottomAppBarScrollBehavior {
+    state: AppBarState = rememberBottomAppBarState(),
+): AppBarScrollBehavior {
+    return object : AppBarScrollBehavior {
         override val nestedScrollConnection = object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 val delta = available.y

@@ -9,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.paging.compose.items
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -213,8 +212,8 @@ fun NewsListRoute(
 fun TopicScreen(
     topic: Topic? = null,
     refreshState: SwipeRefreshState,
-    topBarScrollBehavior: TopAppBarScrollBehavior? = null,
-    bottomBarScrollBehavior: BottomAppBarScrollBehavior? = null,
+    topBarScrollBehavior: AppBarScrollBehavior? = null,
+    bottomBarScrollBehavior: AppBarScrollBehavior? = null,
     lazyColumnState: LazyListState,
     pagingNews: LazyPagingItems<News>,
     allBoards: List<Board>,
