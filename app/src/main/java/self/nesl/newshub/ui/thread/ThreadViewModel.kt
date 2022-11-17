@@ -2,9 +2,13 @@ package self.nesl.newshub.ui.thread
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import self.nesl.hub_server.data.news.News
+import self.nesl.newshub.applyIf
 import self.nesl.newshub.interactor.BoardInteractor
 import self.nesl.newshub.interactor.NewsInteractor
 import self.nesl.newshub.interactor.PostInteractor
@@ -25,26 +29,22 @@ class ThreadViewModel @Inject constructor(
     val pagingPosts = _threadUrl
         .mapLatest { url ->
             _loading.update { true }
-            if (url.isNotBlank()) {
+            url.applyIf({ isNotBlank() }) {
                 readBoardName(url)
             }
-            url
-        }.combine(_rePostId) { url, rePostId ->
-            Pair(url, rePostId)
         }
-        .flatMapLatest { (url, rePostId) ->
+        .combineTransform(_rePostId) { url, rePostId ->
             if (url.isNotBlank() && rePostId.isNotBlank()) {
                 postInteractor.getAll(url, rePostId)
             } else if (url.isNotBlank()) {
                 postInteractor.getAll(url)
             } else {
-                flowOf()
-            }
+                emptyFlow()
+            }.collect(this)
         }
-        .onEach {
-            _loading.update { false }
-        }
+        .onEach { _loading.update { false } }
         .catch { Log.e("ThreadViewModel", it.stackTraceToString()) }
+        .cachedIn(viewModelScope)
 
     fun threadUrl(url: String) {
         this._threadUrl.update { url }

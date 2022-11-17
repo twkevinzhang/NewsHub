@@ -10,6 +10,9 @@ import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.locks.Condition
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 fun String.toBitmap(): Bitmap {
     val imageBytes = android.util.Base64.decode(this, android.util.Base64.DEFAULT)
@@ -44,6 +47,14 @@ fun Int?.isZeroOrNull() = this == 0 || this == null
 fun <T> Modifier.thenIfNotNull(any: T?, callback: Modifier.(T) -> Modifier): Modifier {
     return if (any != null) {
         then(callback(any))
+    } else {
+        this
+    }
+}
+
+public inline fun <T> T.applyIf(condition: T.() -> Boolean, block: T.() -> Unit): T {
+    return if (condition()) {
+        apply(block)
     } else {
         this
     }
