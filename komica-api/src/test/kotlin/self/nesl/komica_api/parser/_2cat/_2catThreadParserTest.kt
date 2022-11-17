@@ -10,10 +10,10 @@ internal class _2catThreadParserTest {
     @Test
     fun `Test _2catThreadParser expect successful`() {
         val parser = _2catThreadParser(_2catPostParser(_2catUrlParser(), _2catPostHeadParser(_2catUrlParser())))
-        val pair = parser.parse(
-            Jsoup.parse(loadFile("./src/test/html/_2cat/ThreadPage.html")),
+        val thread = parser.parse(
+            Jsoup.parse(loadFile("./src/test/html/org/2cat/ThreadPage.html")),
             "https://2cat.org/granblue/?res=963",
         )
-        assertEquals(48, pair.second.size)
+        assertEquals(6, thread.size)
     }
 }

@@ -67,10 +67,6 @@ internal class ExtensionsTest {
         assertEquals("Mon Tue", "一 二".replaceChiWeekday())
 
     @Test
-    fun `Test toMillTimestamp extension expect successful`() =
-        assertEquals(1662795827333L, "2022/09/10(Sat) 15:43:47.333".toMillTimestamp())
-
-    @Test
     fun `Test toMillTimestamp with years with only two digits extension expect successful`() =
         assertEquals(1662795827000L, "22/09/10(Sat) 15:43:47".toMillTimestamp())
 }

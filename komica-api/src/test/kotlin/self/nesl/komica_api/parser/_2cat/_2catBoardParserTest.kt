@@ -11,9 +11,9 @@ internal class _2catBoardParserTest {
     fun `Test _2catBoardParser expect successful`() {
         val parser = _2catBoardParser(_2catPostParser(_2catUrlParser(), _2catPostHeadParser(_2catUrlParser())))
         val posts = parser.parse(
-            Jsoup.parse(loadFile("./src/test/html/_2cat/BoardPage.html")),
+            Jsoup.parse(loadFile("./src/test/html/org/2cat/BoardPage.html")),
             "https://2cat.org/granblue",
         )
-        assertEquals(15, posts.size)
+        assertEquals(8, posts.size)
     }
 }

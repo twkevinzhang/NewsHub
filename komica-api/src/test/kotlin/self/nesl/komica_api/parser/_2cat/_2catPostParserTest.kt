@@ -11,9 +11,9 @@ internal class _2catPostParserTest {
     fun `Test _2catPostParser expect successful`() {
         val parser = _2catPostParser(_2catUrlParser(), _2catPostHeadParser(_2catUrlParser()))
         val post = parser.parse(
-            Jsoup.parse(loadFile("./src/test/html/_2cat/ReplyPost.html")),
+            Jsoup.parse(loadFile("./src/test/html/org/2cat/ReplyPost.html")),
             "https://2cat.org/granblue/?res=963#r23587",
         )
-        assertEquals("25208017", post.id)
+        assertEquals("23587", post.id)
     }
 }

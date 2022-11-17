@@ -15,7 +15,7 @@ internal class SoraBoardRequestBuilderTest {
             .setPageReq(1)
             .build()
         assertEquals(
-            "https://sora.komica.org/00/pixmicat.php?page_num=1".toHttpUrl(),
+            "https://sora.komica.org/00/pixmicat.php?page_num=1/".toHttpUrl(),
             req.url
         )
     }
@@ -27,7 +27,7 @@ internal class SoraBoardRequestBuilderTest {
             .setPageReq(1)
             .build()
         assertEquals(
-            "https://sora.komica.org/00/pixmicat.php?page_num=1".toHttpUrl(),
+            "https://sora.komica.org/00/pixmicat.php?page_num=1/".toHttpUrl(),
             req.url
         )
     }

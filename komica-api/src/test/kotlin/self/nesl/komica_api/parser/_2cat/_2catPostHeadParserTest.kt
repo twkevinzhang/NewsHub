@@ -12,7 +12,7 @@ internal class _2catPostHeadParserTest {
     fun `Test parse title expect successful`() {
         val parser = _2catPostHeadParser(_2catUrlParser())
         val title = parser.parseTitle(
-            Jsoup.parse(loadFile("./src/test/html/_2cat/ReplyPost.html")),
+            Jsoup.parse(loadFile("./src/test/html/org/2cat/ReplyPost.html")),
             "https://2cat.org/granblue/?res=963#r23587".toHttpUrl()
         )
         assertEquals("無標題", title)
@@ -22,7 +22,7 @@ internal class _2catPostHeadParserTest {
     fun `Test parse created at expect successful`() {
         val parser = _2catPostHeadParser(_2catUrlParser())
         val time = parser.parseCreatedAt(
-            Jsoup.parse(loadFile("./src/test/html/_2cat/ReplyPost.html")),
+            Jsoup.parse(loadFile("./src/test/html/org/2cat/ReplyPost.html")),
             "https://2cat.org/granblue/?res=963#r23587".toHttpUrl()
         )
         assertEquals(1638198600000L, time)

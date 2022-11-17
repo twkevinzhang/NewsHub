@@ -1,11 +1,8 @@
 package self.nesl.komica_api.parser.sora
 
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import org.jsoup.Jsoup
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import self.nesl.komica_api.loadFile
 
 internal class SoraUrlParserTest {
 

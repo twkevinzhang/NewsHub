@@ -14,7 +14,7 @@ internal class SoraThreadParserTest {
             Jsoup.parse(loadFile("./src/test/html/org/komica/sora/ThreadPage.html")),
             "https://sora.komica.org/00/pixmicat.php?res=25214959",
         )
-        assertEquals(48, pair.second.size)
+        assertEquals(49, pair.size)
     }
 
     @Test
@@ -24,6 +24,6 @@ internal class SoraThreadParserTest {
             Jsoup.parse(loadFile("./src/test/html/org/komica/2cat/ThreadPage.html")),
             "https://2cat.komica.org/~tedc21thc/new/pixmicat.php?res=4003068",
         )
-        assertEquals(36, pair.second.size)
+        assertEquals(37, pair.size)
     }
 }
