@@ -20,11 +20,15 @@ class _2catPostHeadParser(
         val head = head(source, url).clone()
         head.selectFirst("span.title").remove()
         val s = head.text().trim()
-        val post_detail = s.substring(1, s.length - 1).split(" ID:")
-        println(post_detail[0])
-        return post_detail[0].trim()
-            .replaceChiWeekday()
-            .toMillTimestamp()
+        return if (s.isNotEmpty()) {
+            val post_detail = s.substring(1, s.length - 1).split(" ID:")
+            println(post_detail[0])
+            post_detail[0].trim()
+                .replaceChiWeekday()
+                .toMillTimestamp()
+        } else {
+            0L
+        }
     }
 
     override fun parsePoster(source: Element, url: HttpUrl): String? {
