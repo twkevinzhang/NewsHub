@@ -4,13 +4,43 @@ import okhttp3.HttpUrl
 import self.nesl.komica_api.parser.UrlParser
 
 class SoraUrlParser: UrlParser {
-    override fun parsePostId(url: HttpUrl): String? {
-        val postId = url.queryParameter("res")
-        val fragment = url.fragment // "#12345678"
-        return fragment?.substring(1) ?: postId
-    }
-
     override fun parseBoardId(url: HttpUrl): String? {
         TODO("Not yet implemented")
+    }
+
+    override fun parsePostId(url: HttpUrl): String? {
+        return parseRePostId(url) ?: parseHeadPostId(url)
+    }
+
+    override fun parseHeadPostId(url: HttpUrl): String? {
+        return url.queryParameter("res")
+    }
+
+    override fun parseRePostId(url: HttpUrl): String? {
+        return  url.fragment?.substring(1)
+    }
+
+    override fun parsePage(url: HttpUrl): Int? {
+        return url.queryParameter("page")?.toInt()
+    }
+
+    override fun hasBoardId(url: HttpUrl): Boolean {
+        return parseBoardId(url) != null
+    }
+
+    override fun hasPostId(url: HttpUrl): Boolean {
+        return parsePostId(url) != null
+    }
+
+    override fun hasHeadPostId(url: HttpUrl): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun hasRePostId(url: HttpUrl): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun hasPage(url: HttpUrl): Boolean {
+        return parsePage(url) != null
     }
 }
