@@ -40,4 +40,18 @@ class GetAllPost(
                 throw NotImplementedError("ThreadParser of $url not implemented yet")
         }.parse(Jsoup.parse(response.body?.string()), url)
     }
+
+    suspend fun withFillReplyTo(url: String): List<KPost> = withContext(Dispatchers.IO) {
+        val urlParser = GetUrlParser().invoke(url.toKBoard())
+        val headPostId = urlParser.parseHeadPostId(url.toHttpUrl())!!
+        val origin = invoke(url)
+        origin.map { p ->
+            if (p.replyTo().isEmpty()) {
+                val originContent = p.content
+                p.copy(content = listOf(KReplyTo(headPostId)).plus(originContent))
+            } else {
+                p
+            }
+        }
+    }
 }

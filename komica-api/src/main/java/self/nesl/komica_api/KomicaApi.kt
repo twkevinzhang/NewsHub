@@ -29,7 +29,7 @@ class KomicaApi (
         val urlParser = GetUrlParser().invoke(url.toKBoard())
         val httpUrl = url.toHttpUrl()
         return if (urlParser.hasPostId(httpUrl)) {
-            GetAllPost(client).invoke(url)
+            GetAllPost(client).withFillReplyTo(url)
         } else if (urlParser.hasBoardId(httpUrl)) {
             GetAllNews(client).invoke(url)
         } else {
