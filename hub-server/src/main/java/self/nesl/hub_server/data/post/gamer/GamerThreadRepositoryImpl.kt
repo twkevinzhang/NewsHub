@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import self.nesl.gamer_api.GamerApi
 import self.nesl.hub_server.data.board.Board
+import self.nesl.hub_server.data.news.News
 import self.nesl.hub_server.data.news.gamer.GamerNewsDao
 import self.nesl.hub_server.data.post.ThreadRepository
 import self.nesl.hub_server.di.TransactionProvider
@@ -20,26 +21,27 @@ class GamerThreadRepositoryImpl @Inject constructor(
 ): ThreadRepository<GamerPost> {
 
     override suspend fun getPostThread(threadUrl: String, page: Int, board: Board) = withContext(ioDispatcher) {
-        val news = newsDao.readNews(threadUrl)
-        val thread = postDao.readAllByThreadUrl(news.threadUrl)
-        val isEmpty = thread.size == 1
-        if (isEmpty) {
-            try {
-                val req = api.getRequestBuilder()
-                    .url(threadUrl)
-                    .setPageReq(page)
-                    .build()
-                val remote = api.getAllPost(req).map { it.toGamerPost(page, threadUrl) }
-                transactionProvider.invoke {
-                    postDao.upsertAll(remote)
-                }
-                remote
-            } catch (e: Exception) {
-                Log.e("GamerPostRepo", e.stackTraceToString())
-                emptyList()
+        val news = newsDao.readNews(threadUrl) as? News
+        if (news != null) {
+            val thread = postDao.readAllByThreadUrl(news.threadUrl)
+            val isEmpty = thread.size <= 1
+            if (!isEmpty) {
+                return@withContext thread
             }
-        } else {
-            thread
+        }
+        try {
+            val req = api.getRequestBuilder()
+                .url(threadUrl)
+                .setPageReq(page)
+                .build()
+            val remote = api.getAllPost(req).map { it.toGamerPost(page, threadUrl) }
+            transactionProvider.invoke {
+                postDao.upsertAll(remote)
+            }
+            remote
+        } catch (e: Exception) {
+            Log.e("GamerPostRepo", e.stackTraceToString())
+            emptyList()
         }
     }
 

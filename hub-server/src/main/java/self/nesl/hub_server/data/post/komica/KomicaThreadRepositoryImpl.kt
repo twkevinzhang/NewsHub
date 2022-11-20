@@ -21,25 +21,26 @@ class KomicaThreadRepositoryImpl @Inject constructor(
 
     override suspend fun getPostThread(threadUrl: String, page: Int, board: Board): List<KomicaPost> = withContext(ioDispatcher) {
         if (page > 1) return@withContext emptyList()
-        val news = dao.readNews(threadUrl) as News
-        val thread = dao.readAllByThreadUrl(news.threadUrl)
-        val isEmpty = thread.size == 1
-        if (isEmpty) {
-            try {
-                val req = api.getRequestBuilder(board.toKBoard())
-                    .url(threadUrl)
-                    .build()
-                val remote = api.getAllPost(req).map { it.toKomicaPost(page, board.url, threadUrl) }
-                transactionProvider.invoke {
-                    dao.upsertAll(remote)
-                }
-                remote
-            } catch (e: Exception) {
-                Log.e("KomicaPostRepo", e.stackTraceToString())
-                emptyList()
+        val news = dao.readNews(threadUrl) as? News
+        if (news != null) {
+            val thread = dao.readAllByThreadUrl(news.threadUrl)
+            val isEmpty = thread.size <= 1
+            if (!isEmpty) {
+                return@withContext thread
             }
-        } else {
-            thread
+        }
+        try {
+            val req = api.getRequestBuilder(board.toKBoard())
+                .url(threadUrl)
+                .build()
+            val remote = api.getAllPost(req).map { it.toKomicaPost(page, board.url, threadUrl) }
+            transactionProvider.invoke {
+                dao.upsertAll(remote)
+            }
+            remote
+        } catch (e: Exception) {
+            Log.e("KomicaPostRepo", e.stackTraceToString())
+            emptyList()
         }
     }
 
