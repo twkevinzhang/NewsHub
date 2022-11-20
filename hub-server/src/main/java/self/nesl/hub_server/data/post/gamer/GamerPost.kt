@@ -4,15 +4,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import self.nesl.gamer_api.model.GPost
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.news.gamer.GamerNews
+import self.nesl.hub_server.data.news.News
 import self.nesl.hub_server.data.post.Post
 import self.nesl.hub_server.data.toParagraph
-import self.nesl.komica_api.model.KPost
 
+@Entity(tableName = "gamer_post")
 data class GamerPost (
-    override val url: String,
+    @PrimaryKey val url: String,
+    override val threadUrl: String,
     override val id: String,
-    override val boardUrl: String,
     override val title: String,
     val createdAt: Long?,
     val posterName: String,
@@ -22,9 +22,9 @@ data class GamerPost (
     val page: Int,
 ): Post
 
-fun GPost.toGamerPost(page: Int, boardUrl: String) =
+fun GPost.toGamerPost(page: Int, threadUrl: String) =
     GamerPost(
-        boardUrl = boardUrl,
+        threadUrl = threadUrl,
         url = url,
         title = title,
         createdAt = createdAt,
@@ -40,9 +40,9 @@ fun mockGamerPost() =
     GamerPost(
         id = "29683783",
         posterName = "Zhen Long",
-        url = "https://gaia.komica.org/00/pixmicat.php?res=29683783",
+        threadUrl = "https://forum.gamer.com.tw/C.php?bsn=60076&snA=4166175",
         title = "How to Google?",
-        boardUrl = "https://gaia.komica.org/00",
+        url = "https://forum.gamer.com.tw/C.php?bsn=60076&snA=4166175#29683783",
         createdAt = 0,
         replies = 0,
         readAt = 0,

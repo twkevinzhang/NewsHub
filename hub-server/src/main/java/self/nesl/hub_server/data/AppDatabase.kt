@@ -1,5 +1,6 @@
 package self.nesl.hub_server.data
 
+import android.util.Log
 import androidx.room.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -9,6 +10,8 @@ import self.nesl.hub_server.data.board.Board
 import self.nesl.hub_server.data.board.BoardDao
 import self.nesl.hub_server.data.news.gamer.GamerNews
 import self.nesl.hub_server.data.news.gamer.GamerNewsDao
+import self.nesl.hub_server.data.post.gamer.GamerPost
+import self.nesl.hub_server.data.post.gamer.GamerPostDao
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.KomicaPostDao
 
@@ -16,6 +19,7 @@ import self.nesl.hub_server.data.post.komica.KomicaPostDao
     entities = [
         KomicaPost::class,
         GamerNews::class,
+        GamerPost::class,
         Board::class,
     ],
     version = 1
@@ -47,7 +51,7 @@ abstract class AppDatabase: RoomDatabase() {
                             content = it.getString("content")
                         )
                         ParagraphType.REPLY_TO.toString() -> Paragraph.ReplyTo(
-                            id = it.getString("content")
+                            id = it.getString("id")
                         )
                         ParagraphType.TEXT.toString() -> Paragraph.Text(
                             content = it.getString("content")
@@ -93,5 +97,6 @@ abstract class AppDatabase: RoomDatabase() {
 
     abstract fun komicaPostDao(): KomicaPostDao
     abstract fun gamerNewsDao(): GamerNewsDao
+    abstract fun gamerPostDao(): GamerPostDao
     abstract fun boardDao(): BoardDao
 }

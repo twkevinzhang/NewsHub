@@ -3,27 +3,30 @@ package self.nesl.hub_server.data.post.komica
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import self.nesl.hub_server.data.Paragraph
+import self.nesl.hub_server.data.news.News
 import self.nesl.hub_server.data.post.Post
 import self.nesl.hub_server.data.toParagraph
 import self.nesl.komica_api.model.KPost
 
 @Entity(tableName = "komica_news")
 data class KomicaPost (
-    @PrimaryKey override val url: String,
+    @PrimaryKey val url: String,
+    override val threadUrl: String,
     override val id: String,
     override val boardUrl: String,
     override val title: String,
+    override val content: List<Paragraph>,
     val createdAt: Long?,
     val poster: String?,
     val visits: Int?,
     val replies: Int?,
     val readAt: Int?,
-    override val content: List<Paragraph>,
     val page: Int,
-): Post
+): Post, News
 
-fun KPost.toKomicaPost(page: Int, boardUrl: String) =
+fun KPost.toKomicaPost(page: Int, boardUrl: String, threadUrl: String = url) =
     KomicaPost(
+        threadUrl = threadUrl,
         boardUrl = boardUrl,
         url = url,
         title = title,
@@ -39,7 +42,8 @@ fun KPost.toKomicaPost(page: Int, boardUrl: String) =
 
 fun mockKomicaPost() =
     KomicaPost(
-        url = "https://gaia.komica.org/00/pixmicat.php?res=29683783",
+        threadUrl = "https://gaia.komica.org/00/pixmicat.php?res=29683783",
+        url = "https://gaia.komica.org/00/pixmicat.php?res=29683783#r1",
         title = "How to Google?",
         boardUrl = "https://gaia.komica.org/00",
         createdAt = 0,

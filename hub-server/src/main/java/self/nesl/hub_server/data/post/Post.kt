@@ -4,7 +4,9 @@ import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news.News
 import self.nesl.hub_server.trySubstring
 
-interface Post: News {
+interface Post {
+
+    val threadUrl: String
 
     /**
      * Returns the id in the discussion thread.

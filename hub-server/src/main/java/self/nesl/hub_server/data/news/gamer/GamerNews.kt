@@ -8,7 +8,7 @@ import self.nesl.hub_server.data.news.News
 
 @Entity(tableName = "gamer_news")
 data class GamerNews (
-    @PrimaryKey override val url: String,
+    @PrimaryKey override val threadUrl: String,
     override val boardUrl: String,
     val title: String,
     val createdAt: String,
@@ -30,7 +30,7 @@ fun GNews.toGamerPost(page: Int, boardUrl: String): GamerNews {
     }
     return GamerNews(
         boardUrl = boardUrl,
-        url = url,
+        threadUrl = url,
         title = title,
         createdAt = createdAt,
         posterName = posterName,
@@ -44,7 +44,7 @@ fun GNews.toGamerPost(page: Int, boardUrl: String): GamerNews {
 
 fun mockGamerNews() =
     GamerNews(
-        url = "https://gaia.komica.org/00/pixmicat.php?res=29683783",
+        threadUrl = "https://gaia.komica.org/00/pixmicat.php?res=29683783",
         title = "How to Google?",
         boardUrl = "https://gaia.komica.org/00",
         createdAt = "今日 15:19",

@@ -1,9 +1,9 @@
 package self.nesl.hub_server.data.news
 
 import self.nesl.hub_server.data.Paragraph
-import self.nesl.hub_server.data.Host
 
 interface News {
-    val url: String
+    val threadUrl: String
     val boardUrl: String
+    val content: List<Paragraph>
 }
