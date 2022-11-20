@@ -30,18 +30,18 @@ fun CardHeadTimeBlock(timestamp: Long?) {
 
 @Composable
 fun CardHeadRepliesBlock(replies: Int?, onShowMoreClick: (() -> Unit)? = null, showZero: Boolean = true) {
-    if (onShowMoreClick == null || replies.isZeroOrNull()) {
-        if (showZero) {
+    if ((replies.isZeroOrNull() && showZero) || replies.isZeroOrNull().not()) {
+        if (onShowMoreClick == null || replies.isZeroOrNull()) {
             CardHeadTextBlock(
                 text = (replies ?: 0).toString(),
             )
+        } else {
+            CardHeadTextBlock(
+                text = (replies ?: 0).toString(),
+                color = AppLink,
+                onClick = onShowMoreClick,
+            )
         }
-    } else {
-        CardHeadTextBlock(
-            text = (replies ?: 0).toString(),
-            color = AppLink,
-            onClick = onShowMoreClick,
-        )
     }
 }
 
