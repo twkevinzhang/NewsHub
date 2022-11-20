@@ -24,14 +24,8 @@ import self.nesl.komica_api.toKBoard
 class GetAllNews(
     private val client: OkHttpClient,
 ) {
-    suspend fun invoke(url: String): List<KPost> = withContext(Dispatchers.IO) {
-        val board = url.toKBoard()
-        val page = GetUrlParser().invoke(url.toKBoard()).parsePage(url.toHttpUrl())
-        invoke(board, page)
-    }
-
-    suspend fun invoke(board: KBoard, page: Int?= null): List<KPost> = withContext(Dispatchers.IO) {
-        val req = processPage(board, page)
+    suspend fun invoke(req: Request): List<KPost> = withContext(Dispatchers.IO) {
+        val board = req.url.toKBoard()
         val response = client.newCall(req).await()
         val urlParser = GetUrlParser().invoke(board)
 
@@ -45,21 +39,5 @@ class GetAllNews(
             else ->
                 throw NotImplementedError("BoardParser of $board not implemented yet")
         }.parse(Jsoup.parse(response.body?.string()), board.url)
-    }
-
-    private fun processPage(board: KBoard, page: Int?= null): Request {
-        return when (board) {
-            is KBoard.Sora, KBoard.人外, KBoard.格鬥遊戲, KBoard.Idolmaster, KBoard.`3D-STG`, KBoard.魔物獵人, KBoard.`TYPE-MOON` ->
-                SoraBoardRequestBuilder()
-            is KBoard._2catKomica ->
-                SoraBoardRequestBuilder()
-            is KBoard._2cat ->
-                _2catBoardRequestBuilder()
-            else ->
-                throw NotImplementedError("BoardRequestBuilder of $board not implemented yet")
-        }
-            .url(board.url)
-            .setPageReq(page)
-            .build()
     }
 }

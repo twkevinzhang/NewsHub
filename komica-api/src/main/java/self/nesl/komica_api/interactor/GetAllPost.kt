@@ -21,15 +21,12 @@ import self.nesl.komica_api.toKBoard
 class GetAllPost(
     private val client: OkHttpClient,
 ) {
-    suspend fun invoke(url: String): List<KPost> = withContext(Dispatchers.IO) {
-        val response = client.newCall(
-            Request.Builder()
-                .url(url)
-                .build()
-        ).await()
-        val urlParser = GetUrlParser().invoke(url.toKBoard())
+    suspend fun invoke(req: Request): List<KPost> = withContext(Dispatchers.IO) {
+        val response = client.newCall(req).await()
+        val board = req.url.toKBoard()
+        val urlParser = GetUrlParser().invoke(board)
 
-        when (url.toKBoard()) {
+        when (board) {
             is KBoard.Sora, KBoard.人外, KBoard.格鬥遊戲, KBoard.Idolmaster, KBoard.`3D-STG`, KBoard.魔物獵人, KBoard.`TYPE-MOON` ->
                 SoraThreadParser(SoraPostParser(urlParser, SoraPostHeadParser()))
             is KBoard._2catKomica ->
@@ -37,14 +34,14 @@ class GetAllPost(
             is KBoard._2cat ->
                 _2catThreadParser(_2catPostParser(urlParser, _2catPostHeadParser(_2catUrlParser())))
             else ->
-                throw NotImplementedError("ThreadParser of $url not implemented yet")
-        }.parse(Jsoup.parse(response.body?.string()), url)
+                throw NotImplementedError("ThreadParser of ${req.url} not implemented yet")
+        }.parse(Jsoup.parse(response.body?.string()), req.url.toString())
     }
 
-    suspend fun withFillReplyTo(url: String): List<KPost> = withContext(Dispatchers.IO) {
-        val urlParser = GetUrlParser().invoke(url.toKBoard())
-        val headPostId = urlParser.parseHeadPostId(url.toHttpUrl())!!
-        val origin = invoke(url)
+    suspend fun withFillReplyTo(req: Request): List<KPost> = withContext(Dispatchers.IO) {
+        val urlParser = GetUrlParser().invoke(req.url.toKBoard())
+        val headPostId = urlParser.parseHeadPostId(req.url)!!
+        val origin = invoke(req)
         origin.map { p ->
             if (p.replyTo().isEmpty()) {
                 val originContent = p.content

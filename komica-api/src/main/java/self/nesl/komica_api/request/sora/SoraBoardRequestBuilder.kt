@@ -1,14 +1,15 @@
 package self.nesl.komica_api.request.sora
 
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
 import self.nesl.komica_api.request.RequestBuilder
 
 class SoraBoardRequestBuilder: RequestBuilder {
-    private val suffix = "/pixmicat.php?page_num="
-    private var url: String = ""
+    private lateinit var _httpUrl: HttpUrl
 
     override fun url(url: String): RequestBuilder {
-        this.url= url
+        this._httpUrl= url.toHttpUrl()
         return this
     }
 
@@ -20,24 +21,27 @@ class SoraBoardRequestBuilder: RequestBuilder {
     private fun addPageReq(page: Int): RequestBuilder {
         if (hasPageReq())
             removePageReq()
-        url += suffix + page
+        _httpUrl = _httpUrl.newBuilder()
+            .addQueryParameter("page_num", page.toString())
+            .build()
         return this
     }
 
     private fun removePageReq(): RequestBuilder {
         if(hasPageReq())
-            url = url.split(suffix)[0]
+            _httpUrl = _httpUrl.newBuilder()
+                .removeAllQueryParameters("page_num")
+                .build()
         return this
     }
 
     private fun hasPageReq(): Boolean {
-        return url.contains(suffix)
+        return _httpUrl.queryParameter("page_num").isNullOrBlank().not()
     }
 
     override fun build(): Request {
-        val _url = if (url.last() == '/') url else "$url/"
         return Request.Builder()
-            .url(_url)
+            .url(_httpUrl)
             .build()
     }
 }

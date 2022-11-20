@@ -1,5 +1,6 @@
 package self.nesl.komica_api
 
+import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
@@ -132,5 +133,5 @@ fun String.toMillTimestamp(): Long {
     return 0L
 }
 
-fun String.toKBoard() =
-    boards().first { this.contains(it.url) }
+fun HttpUrl.toKBoard() =
+    boards().first { toString().contains(it.url) }

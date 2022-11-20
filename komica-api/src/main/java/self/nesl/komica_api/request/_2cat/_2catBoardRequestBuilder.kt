@@ -7,10 +7,10 @@ import okhttp3.Request
 import self.nesl.komica_api.request.RequestBuilder
 
 class _2catBoardRequestBuilder: RequestBuilder {
-    private lateinit var url: HttpUrl
+    private lateinit var _httpUrl: HttpUrl
 
     override fun url(url: String): RequestBuilder {
-        this.url= url.toHttpUrl()
+        this._httpUrl = url.toHttpUrl()
         return this
     }
 
@@ -22,7 +22,7 @@ class _2catBoardRequestBuilder: RequestBuilder {
     private fun addPageReq(page: Int): RequestBuilder {
         if (hasPageReq())
             removePageReq()
-        url = url.newBuilder()
+        _httpUrl = _httpUrl.newBuilder()
             .addQueryParameter("page", page.toString())
             .build()
         return this
@@ -30,7 +30,7 @@ class _2catBoardRequestBuilder: RequestBuilder {
 
     private fun removePageReq(): RequestBuilder {
         if(hasPageReq()){
-            url = url.newBuilder()
+            _httpUrl = _httpUrl.newBuilder()
                 .removeAllQueryParameters("page")
                 .build()
         }
@@ -38,12 +38,12 @@ class _2catBoardRequestBuilder: RequestBuilder {
     }
 
     private fun hasPageReq(): Boolean {
-        return url.queryParameter("page").isNullOrEmpty().not()
+        return _httpUrl.queryParameter("page").isNullOrEmpty().not()
     }
 
     override fun build(): Request {
         return Request.Builder()
-            .url(url)
+            .url(_httpUrl)
             .build()
     }
 }

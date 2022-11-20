@@ -19,18 +19,21 @@ class KomicaNewsRepositoryImpl @Inject constructor(
 ): NewsRepository<KomicaPost> {
 
     override suspend fun getAllNews(board: Board, page: Int): List<KomicaPost> = withContext(ioDispatcher) {
-        val news = dao.readAll(board.url, page)
-        if (news.isNotEmpty()) {
-            news
-        } else {
+        val news = dao.readAllNews(board.url, page)
+        news.ifEmpty {
             try {
-                val remote = api.getAllThreadHead(board.toKBoard(), page.takeIf { it != 0 }).map { it.toKomicaPost(page, board.url) }
+                val request = api.getRequestBuilder(board.toKBoard())
+                    .url(board.url)
+                    .setPageReq(page)
+                    .build()
+                val remote = api.getAllPost(request)
+                    .map { it.toKomicaPost(page, board.url) }
                 transactionProvider.invoke {
                     dao.upsertAll(remote)
                 }
                 remote
             } catch (e: Exception) {
-                Log.e("KomicaPostRepo", e.stackTraceToString())
+                Log.e("KomicaNewsRepo", e.stackTraceToString())
                 emptyList()
             }
         }
