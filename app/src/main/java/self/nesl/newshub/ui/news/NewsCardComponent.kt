@@ -18,7 +18,6 @@ import self.nesl.newshub.ui.component.TextParagraph
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
 import self.nesl.newshub.ui.theme.AppLink
 
-
 @Composable
 fun CardHeadPosterBlock(poster: String?) {
     CardHeadTextBlock(poster?.takeIf { it.isNotBlank() }.toString())
@@ -30,11 +29,13 @@ fun CardHeadTimeBlock(timestamp: Long?) {
 }
 
 @Composable
-fun CardHeadRepliesBlock(replies: Int?, onShowMoreClick: (() -> Unit)? = null) {
+fun CardHeadRepliesBlock(replies: Int?, onShowMoreClick: (() -> Unit)? = null, showZero: Boolean = true) {
     if (onShowMoreClick == null || replies.isZeroOrNull()) {
-        CardHeadTextBlock(
-            text = (replies ?: 0).toString(),
-        )
+        if (showZero) {
+            CardHeadTextBlock(
+                text = (replies ?: 0).toString(),
+            )
+        }
     } else {
         CardHeadTextBlock(
             text = (replies ?: 0).toString(),
@@ -59,7 +60,7 @@ fun CardHeadBlock(
 
 @Composable
 fun CardHeadTextBlock(
-    text: String = "",
+    text: String? = "",
     color: Color = LocalContentColor.current.copy(alpha = AppDisabledAlpha),
     onClick: (() -> Unit)? = null,
 ) {
@@ -67,11 +68,13 @@ fun CardHeadTextBlock(
         modifier = Modifier
             .thenIfNotNull(onClick) { clickable(onClick = it) }
     ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodySmall,
-            color = color,
-        )
+        if (text != null) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodySmall,
+                color = color,
+            )
+        }
     }
 }
 

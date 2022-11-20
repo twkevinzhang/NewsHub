@@ -137,9 +137,9 @@ private fun KomicaRePostCardHeader(rePost: KomicaPost) {
             KomicaNewsCardTitle(rePost.title)
         }
         Row {
-            CardHeadPosterBlock(rePost.poster)
             CardHeadTimeBlock(rePost.createdAt)
-            CardHeadTextBlock(rePost.id)
+            CardHeadTextBlock("${rePost.id}(${rePost.poster})")
+            CardHeadRepliesBlock(rePost.replies, showZero = false)
         }
     }
 }
