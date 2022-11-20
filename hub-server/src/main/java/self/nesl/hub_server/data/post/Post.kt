@@ -34,7 +34,8 @@ fun Post.parent(): List<String> {
 fun Post.toText(): String {
     return content
         .filterIsInstance<Paragraph.Text>()
-        .first()
-        .content
-        .trySubstring(0..5)
+        .firstOrNull()
+        ?.content
+        ?.trySubstring(0..5)
+        ?: ""
 }
