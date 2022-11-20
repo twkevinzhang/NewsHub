@@ -24,6 +24,7 @@ import self.nesl.hub_server.data.post.parentIs
 import self.nesl.hub_server.data.post.toText
 import self.nesl.hub_server.data.rawImages
 import self.nesl.newshub.encode
+import self.nesl.newshub.isZeroOrNull
 import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.component.gallery.AsyncGallery
@@ -74,7 +75,7 @@ fun ThreadRoute(
         return pagingPosts.itemSnapshotList.findLast { it?.id ==  replyTo.id }?.toText() ?: ""
     }
 
-    fun onRePostClick(rePost: Post) {
+    fun navigateToRePostThread(rePost: Post) {
         if (pagingPosts.itemSnapshotList.items.parentIs(rePost.id).isNotEmpty()) {
             val top = pagingPosts.peek(0)
             top?.let {
@@ -94,7 +95,7 @@ fun ThreadRoute(
         },
         navigateUp = navController::navigateUp,
         onPreviewReplyTo = ::onPreviewReplyTo,
-        onRePostClick = ::onRePostClick,
+        navigateToRePostThread = ::navigateToRePostThread,
     )
 
     if (replyStack.isNotEmpty()) {
@@ -105,7 +106,7 @@ fun ThreadRoute(
         ) {
             RePostCard(
                 post = replyStack.lastOrNull(),
-                onClick = { onRePostClick(replyStack.last()) },
+                navigateToRePostThread = { navigateToRePostThread(replyStack.last()) },
                 onParagraphClick = ::onParagraphClick,
                 onPreviewReplyTo = ::onPreviewReplyTo,
             )
@@ -138,7 +139,7 @@ fun ThreadScreen(
     navigateUp: () -> Unit = {},
     onParagraphClick: (Paragraph) -> Unit = { },
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
-    onRePostClick: (Post) -> Unit,
+    navigateToRePostThread: (Post) -> Unit,
 ){
     Scaffold(
         topBar = {
@@ -174,7 +175,7 @@ fun ThreadScreen(
                         } else if (post != null) {
                             RePostCard(
                                 post = post,
-                                onClick = { onRePostClick(post) },
+                                navigateToRePostThread = { navigateToRePostThread(post) },
                                 onParagraphClick = onParagraphClick,
                                 onPreviewReplyTo = onPreviewReplyTo,
                             )
@@ -208,20 +209,21 @@ fun PostCard(
 @Composable
 fun RePostCard(
     post: Post?,
-    onClick: () -> Unit = {},
+    navigateToRePostThread: (() -> Unit)? = null,
     onParagraphClick: (Paragraph) -> Unit = {},
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
 ) {
     when (post) {
         is KomicaPost -> KomicaRePostCard(
             rePost = post,
-            onClick = onClick,
+            onClick = navigateToRePostThread.takeIf { post.replies.isZeroOrNull().not() },
             onPreviewReplyTo = onPreviewReplyTo,
             onParagraphClick = onParagraphClick,
         )
         is GamerPost -> GamerPostCard(
             post = post,
             onParagraphClick = onParagraphClick,
+            onClick = navigateToRePostThread.takeIf { post.replies.isZeroOrNull().not() },
         )
     }
 }
