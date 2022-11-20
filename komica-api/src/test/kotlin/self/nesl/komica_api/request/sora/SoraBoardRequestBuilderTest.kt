@@ -11,11 +11,11 @@ internal class SoraBoardRequestBuilderTest {
     @Test
     fun `Test setPageReq with url expect successful`() {
         val req = SoraBoardRequestBuilder()
-            .url("https://sora.komica.org/00")
+            .url("https://gaia.komica.org/00")
             .setPageReq(1)
             .build()
         assertEquals(
-            "https://sora.komica.org/00/pixmicat.php?page_num=1/".toHttpUrl(),
+            "https://gaia.komica.org/00/1.htm".toHttpUrl(),
             req.url
         )
     }
@@ -23,11 +23,11 @@ internal class SoraBoardRequestBuilderTest {
     @Test
     fun `Test setPageReq with url with page_num expect successful`() {
         val req = SoraBoardRequestBuilder()
-            .url("https://sora.komica.org/00/pixmicat.php?page_num=2")
+            .url("https://gaia.komica.org/00/2.htm")
             .setPageReq(1)
             .build()
         assertEquals(
-            "https://sora.komica.org/00/pixmicat.php?page_num=1/".toHttpUrl(),
+            "https://gaia.komica.org/00/1.htm".toHttpUrl(),
             req.url
         )
     }

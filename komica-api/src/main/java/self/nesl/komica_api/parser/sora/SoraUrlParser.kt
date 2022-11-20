@@ -21,7 +21,8 @@ class SoraUrlParser: UrlParser {
     }
 
     override fun parsePage(url: HttpUrl): Int? {
-        return url.queryParameter("page")?.toInt()
+        val page = url.pathSegments.last().replace(".htm", "")
+        return page.toInt()
     }
 
     override fun hasBoardId(url: HttpUrl): Boolean {

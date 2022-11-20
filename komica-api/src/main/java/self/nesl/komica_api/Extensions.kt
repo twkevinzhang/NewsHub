@@ -135,3 +135,29 @@ fun String.toMillTimestamp(): Long {
 
 fun HttpUrl.toKBoard() =
     boards().first { toString().contains(it.url) }
+
+fun HttpUrl.Builder.setFilename(name: String?): HttpUrl.Builder {
+    val lastIndex = build().pathSegments.lastIndex
+    if (name != null) {
+        setPathSegment(lastIndex, name)
+    } else {
+        removePathSegment(lastIndex)
+    }
+    return this
+}
+
+fun HttpUrl.Builder.addFilename(name: String): HttpUrl.Builder {
+    addPathSegment(name)
+    return this
+}
+
+fun HttpUrl.Builder.removeFilename(extension: String): HttpUrl.Builder {
+    val pathSegments = build().pathSegments
+    val last = pathSegments.last()
+    if (last.contains(extension)) {
+        removePathSegment(pathSegments.lastIndex)
+    }
+    return this
+}
+
+fun Int?.isZeroOrNull() = this == 0 || this == null
