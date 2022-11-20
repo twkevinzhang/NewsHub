@@ -24,7 +24,7 @@ class KomicaApi (
     suspend fun getAllPost(req: Request): List<KPost> {
         val urlParser = GetUrlParser().invoke(req.url.toKBoard())
         return if (urlParser.hasPostId(req.url)) {
-            GetAllPost(client).withFillReplyTo(req)
+            GetAllPost(client).invoke(req)
         } else {
             GetAllNews(client).invoke(req)
         }
