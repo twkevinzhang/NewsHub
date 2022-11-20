@@ -78,7 +78,7 @@ fun ThreadRoute(
         if (pagingPosts.itemSnapshotList.items.parentIs(rePost.id).isNotEmpty()) {
             val top = pagingPosts.peek(0)
             top?.let {
-                navController.navigate("thread/${it.url.encode()}/re-post/${rePost.id}")
+                navController.navigate("thread/${it.threadUrl.encode()}/re-post/${rePost.id}")
             }
         }
     }
@@ -88,7 +88,10 @@ fun ThreadRoute(
         pagingPosts = pagingPosts,
         boardName = boardName,
         onParagraphClick = ::onParagraphClick,
-        onRefresh = threadViewModel::refresh,
+        onRefresh = {
+            threadViewModel.clear()
+            pagingPosts.refresh()
+        },
         navigateUp = navController::navigateUp,
         onPreviewReplyTo = ::onPreviewReplyTo,
         onRePostClick = ::onRePostClick,

@@ -7,16 +7,14 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import self.nesl.hub_server.data.news.News
 import self.nesl.newshub.applyIf
 import self.nesl.newshub.interactor.BoardInteractor
-import self.nesl.newshub.interactor.NewsInteractor
-import self.nesl.newshub.interactor.PostInteractor
+import self.nesl.newshub.interactor.ThreadInteractor
 import javax.inject.Inject
 
 @HiltViewModel
 class ThreadViewModel @Inject constructor(
-    private val postInteractor: PostInteractor,
+    private val threadInteractor: ThreadInteractor,
     private val boardInteractor: BoardInteractor,
 ) : ViewModel() {
     private val _threadUrl = MutableStateFlow("")
@@ -27,17 +25,15 @@ class ThreadViewModel @Inject constructor(
     val boardName = _boardName.asStateFlow()
 
     val pagingPosts = _threadUrl
-        .mapLatest { url ->
+        .mapLatest { threadUrl ->
             _loading.update { true }
-            url.applyIf({ isNotBlank() }) {
-                readBoardName(url)
+            threadUrl.applyIf({ isNotBlank() }) {
+                readBoardName(threadUrl)
             }
         }
-        .combineTransform(_rePostId) { url, rePostId ->
-            if (url.isNotBlank() && rePostId.isNotBlank()) {
-                postInteractor.getAll(url, rePostId)
-            } else if (url.isNotBlank()) {
-                postInteractor.getAll(url)
+        .combineTransform(_rePostId) { threadUrl, rePostId ->
+            if (threadUrl.isNotBlank()) {
+                threadInteractor.getAll(threadUrl, rePostId.takeIf { it.isNotBlank() })
             } else {
                 emptyFlow()
             }.collect(this)
@@ -46,21 +42,23 @@ class ThreadViewModel @Inject constructor(
         .catch { Log.e("ThreadViewModel", it.stackTraceToString()) }
         .cachedIn(viewModelScope)
 
-    fun threadUrl(url: String) {
-        this._threadUrl.update { url }
+    fun thread(threadUrl: String) {
+        this._threadUrl.update { threadUrl }
     }
 
     fun rePostId(rePostId: String) {
         this._rePostId.update { rePostId }
     }
 
-    fun refresh() {
-
+    fun clear() {
+        viewModelScope.launch {
+            threadInteractor.removeThread(_threadUrl.value)
+        }
     }
 
-    private suspend fun readBoardName(url: String) {
-        if (url.isBlank()) return
-        val board = boardInteractor.get(url)
+    private suspend fun readBoardName(threadUrl: String) {
+        if (threadUrl.isBlank()) return
+        val board = boardInteractor.get(threadUrl)
         _boardName.update { board.name }
     }
 }

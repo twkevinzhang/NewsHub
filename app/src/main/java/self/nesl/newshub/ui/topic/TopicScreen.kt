@@ -2,7 +2,6 @@ package self.nesl.newshub.ui.topic
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -31,7 +30,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.Host
 import self.nesl.hub_server.data.board.Board
@@ -72,11 +70,11 @@ fun TopicRoute(
             )
         }
 
-        swipeable("thread/{url}") {
+        swipeable("thread/{threadUrl}") {
             val factory = HiltViewModelFactory(LocalContext.current, it)
             val threadViewModel = viewModel<ThreadViewModel>(factory = factory)
-            it.arguments?.getString("url")?.let { url ->
-                threadViewModel.threadUrl(url)
+            it.arguments?.getString("threadUrl")?.let { threadUrl ->
+                threadViewModel.thread(threadUrl)
             }
             ThreadRoute(
                 threadViewModel = threadViewModel,
@@ -84,11 +82,11 @@ fun TopicRoute(
             )
         }
 
-        swipeable("thread/{url}/re-post/{rePostId}") {
+        swipeable("thread/{threadUrl}/re-post/{rePostId}") {
             val factory = HiltViewModelFactory(LocalContext.current, it)
             val threadViewModel = viewModel<ThreadViewModel>(factory = factory)
-            it.arguments?.getString("url")?.let { url ->
-                threadViewModel.threadUrl(url)
+            it.arguments?.getString("threadUrl")?.let { threadUrl ->
+                threadViewModel.thread(threadUrl)
             }
             it.arguments?.getString("rePostId")?.let { rePostId ->
                 threadViewModel.rePostId(rePostId)
@@ -113,7 +111,7 @@ fun NewsListRoute(
     val enableBoards by newsListViewModel.enableBoards.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
     val refreshState = rememberSwipeRefreshState(loading)
-    val navigateToNews = { news: News -> navController.navigate("thread/${news.url.encode()}") }
+    val navigateToNews = { news: News -> navController.navigate("thread/${news.threadUrl.encode()}") }
     val context = LocalContext.current
 
     fun onLinkClick(link: Paragraph.Link) {
