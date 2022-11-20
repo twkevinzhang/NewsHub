@@ -13,6 +13,19 @@ class BoardParser(
 ): Parser<List<GNews>> {
     override fun parse(source: Element, url: String): List<GNews> {
         val newsList = source.select("tr.b-list__row.b-list-item.b-imglist-item:not(.b-list__row--sticky)")
-        return newsList.map { newsParser.parse(it, url) }
+        return newsList.map {
+            val href = source.selectFirst("a[href^=\"C.php?bsn=\"]").attr("href")
+            val threadUrl = url.toHttpUrl().newBuilder()
+                .replaceAfterHost("/$href")
+                .removeAllQueryParameters("tnum")
+                .build()
+            newsParser.parse(it, threadUrl.toString())
+        }
+    }
+
+    private fun HttpUrl.Builder.replaceAfterHost(after: String): HttpUrl.Builder {
+        require(after.startsWith("/")){ "after should be starts with /: $after" }
+        val url = encodedPath("/").encodedQuery(null).encodedFragment(null)
+        return (url.toString().substringBeforeLast("/") + after).toHttpUrl().newBuilder()
     }
 }

@@ -27,10 +27,7 @@ class NewsParser: Parser<GNews> {
         setPopularity(source)
         setPosterName(source)
         setCreatedAt(source)
-        val href = source.selectFirst("a[href^=\"C.php?bsn=\"]").attr("href")
-        val httpUrl = url.toHttpUrl()
-        val threadUrl = "${httpUrl.scheme}://${httpUrl.host}/$href"
-        news = news.copy(url = threadUrl)
+        news = news.copy(url = url)
         return news
     }
 
