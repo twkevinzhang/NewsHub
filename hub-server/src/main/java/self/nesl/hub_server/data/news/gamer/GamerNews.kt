@@ -10,10 +10,10 @@ import self.nesl.hub_server.data.news.News
 data class GamerNews (
     @PrimaryKey override val threadUrl: String,
     override val boardUrl: String,
+    override val content: List<Paragraph>,
     val title: String,
     val createdAt: String,
     val posterName: String?,
-    val content: List<Paragraph>,
     val gp: Int,
     val interactions: Int,
     val popularity: Int,
