@@ -2,6 +2,7 @@ package self.nesl.newshub.ui.thread
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
@@ -10,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
@@ -38,8 +41,9 @@ fun ThreadRoute(
     navController: NavHostController,
 ){
     val pagingPosts = threadViewModel.pagingPosts.collectAsLazyPagingItems()
-    val loading by threadViewModel.loading.collectAsState(false)
+    var loading by remember { mutableStateOf(false) }
     val boardName by threadViewModel.boardName.collectAsState("")
+    val refreshState = rememberSwipeRefreshState(loading)
     val replyStack = remember { mutableStateListOf<Post>() }
     val galleryStack = remember { mutableStateListOf<String>() }
     var galleryIndex by remember { mutableStateOf(-1) }
@@ -85,7 +89,7 @@ fun ThreadRoute(
     }
 
     ThreadScreen(
-        refreshState = rememberSwipeRefreshState(loading),
+        refreshState = refreshState,
         pagingPosts = pagingPosts,
         boardName = boardName,
         onParagraphClick = ::onParagraphClick,
@@ -95,6 +99,21 @@ fun ThreadRoute(
         },
         navigateUp = navController::navigateUp,
         onPreviewReplyTo = ::onPreviewReplyTo,
+        onLoadStateChange = { loadState ->
+            loadState.apply {
+                when {
+                    refresh is LoadState.Loading -> {
+                        loading = true
+                    }
+                    refresh is LoadState.NotLoading -> {
+                        loading = false
+                    }
+                    refresh is LoadState.Error -> {
+                        loading = false
+                    }
+                }
+            }
+        },
         navigateToRePostThread = ::navigateToRePostThread,
     )
 
@@ -139,6 +158,7 @@ fun ThreadScreen(
     navigateUp: () -> Unit = {},
     onParagraphClick: (Paragraph) -> Unit = { },
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
+    onLoadStateChange: (CombinedLoadStates) -> Unit = { },
     navigateToRePostThread: (Post) -> Unit,
 ){
     Scaffold(
@@ -155,30 +175,36 @@ fun ThreadScreen(
                 )
             }
         },
-        modifier = Modifier.fillMaxSize()
     ) {
-        SwipeRefresh(
-            state = refreshState,
-            onRefresh = onRefresh,
+        Surface(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
         ) {
-            LazyColumn(
-                modifier = Modifier.padding(it)
+            SwipeRefresh(
+                state = refreshState,
+                onRefresh = onRefresh,
             ) {
-                pagingPosts.apply {
-                    itemsIndexed(this) { index, post ->
-                        if (index == 0) {
-                            PostCard(
-                                post = post,
-                                boardName = boardName,
-                                onParagraphClick = onParagraphClick,
-                            )
-                        } else if (post != null) {
-                            RePostCard(
-                                post = post,
-                                navigateToRePostThread = { navigateToRePostThread(post) },
-                                onParagraphClick = onParagraphClick,
-                                onPreviewReplyTo = onPreviewReplyTo,
-                            )
+                LazyColumn {
+                    pagingPosts.apply {
+                        item {
+                            onLoadStateChange(loadState)
+                        }
+                        itemsIndexed(this) { index, post ->
+                            if (index == 0) {
+                                PostCard(
+                                    post = post,
+                                    boardName = boardName,
+                                    onParagraphClick = onParagraphClick,
+                                )
+                            } else if (post != null) {
+                                RePostCard(
+                                    post = post,
+                                    navigateToRePostThread = { navigateToRePostThread(post) },
+                                    onParagraphClick = onParagraphClick,
+                                    onPreviewReplyTo = onPreviewReplyTo,
+                                )
+                            }
                         }
                     }
                 }

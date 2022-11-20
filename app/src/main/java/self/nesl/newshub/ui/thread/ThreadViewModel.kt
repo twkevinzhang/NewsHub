@@ -20,13 +20,10 @@ class ThreadViewModel @Inject constructor(
     private val _threadUrl = MutableStateFlow("")
     private val _boardName = MutableStateFlow("")
     private val _rePostId = MutableStateFlow("")
-    private val _loading = MutableStateFlow(false)
-    val loading = _loading.asStateFlow()
     val boardName = _boardName.asStateFlow()
 
     val pagingPosts = _threadUrl
         .mapLatest { threadUrl ->
-            _loading.update { true }
             threadUrl.applyIf({ isNotBlank() }) {
                 readBoardName(threadUrl)
             }
@@ -38,7 +35,6 @@ class ThreadViewModel @Inject constructor(
                 emptyFlow()
             }.collect(this)
         }
-        .onEach { _loading.update { false } }
         .catch { Log.e("ThreadViewModel", it.stackTraceToString()) }
         .cachedIn(viewModelScope)
 
