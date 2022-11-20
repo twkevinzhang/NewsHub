@@ -16,15 +16,8 @@ fun NewshubTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        } else {
-            ColorPalette
-        }
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = ColorPalette,
         typography = MaterialTheme.typography,
         shapes = MaterialTheme.shapes,
         content = content
@@ -36,9 +29,7 @@ fun NewshubTheme(
 fun PreviewTheme(
     content: @Composable () -> Unit =  {},
 ) {
-    MaterialTheme() {
-        Surface {
-            content()
-        }
+    NewshubTheme() {
+        content()
     }
 }
