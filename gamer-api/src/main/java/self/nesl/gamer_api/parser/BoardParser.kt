@@ -14,7 +14,7 @@ class BoardParser(
     override fun parse(source: Element, url: String): List<GNews> {
         val newsList = source.select("tr.b-list__row.b-list-item.b-imglist-item:not(.b-list__row--sticky)")
         return newsList.map {
-            val href = source.selectFirst("a[href^=\"C.php?bsn=\"]").attr("href")
+            val href = it.selectFirst("a[href^=\"C.php?bsn=\"]").attr("href")
             val threadUrl = url.toHttpUrl().newBuilder()
                 .replaceAfterHost("/$href")
                 .removeAllQueryParameters("tnum")
