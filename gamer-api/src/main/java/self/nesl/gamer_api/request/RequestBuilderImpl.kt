@@ -6,11 +6,9 @@ import okhttp3.Request
 
 class RequestBuilderImpl: RequestBuilder {
     private lateinit var _httpUrl: HttpUrl
-    private lateinit var builder: HttpUrl.Builder
 
     override fun url(url: String): RequestBuilder {
-        this._httpUrl= url.toHttpUrl()
-        this.builder = this._httpUrl.newBuilder()
+        this._httpUrl = url.toHttpUrl()
         return this
     }
 
@@ -22,13 +20,17 @@ class RequestBuilderImpl: RequestBuilder {
     private fun addPageReq(page: Int): RequestBuilder {
         if (hasPageReq())
             removePageReq()
-        builder.addQueryParameter("page", page.toString())
+        _httpUrl = _httpUrl.newBuilder()
+            .addQueryParameter("page", page.toString())
+            .build()
         return this
     }
 
     private fun removePageReq(): RequestBuilder {
         if(hasPageReq())
-            builder.removeAllQueryParameters("page")
+            _httpUrl = _httpUrl.newBuilder()
+                .removeAllQueryParameters("page")
+                .build()
         return this
     }
 
@@ -38,7 +40,7 @@ class RequestBuilderImpl: RequestBuilder {
 
     override fun build(): Request {
         return Request.Builder()
-            .url(builder.build())
+            .url(_httpUrl)
             .build()
     }
 }

@@ -6,10 +6,6 @@ import self.nesl.gamer_api.model.GBoard
 import self.nesl.gamer_api.model.GPost
 
 class UrlParserImpl: UrlParser {
-    override fun parsePostId(url: HttpUrl): String? {
-        return url.queryParameter("sn")
-    }
-
     override fun parseBoardId(url: HttpUrl): String? {
         return url.queryParameter("bsn")
     }
@@ -18,14 +14,34 @@ class UrlParserImpl: UrlParser {
         return url.queryParameter("snA")
     }
 
+    override fun parsePostId(url: HttpUrl): String? {
+        return url.queryParameter("sn")
+    }
+
     override fun parsePage(url: HttpUrl): Int {
         return url.queryParameter("page")?.toInt() ?: 1
     }
 
+    override fun hasBoardId(url: HttpUrl): Boolean {
+        return parseBoardId(url) != null
+    }
+
+    override fun hasThreadId(url: HttpUrl): Boolean {
+        return parseThreadId(url) != null
+    }
+
+    override fun hasPostId(url: HttpUrl): Boolean {
+        return parsePostId(url) != null
+    }
+
+    override fun hasPage(url: HttpUrl): Boolean {
+        return parsePage(url) != null
+    }
+
     override fun parseThreadUrl(url: HttpUrl): String {
         if (
-            parseBoardId(url) == null ||
-            parseThreadId(url) == null
+            !hasBoardId(url) ||
+            !hasThreadId(url)
         ) throw IllegalArgumentException()
 
         val builder = url.newBuilder()

@@ -20,11 +20,14 @@ class GamerNewsRepositoryImpl @Inject constructor(
 
     override suspend fun getAllNews(board: Board, page: Int): List<GamerNews> = withContext(ioDispatcher) {
         val news = dao.readAll(board.url, page)
-        if (news.isNotEmpty()) {
-            news
-        } else {
+        news.ifEmpty {
             try {
-                val remote = api.getAllNews(board.toGBoard(), page.takeIf { it != 0 }).map { it.toGamerPost(page, board.url) }
+                val req = api.getRequestBuilder()
+                    .url(board.url)
+                    .setPageReq(page.takeIf { it != 0 })
+                    .build()
+                val remote = api.getAllNews(req)
+                    .map { it.toGamerPost(page, board.url) }
                 transactionProvider.invoke {
                     dao.upsertAll(remote)
                 }

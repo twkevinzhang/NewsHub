@@ -20,22 +20,10 @@ import self.nesl.gamer_api.request.RequestBuilderImpl
 class GetAllPost(
     private val client: OkHttpClient,
 ) {
-    suspend fun invoke(threadUrl: String, page: Int): List<GPost> = withContext(Dispatchers.IO) {
-        val req = RequestBuilderImpl()
-            .url(threadUrl)
-            .setPageReq(page)
-            .build()
+    suspend fun invoke(req: Request): List<GPost> = withContext(Dispatchers.IO) {
+        val urlParser = GetUrlParser().invoke()
         val response = client.newCall(req).await()
-        parse(response, req.url.toString())
-    }
-
-    suspend fun invoke(url: String): List<GPost> = withContext(Dispatchers.IO) {
-        val req = RequestBuilderImpl()
-            .url(url)
-            .build()
-        val response = client.newCall(req).await()
-
-        parse(response, url)
+        parse(response, urlParser.parseThreadUrl(req.url))
     }
 
     private fun parse(response: Response, url: String) =
