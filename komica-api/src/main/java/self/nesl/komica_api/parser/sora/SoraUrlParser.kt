@@ -34,11 +34,11 @@ class SoraUrlParser: UrlParser {
     }
 
     override fun hasHeadPostId(url: HttpUrl): Boolean {
-        TODO("Not yet implemented")
+        return parseHeadPostId(url) != null
     }
 
     override fun hasRePostId(url: HttpUrl): Boolean {
-        TODO("Not yet implemented")
+        return parseRePostId(url) != null
     }
 
     override fun hasPage(url: HttpUrl): Boolean {

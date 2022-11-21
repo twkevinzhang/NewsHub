@@ -21,8 +21,7 @@ class _2catUrlParser: UrlParser {
     }
 
     override fun parsePage(url: HttpUrl): Int? {
-        val page = url.pathSegments.last().replace(".htm", "")
-        return page.toInt()
+        return url.queryParameter("page")?.toInt()
     }
 
     override fun hasPage(url: HttpUrl): Boolean {
