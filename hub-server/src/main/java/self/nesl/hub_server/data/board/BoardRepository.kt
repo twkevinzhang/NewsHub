@@ -1,8 +1,12 @@
 package self.nesl.hub_server.data.board
 
+import kotlinx.coroutines.flow.Flow
+
 
 interface BoardRepository {
-    suspend fun getAllBoards(): List<Board>
-    suspend fun getBoard(url: String): Board
-    suspend fun clearAllNews()
+    fun getAllBoards(): Flow<List<Board>>
+    fun getSubscribed(subscriber: String): Flow<List<Board>>
+    suspend fun subscribe(board: Board, subscriber: String)
+    suspend fun unsubscribe(board: Board, subscriber: String)
+    suspend fun clearAll()
 }

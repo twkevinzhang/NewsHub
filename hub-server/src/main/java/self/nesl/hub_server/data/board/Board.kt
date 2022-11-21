@@ -12,6 +12,11 @@ data class Board(
     @PrimaryKey val url: String,
     val name: String,
     val host: Host,
+
+    /**
+     * topic id list
+     */
+    val subscriber: List<String> = emptyList(),
 )
 
 fun Board.toKBoard() =

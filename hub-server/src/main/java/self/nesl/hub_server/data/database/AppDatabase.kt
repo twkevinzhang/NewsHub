@@ -1,11 +1,13 @@
-package self.nesl.hub_server.data
+package self.nesl.hub_server.data.database
 
-import android.util.Log
 import androidx.room.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONObject
+import self.nesl.hub_server.data.Host
+import self.nesl.hub_server.data.Paragraph
+import self.nesl.hub_server.data.ParagraphType
 import self.nesl.hub_server.data.board.Board
 import self.nesl.hub_server.data.board.BoardDao
 import self.nesl.hub_server.data.news.gamer.GamerNews
@@ -26,12 +28,30 @@ import self.nesl.hub_server.data.post.komica.KomicaPostDao
 )
 
 @TypeConverters(
+    AppDatabase.StringListConverter::class,
     AppDatabase.ParagraphListConverter::class,
     AppDatabase.HostConverter::class,
 )
 abstract class AppDatabase: RoomDatabase() {
     companion object {
         private val gson = Gson()
+    }
+
+    object StringListConverter {
+        @TypeConverter
+        @JvmStatic
+        fun valueToRoom(value: List<String>?): String {
+            return value?.let { gson.toJson(it) } ?: ""
+        }
+
+        @TypeConverter
+        @JvmStatic
+        fun roomToValue(json: String): List<String> {
+            return json.takeIf { it.isNotBlank() }?.let { jsonString: String ->
+                val type = object : TypeToken<List<String>>() {}.type
+                gson.fromJson(jsonString, type)
+            } ?: emptyList()
+        }
     }
 
     object ParagraphListConverter {

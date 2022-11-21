@@ -1,16 +1,19 @@
 package self.nesl.hub_server.di
 
-import android.content.Context
+import android.app.Application
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import self.nesl.hub_server.data.AppDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import self.nesl.hub_server.data.database.AppDatabase
 import self.nesl.hub_server.data.board.BoardRepository
 import self.nesl.hub_server.data.board.BoardRepositoryImpl
+import self.nesl.hub_server.data.database.PrePopulateCallBack
 import self.nesl.hub_server.data.news.gamer.GamerNewsRepositoryImpl
 import self.nesl.hub_server.data.news.NewsRepository
 import self.nesl.hub_server.data.news.gamer.GamerNews
@@ -20,6 +23,9 @@ import self.nesl.hub_server.data.post.gamer.GamerThreadRepositoryImpl
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.KomicaNewsRepositoryImpl
 import self.nesl.hub_server.data.post.komica.KomicaThreadRepositoryImpl
+import self.nesl.hub_server.data.topic.TopicRepository
+import self.nesl.hub_server.data.topic.TopicRepositoryImpl
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -30,12 +36,18 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
+    fun provideDatabase(
+        app: Application,
+        callback: PrePopulateCallBack
+    ): AppDatabase {
         return Room.databaseBuilder(
-            context.applicationContext,
+            app,
             AppDatabase::class.java,
             "app.db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .addCallback(callback)
+            .build()
     }
 
     @Singleton
@@ -63,6 +75,9 @@ object DataModule {
     abstract class RepositoryBinder {
 
         @Binds
+        abstract fun bindTopicRepository(impl: TopicRepositoryImpl): TopicRepository
+
+        @Binds
         abstract fun bindBoardRepository(impl: BoardRepositoryImpl): BoardRepository
 
         @Binds
@@ -77,4 +92,13 @@ object DataModule {
         @Binds
         abstract fun bindGamerPostRepository(impl: GamerThreadRepositoryImpl): ThreadRepository<GamerPost>
     }
+
+    @DataScope
+    @Provides
+    @Singleton
+    fun provideDataScope() = CoroutineScope(SupervisorJob())
 }
+
+@Retention(AnnotationRetention.RUNTIME)
+@Qualifier
+annotation class DataScope

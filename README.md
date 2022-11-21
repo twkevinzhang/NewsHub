@@ -112,3 +112,5 @@ Browse between multiple forums.
     - [Komica20160704/homu-api](https://homu.homu-api.com/api) and [Repository](https://github.com/Komica20160704/homu-api)
     - [Komica+](https://github.com/TakumaMochizuki/Komica)
     
+## Guide
+BoardList > Board > NewsList > News > Thread(PostList) > HeadPost、RePostList > CommentList > Comment

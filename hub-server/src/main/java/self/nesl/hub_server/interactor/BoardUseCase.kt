@@ -1,11 +1,10 @@
 package self.nesl.hub_server.interactor
 
+import kotlinx.coroutines.flow.first
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import self.nesl.hub_server.data.*
 import self.nesl.hub_server.data.board.Board
 import self.nesl.hub_server.data.board.BoardRepository
-import self.nesl.hub_server.data.board.toBoard
-import self.nesl.komica_api.model.boards
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,11 +13,14 @@ class BoardUseCase @Inject constructor(
     private val boardRepository: BoardRepository,
 ) {
 
-    suspend fun getAllBoards() =
+    fun getAllBoards() =
         boardRepository.getAllBoards()
 
+    fun getSubscribedBoards(subscriber: String) =
+        boardRepository.getSubscribed(subscriber)
+
     suspend fun getBoard(url: String): Board {
-        val boards = getAllBoards()
+        val boards = getAllBoards().first()
         for (board in boards) {
             when (board.host) {
                 Host.KOMICA -> {
@@ -31,5 +33,13 @@ class BoardUseCase @Inject constructor(
             }
         }
         throw NotImplementedError("url $url can't find board")
+    }
+
+    suspend fun subscribe(board: Board, subscriber: String) {
+        boardRepository.subscribe(board, subscriber)
+    }
+
+    suspend fun unsubscribe(board: Board, subscriber: String) {
+        boardRepository.unsubscribe(board, subscriber)
     }
 }

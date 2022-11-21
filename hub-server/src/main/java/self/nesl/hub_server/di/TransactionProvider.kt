@@ -1,7 +1,7 @@
 package self.nesl.hub_server.di
 
 import androidx.room.withTransaction
-import self.nesl.hub_server.data.AppDatabase
+import self.nesl.hub_server.data.database.AppDatabase
 
 class TransactionProvider(
     private val database: AppDatabase
