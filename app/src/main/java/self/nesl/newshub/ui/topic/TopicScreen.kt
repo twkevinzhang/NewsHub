@@ -348,16 +348,19 @@ fun BoardFilter(
     onInactiveClick: (Board) -> Unit = { },
     onAddBoardClick: () -> Unit = { },
 ) {
+    val mockBoard = Board("", "", Host.KOMICA)
+    val icons = boards.plus(mockBoard)
     Column(
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.space_16)),
     ) {
-        val mockBoard = Board("", "", Host.KOMICA)
-        boards.plus(mockBoard).chunked(4).forEach { boards ->
+        icons.chunked(4).forEach { boards ->
             Row {
-                boards.forEachIndexed { index, it ->
+                boards.forEach {
                     val active = selected.contains(it)
-                    if (index != boards.lastIndex) {
+                    if (it == mockBoard) {
+                        AddBoardIcon(onClick = onAddBoardClick)
+                    } else {
                         BoardIcon(it, active) {
                             if (active) {
                                 onActiveClick(it)
@@ -365,8 +368,6 @@ fun BoardFilter(
                                 onInactiveClick(it)
                             }
                         }
-                    } else {
-                        AddBoardIcon(onClick = onAddBoardClick)
                     }
                 }
             }
