@@ -6,6 +6,7 @@ import kotlinx.coroutines.withContext
 import self.nesl.hub_server.data.board.Board
 import self.nesl.hub_server.data.board.toKBoard
 import self.nesl.hub_server.data.news.News
+import self.nesl.hub_server.data.news.komica.KomicaNewsDao
 import self.nesl.hub_server.data.post.ThreadRepository
 import self.nesl.hub_server.di.TransactionProvider
 import self.nesl.komica_api.KomicaApi
@@ -13,7 +14,8 @@ import self.nesl.newshub.di.IoDispatcher
 import javax.inject.Inject
 
 class KomicaThreadRepositoryImpl @Inject constructor(
-    private val dao: KomicaPostDao,
+    private val newsDao: KomicaNewsDao,
+    private val postDao: KomicaPostDao,
     private val api: KomicaApi,
     private val transactionProvider: TransactionProvider,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
@@ -21,9 +23,9 @@ class KomicaThreadRepositoryImpl @Inject constructor(
 
     override suspend fun getPostThread(threadUrl: String, page: Int, board: Board): List<KomicaPost> = withContext(ioDispatcher) {
         if (page > 1) return@withContext emptyList()
-        val news = dao.readNews(threadUrl) as? News
+        val news = newsDao.readNews(threadUrl) as? News
         if (news != null) {
-            val thread = dao.readAllByThreadUrl(news.threadUrl)
+            val thread = postDao.readPostThread(news.threadUrl)
             val isEmpty = thread.size <= 1
             if (!isEmpty) {
                 return@withContext thread
@@ -35,7 +37,7 @@ class KomicaThreadRepositoryImpl @Inject constructor(
                 .build()
             val remote = api.getAllPost(req).map { it.toKomicaPost(page, board.url, threadUrl) }
             transactionProvider.invoke {
-                dao.upsertAll(remote)
+                postDao.upsertAll(remote)
             }
             remote
         } catch (e: Exception) {
@@ -49,12 +51,12 @@ class KomicaThreadRepositoryImpl @Inject constructor(
         rePostId: String,
         page: Int,
     ): List<KomicaPost> = withContext(ioDispatcher) {
-        val head = dao.readByRePostId(threadUrl, rePostId)
-        val sub = dao.readAllByRePostId(threadUrl, rePostId, page)
+        val head = postDao.readRePost(threadUrl, rePostId)
+        val sub = postDao.readRePostThread(threadUrl, rePostId, page)
         listOf(head).plus(sub)
     }
 
     override suspend fun removePostThread(threadUrl: String) = withContext(ioDispatcher) {
-        dao.clearAllByThreadUrl(threadUrl)
+        postDao.clearPostThread(threadUrl)
     }
 }

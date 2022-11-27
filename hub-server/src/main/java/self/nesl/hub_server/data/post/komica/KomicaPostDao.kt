@@ -4,28 +4,21 @@ import androidx.room.*
 
 @Dao
 interface KomicaPostDao {
-
-    @Query("SELECT * FROM komica_news where page = :page and boardUrl = :boardUrl")
-    suspend fun readAllNews(boardUrl: String, page: Int): List<KomicaPost>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(list: List<KomicaPost>)
 
-    @Query("DELETE FROM komica_news")
+    @Query("DELETE FROM komica_post")
     suspend fun clearAll()
 
-    @Query("SELECT * FROM komica_news where threadUrl = :threadUrl")
-    suspend fun readNews(threadUrl: String): KomicaPost
+    @Query("SELECT * FROM komica_post where threadUrl = :threadUrl and id = :headPostId")
+    suspend fun readRePost(threadUrl: String, headPostId: String): KomicaPost
 
-    @Query("SELECT * FROM komica_news where threadUrl = :threadUrl and id = :headPostId")
-    suspend fun readByRePostId(threadUrl: String, headPostId: String): KomicaPost
+    @Query("SELECT * FROM komica_post where threadUrl = :threadUrl")
+    suspend fun readPostThread(threadUrl: String): List<KomicaPost>
 
-    @Query("SELECT * FROM komica_news where threadUrl = :threadUrl")
-    suspend fun readAllByThreadUrl(threadUrl: String): List<KomicaPost>
+    @Query("SELECT * FROM komica_post where page = :page and threadUrl = :threadUrl and content like '%{\"id\":\"' || :headPostId || '\",\"type\":\"REPLY_TO\"}%'")
+    suspend fun readRePostThread(threadUrl: String, headPostId: String, page: Int): List<KomicaPost>
 
-    @Query("SELECT * FROM komica_news where page = :page and threadUrl = :threadUrl and content like '%{\"id\":\"' || :headPostId || '\",\"type\":\"REPLY_TO\"}%'")
-    suspend fun readAllByRePostId(threadUrl: String, headPostId: String, page: Int): List<KomicaPost>
-
-    @Query("DELETE FROM komica_news WHERE threadUrl = :threadUrl")
-    suspend fun clearAllByThreadUrl(threadUrl: String)
+    @Query("DELETE FROM komica_post WHERE threadUrl = :threadUrl")
+    suspend fun clearPostThread(threadUrl: String)
 }

@@ -1,19 +1,20 @@
-package self.nesl.hub_server.data.post.komica
+package self.nesl.hub_server.data.news.komica
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import self.nesl.gamer_api.model.GNews
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news.News
-import self.nesl.hub_server.data.post.Post
+import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.toParagraph
 import self.nesl.komica_api.model.KPost
 
-@Entity(tableName = "komica_post")
-data class KomicaPost (
+@Entity(tableName = "komica_news")
+data class KomicaNews (
     @PrimaryKey val url: String,
     override val threadUrl: String,
-    override val id: String,
-    override val title: String,
+    override val boardUrl: String,
+    val title: String,
     override val content: List<Paragraph>,
     val createdAt: Long?,
     val poster: String?,
@@ -21,11 +22,12 @@ data class KomicaPost (
     val replies: Int?,
     val readAt: Int?,
     val page: Int,
-): Post
+): News
 
-fun KPost.toKomicaPost(page: Int, boardUrl: String, threadUrl: String) =
-    KomicaPost(
+fun KPost.toKomicaNews(page: Int, boardUrl: String, threadUrl: String) =
+    KomicaNews(
         threadUrl = threadUrl,
+        boardUrl = boardUrl,
         url = url,
         title = title,
         createdAt = createdAt,
@@ -35,14 +37,14 @@ fun KPost.toKomicaPost(page: Int, boardUrl: String, threadUrl: String) =
         readAt = readAt,
         content = content.map { it.toParagraph() },
         page = page,
-        id = id,
     )
 
-fun mockKomicaPost() =
-    KomicaPost(
+fun mockKomicaNews() =
+    KomicaNews(
         threadUrl = "https://gaia.komica.org/00/pixmicat.php?res=29683783",
         url = "https://gaia.komica.org/00/pixmicat.php?res=29683783#r1",
         title = "How to Google?",
+        boardUrl = "https://gaia.komica.org/00",
         createdAt = 0,
         poster = "Zhen Long",
         visits = 0,
@@ -57,5 +59,4 @@ fun mockKomicaPost() =
             Paragraph.Text("This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique."),
         ),
         page = 1,
-        id = "1",
     )

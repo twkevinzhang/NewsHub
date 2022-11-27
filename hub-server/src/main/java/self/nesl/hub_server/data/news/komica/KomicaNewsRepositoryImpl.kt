@@ -1,4 +1,4 @@
-package self.nesl.hub_server.data.post.komica
+package self.nesl.hub_server.data.news.komica
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
@@ -6,20 +6,21 @@ import kotlinx.coroutines.withContext
 import self.nesl.hub_server.data.board.Board
 import self.nesl.hub_server.data.board.toKBoard
 import self.nesl.hub_server.data.news.NewsRepository
+import self.nesl.hub_server.data.post.komica.toKomicaPost
 import self.nesl.komica_api.KomicaApi
 import self.nesl.newshub.di.IoDispatcher
 import self.nesl.hub_server.di.TransactionProvider
 import javax.inject.Inject
 
 class KomicaNewsRepositoryImpl @Inject constructor(
-    private val dao: KomicaPostDao,
+    private val dao: KomicaNewsDao,
     private val api: KomicaApi,
     private val transactionProvider: TransactionProvider,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-): NewsRepository<KomicaPost> {
+): NewsRepository<KomicaNews> {
 
-    override suspend fun getAllNews(board: Board, page: Int): List<KomicaPost> = withContext(ioDispatcher) {
-        val news = dao.readAllNews(board.url, page)
+    override suspend fun getAllNews(board: Board, page: Int): List<KomicaNews> = withContext(ioDispatcher) {
+        val news = dao.readAll(board.url, page)
         news.ifEmpty {
             try {
                 val request = api.getRequestBuilder(board.toKBoard())
@@ -27,7 +28,7 @@ class KomicaNewsRepositoryImpl @Inject constructor(
                     .setPageReq(page)
                     .build()
                 val remote = api.getAllPost(request)
-                    .map { it.toKomicaPost(page, board.url) }
+                    .map { it.toKomicaNews(page, board.url, it.url) }
                 transactionProvider.invoke {
                     dao.upsertAll(remote)
                 }

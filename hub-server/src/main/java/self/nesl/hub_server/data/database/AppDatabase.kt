@@ -12,6 +12,8 @@ import self.nesl.hub_server.data.board.Board
 import self.nesl.hub_server.data.board.BoardDao
 import self.nesl.hub_server.data.news.gamer.GamerNews
 import self.nesl.hub_server.data.news.gamer.GamerNewsDao
+import self.nesl.hub_server.data.news.komica.KomicaNews
+import self.nesl.hub_server.data.news.komica.KomicaNewsDao
 import self.nesl.hub_server.data.post.gamer.GamerPost
 import self.nesl.hub_server.data.post.gamer.GamerPostDao
 import self.nesl.hub_server.data.post.komica.KomicaPost
@@ -19,6 +21,7 @@ import self.nesl.hub_server.data.post.komica.KomicaPostDao
 
 @Database(
     entities = [
+        KomicaNews::class,
         KomicaPost::class,
         GamerNews::class,
         GamerPost::class,
@@ -115,6 +118,7 @@ abstract class AppDatabase: RoomDatabase() {
         }
     }
 
+    abstract fun komicaNewsDao(): KomicaNewsDao
     abstract fun komicaPostDao(): KomicaPostDao
     abstract fun gamerNewsDao(): GamerNewsDao
     abstract fun gamerPostDao(): GamerPostDao

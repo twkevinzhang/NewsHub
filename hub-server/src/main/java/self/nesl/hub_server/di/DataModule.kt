@@ -2,7 +2,6 @@ package self.nesl.hub_server.di
 
 import android.app.Application
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -17,11 +16,12 @@ import self.nesl.hub_server.data.database.PrePopulateCallBack
 import self.nesl.hub_server.data.news.gamer.GamerNewsRepositoryImpl
 import self.nesl.hub_server.data.news.NewsRepository
 import self.nesl.hub_server.data.news.gamer.GamerNews
+import self.nesl.hub_server.data.news.komica.KomicaNews
 import self.nesl.hub_server.data.post.ThreadRepository
 import self.nesl.hub_server.data.post.gamer.GamerPost
 import self.nesl.hub_server.data.post.gamer.GamerThreadRepositoryImpl
 import self.nesl.hub_server.data.post.komica.KomicaPost
-import self.nesl.hub_server.data.post.komica.KomicaNewsRepositoryImpl
+import self.nesl.hub_server.data.news.komica.KomicaNewsRepositoryImpl
 import self.nesl.hub_server.data.post.komica.KomicaThreadRepositoryImpl
 import self.nesl.hub_server.data.topic.TopicRepository
 import self.nesl.hub_server.data.topic.TopicRepositoryImpl
@@ -56,6 +56,10 @@ object DataModule {
 
     @Singleton
     @Provides
+    fun provideKomicaNewsDao(database: AppDatabase) = database.komicaNewsDao()
+
+    @Singleton
+    @Provides
     fun provideKomicaPostDao(database: AppDatabase) = database.komicaPostDao()
 
     @Singleton
@@ -81,7 +85,7 @@ object DataModule {
         abstract fun bindBoardRepository(impl: BoardRepositoryImpl): BoardRepository
 
         @Binds
-        abstract fun bindKomicaNewsRepository(impl: KomicaNewsRepositoryImpl): NewsRepository<KomicaPost>
+        abstract fun bindKomicaNewsRepository(impl: KomicaNewsRepositoryImpl): NewsRepository<KomicaNews>
 
         @Binds
         abstract fun bindGamerNewsRepository(impl: GamerNewsRepositoryImpl): NewsRepository<GamerNews>
