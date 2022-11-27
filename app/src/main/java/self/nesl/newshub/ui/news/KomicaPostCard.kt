@@ -103,7 +103,7 @@ private fun KomicaPostCardContent(
 
 @Preview
 @Composable
-fun PreviewKomicaPostCard() {
+private fun PreviewKomicaPostCard() {
     PreviewTheme {
         KomicaPostCard(
             news = mockKomicaPost(),
@@ -141,7 +141,7 @@ fun KomicaRePostCard(
 
 @Preview
 @Composable
-fun PreviewKomicaRePostCard() {
+private fun PreviewKomicaRePostCard() {
     PreviewTheme {
         KomicaRePostCard(
             rePost = mockKomicaPost(),
@@ -152,7 +152,7 @@ fun PreviewKomicaRePostCard() {
 }
 
 @Composable
-fun KomicaPostCardHeader(
+private fun KomicaPostCardHeader(
     poster: String? = null,
     createdAt: Long? = null,
     id: String? = null,
@@ -192,7 +192,7 @@ private fun KomicaRePostCardHeader(rePost: KomicaPost) {
 }
 
 @Composable
-fun KomicaNewsCardTitle(text: String) {
+private fun KomicaNewsCardTitle(text: String) {
     when (text) {
         "無題", "無念" ->
             Text(
