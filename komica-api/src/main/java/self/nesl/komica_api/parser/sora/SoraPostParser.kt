@@ -43,7 +43,7 @@ class SoraPostParser(
 
     private fun setDetail(source: Element, httpUrl: HttpUrl) {
         builder.setTitle(postHeadParser.parseTitle(source, httpUrl) ?: "")
-            .setPoster("")
+            .setPoster(postHeadParser.parsePoster(source, httpUrl) ?: "")
             .setCreatedAt(postHeadParser.parseCreatedAt(source, httpUrl) ?: 0L)
     }
 

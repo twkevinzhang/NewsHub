@@ -30,7 +30,7 @@ class _2catPostParser(
 
     private fun setDetail(source: Element, url: HttpUrl) {
         builder.setTitle(postHeadParser.parseTitle(source, url) ?: "")
-            .setPoster("")
+            .setPoster(postHeadParser.parsePoster(source, url) ?: "")
             .setCreatedAt(postHeadParser.parseCreatedAt(source, url) ?: 0L)
     }
 
