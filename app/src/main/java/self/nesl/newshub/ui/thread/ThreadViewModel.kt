@@ -7,7 +7,6 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import self.nesl.newshub.applyIf
 import self.nesl.newshub.interactor.BoardInteractor
 import self.nesl.newshub.interactor.ThreadInteractor
 import javax.inject.Inject
@@ -18,16 +17,18 @@ class ThreadViewModel @Inject constructor(
     private val boardInteractor: BoardInteractor,
 ) : ViewModel() {
     private val _threadUrl = MutableStateFlow("")
-    private val _boardName = MutableStateFlow("")
     private val _rePostId = MutableStateFlow("")
-    val boardName = _boardName.asStateFlow()
+
+    val boardName = _threadUrl.mapLatest {
+        if (it.isNotBlank()) {
+            val board = boardInteractor.get(it)
+            board.name
+        } else {
+            ""
+        }
+    }
 
     val pagingPosts = _threadUrl
-        .mapLatest { threadUrl ->
-            threadUrl.applyIf({ isNotBlank() }) {
-                readBoardName(threadUrl)
-            }
-        }
         .combineTransform(_rePostId) { threadUrl, rePostId ->
             if (threadUrl.isNotBlank()) {
                 threadInteractor.getAll(threadUrl, rePostId.takeIf { it.isNotBlank() })
@@ -50,11 +51,5 @@ class ThreadViewModel @Inject constructor(
         viewModelScope.launch {
             threadInteractor.removeThread(_threadUrl.value)
         }
-    }
-
-    private suspend fun readBoardName(threadUrl: String) {
-        if (threadUrl.isBlank()) return
-        val board = boardInteractor.get(threadUrl)
-        _boardName.update { board.name }
     }
 }

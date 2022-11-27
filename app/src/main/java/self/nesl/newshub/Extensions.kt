@@ -51,11 +51,3 @@ fun <T> Modifier.thenIfNotNull(any: T?, callback: Modifier.(T) -> Modifier): Mod
         this
     }
 }
-
-public inline fun <T> T.applyIf(condition: T.() -> Boolean, block: T.() -> Unit): T {
-    return if (condition()) {
-        apply(block)
-    } else {
-        this
-    }
-}

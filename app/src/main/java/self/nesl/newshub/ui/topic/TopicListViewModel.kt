@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import self.nesl.hub_server.data.topic.Topic
 import self.nesl.newshub.interactor.*
 import javax.inject.Inject
 
@@ -12,17 +13,5 @@ import javax.inject.Inject
 class TopicListViewModel @Inject constructor(
     private val topicInteractor: TopicInteractor,
 ) : ViewModel() {
-    private val _topicList = MutableStateFlow(emptyList<Topic>())
-
-    val topicList = _topicList.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            refresh()
-        }
-    }
-
-    suspend fun refresh() {
-        _topicList.update { topicInteractor.getAll() }
-    }
+    val topicList = topicInteractor.getAll()
 }
