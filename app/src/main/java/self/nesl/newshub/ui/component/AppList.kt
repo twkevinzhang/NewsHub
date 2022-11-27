@@ -83,7 +83,7 @@ fun BlankIcon() {
 @Preview
 @Composable
 private fun PreviewAppMaxWidthItem() {
-    PreviewTheme {
+    NewshubTheme {
         AppMaxWidthItem(
             title = "title",
             icon = {
@@ -100,7 +100,7 @@ private fun PreviewAppMaxWidthItem() {
 @Preview
 @Composable
 private fun PreviewAppMaxWidthItemWithBlankIcon() {
-    PreviewTheme {
+    NewshubTheme {
         AppMaxWidthItem(
             title = "title",
             icon = { BlankIcon() },

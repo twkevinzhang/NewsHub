@@ -47,7 +47,7 @@ fun ParagraphBlock(
 @Preview
 @Composable
 fun PreviewParagraphBlock() {
-    PreviewTheme {
+    NewshubTheme {
         ParagraphBlock(
             article = listOf(
                 Paragraph.ReplyTo("Kevin"),

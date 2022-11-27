@@ -13,7 +13,6 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun NewshubTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
@@ -22,14 +21,4 @@ fun NewshubTheme(
         shapes = MaterialTheme.shapes,
         content = content
     )
-}
-
-@Preview
-@Composable
-fun PreviewTheme(
-    content: @Composable () -> Unit =  {},
-) {
-    NewshubTheme() {
-        content()
-    }
 }

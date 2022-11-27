@@ -16,7 +16,8 @@ import androidx.compose.ui.unit.sp
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.theme.AppDarkBlue
 import self.nesl.newshub.ui.theme.AppWhite
-import self.nesl.newshub.ui.theme.PreviewTheme
+import self.nesl.newshub.ui.theme.NewshubTheme
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +56,7 @@ fun NewsHubTopBar(
 @Preview
 @Composable
 private fun PreviewNewsHubTopBar() {
-    PreviewTheme {
+    NewshubTheme {
         NewsHubTopBar("NewsHub")
     }
 }
@@ -63,7 +64,7 @@ private fun PreviewNewsHubTopBar() {
 @Preview
 @Composable
 private fun PreviewNewsHubTopBarWithBack() {
-    PreviewTheme {
+    NewshubTheme {
         NewsHubTopBar(
             title = "NewsHub",
             onBackPressed = { },
@@ -74,7 +75,7 @@ private fun PreviewNewsHubTopBarWithBack() {
 @Preview
 @Composable
 private fun PreviewNewsHubTopBarWithMenu() {
-    PreviewTheme {
+    NewshubTheme {
         NewsHubTopBar(
             title = "NewsHub",
             onMenuPressed = { },

@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import self.nesl.newshub.ui.navigation.*
 import self.nesl.newshub.R
-import self.nesl.newshub.ui.theme.PreviewTheme
+import self.nesl.newshub.ui.theme.NewshubTheme
 
 @Composable
 fun AppBottomBar(
@@ -41,7 +41,7 @@ fun AppBottomBar(
 @Preview
 @Composable
 fun PreviewAppBottomBar() {
-    PreviewTheme {
+    NewshubTheme {
         AppBottomBar(
             navItems = bottomNavItems(),
         )

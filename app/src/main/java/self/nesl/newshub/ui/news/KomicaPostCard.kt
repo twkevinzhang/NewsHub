@@ -16,7 +16,8 @@ import self.nesl.newshub.ui.component.LinkParagraph
 import self.nesl.newshub.ui.component.ParagraphBlock
 import self.nesl.newshub.ui.component.TextParagraph
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
-import self.nesl.newshub.ui.theme.PreviewTheme
+import self.nesl.newshub.ui.theme.NewshubTheme
+
 
 @Composable
 fun KomicaNewsCard(
@@ -104,7 +105,7 @@ private fun KomicaPostCardContent(
 @Preview
 @Composable
 private fun PreviewKomicaPostCard() {
-    PreviewTheme {
+    NewshubTheme {
         KomicaPostCard(
             news = mockKomicaPost(),
             boardName = "Board",
@@ -142,7 +143,7 @@ fun KomicaRePostCard(
 @Preview
 @Composable
 private fun PreviewKomicaRePostCard() {
-    PreviewTheme {
+    NewshubTheme {
         KomicaRePostCard(
             rePost = mockKomicaPost(),
             onParagraphClick = { },

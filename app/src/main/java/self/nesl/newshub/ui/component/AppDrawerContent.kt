@@ -90,7 +90,7 @@ fun AppDrawerHeader(
 @Preview
 @Composable
 private fun PreviewDrawer() {
-    PreviewTheme {
+    NewshubTheme {
         AppDrawerContent(
             currentRoute = "",
             topNavItems = drawerNavItems(),

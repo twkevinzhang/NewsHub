@@ -50,9 +50,10 @@ import self.nesl.newshub.ui.navigation.bottomNavItems
 import self.nesl.newshub.ui.news.GamerNewsCard
 import self.nesl.newshub.ui.news.KomicaNewsCard
 import self.nesl.newshub.ui.news.KomicaPostCard
+import self.nesl.newshub.ui.theme.NewshubTheme
 import self.nesl.newshub.ui.thread.ThreadRoute
 import self.nesl.newshub.ui.thread.ThreadViewModel
-import self.nesl.newshub.ui.theme.PreviewTheme
+
 
 @Composable
 fun TopicRoute(
@@ -290,7 +291,7 @@ fun TopicScreen(
 fun PreviewTopicScreen() {
     val mockNewsfeed = flowOf(PagingData.from(listOf<News>(mockKomicaNews()))).collectAsLazyPagingItems()
 
-    PreviewTheme {
+    NewshubTheme {
         TopicScreen(
             topic = Topic("Square", "Square", 0),
             refreshState = rememberSwipeRefreshState(isRefreshing = false),
@@ -388,7 +389,7 @@ fun PreviewBoardFilter() {
         Board(name = "D", url = "d.com", host = Host.GAMER),
         Board(name = "E", url = "e.com", host = Host.GAMER),
     )
-    PreviewTheme {
+    NewshubTheme {
         BoardFilter(
             boards = boards,
             selected = boards.subList(1, 2),
@@ -425,7 +426,7 @@ fun AddBoardIcon(
 @Preview
 @Composable
 fun PreviewBoardIcon() {
-    PreviewTheme {
+    NewshubTheme {
         BoardIcon(Board(name = "A", url = "a.com", host = Host.KOMICA))
     }
 }
@@ -433,7 +434,7 @@ fun PreviewBoardIcon() {
 @Preview
 @Composable
 fun PreviewAddBoardIcon() {
-    PreviewTheme {
+    NewshubTheme {
         AddBoardIcon()
     }
 }

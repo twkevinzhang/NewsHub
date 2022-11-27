@@ -17,7 +17,8 @@ import self.nesl.hub_server.data.post.gamer.mockGamerPost
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.component.AppCard
 import self.nesl.newshub.ui.component.ParagraphBlock
-import self.nesl.newshub.ui.theme.PreviewTheme
+import self.nesl.newshub.ui.theme.NewshubTheme
+
 
 @Composable
 fun GamerNewsCard(
@@ -51,7 +52,7 @@ fun GamerNewsCard(
 @Preview
 @Composable
 private fun PreviewGamerNewsCard() {
-    PreviewTheme {
+    NewshubTheme {
         GamerNewsCard(
             news = mockGamerNews(),
             boardName = "Board",
@@ -115,7 +116,7 @@ fun GamerRePostCard(
 @Preview
 @Composable
 private fun PreviewGamerPostCard() {
-    PreviewTheme {
+    NewshubTheme {
         GamerPostCard(
             post = mockGamerPost(),
             onParagraphClick = { },

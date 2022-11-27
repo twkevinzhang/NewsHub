@@ -27,7 +27,8 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import self.nesl.newshub.R
-import self.nesl.newshub.ui.theme.PreviewTheme
+import self.nesl.newshub.ui.theme.NewshubTheme
+
 import java.lang.Float.min
 import kotlin.math.absoluteValue
 
@@ -180,7 +181,7 @@ private fun List<PointerInputChange>.consumeAll() {
 @Preview
 @Composable
 fun PreviewZoomableBox() {
-    PreviewTheme {
+    NewshubTheme {
         ZoomableBox(true) {
             Image(painter = painterResource(id = R.drawable.yushan_banner_495x1200), contentDescription = null)
         }
