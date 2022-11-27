@@ -3,6 +3,7 @@ package self.nesl.gamer_api.parser
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.Request
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
@@ -16,7 +17,7 @@ class PostParser(
 ): Parser<GPost> {
     private var builder = GPostBuilder()
 
-    override fun parse(source: Element, url: String): GPost {
+    override fun parse(source: Element, req: Request): GPost {
         setTitle(source)
         setCreatedAt(source)
         setPosterName(source)
@@ -24,8 +25,9 @@ class PostParser(
         setLike(source)
         setUnlike(source)
         setContent(source)
-        builder.setUrl(url)
-        builder.setPostId(urlParser.parsePostId(url.toHttpUrl())!!)
+        builder.setUrl(req.url.toString())
+        builder.setPostId(urlParser.parsePostId(req.url)!!)
+        builder.setPage(urlParser.parsePage(req.url))
         val post = builder.build()
         builder = GPostBuilder()
         return post

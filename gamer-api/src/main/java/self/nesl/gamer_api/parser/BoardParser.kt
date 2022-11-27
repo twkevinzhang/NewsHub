@@ -3,23 +3,26 @@ package self.nesl.gamer_api.parser
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.Request
 import org.jsoup.nodes.Element
 import self.nesl.gamer_api.model.GBoard
 import self.nesl.gamer_api.model.GNews
 import self.nesl.gamer_api.model.GPost
+import self.nesl.gamer_api.request.RequestBuilder
 
 class BoardParser(
     private val newsParser: NewsParser,
+    private val requestBuilder: RequestBuilder,
 ): Parser<List<GNews>> {
-    override fun parse(source: Element, url: String): List<GNews> {
+    override fun parse(source: Element, req: Request): List<GNews> {
         val newsList = source.select("tr.b-list__row.b-list-item.b-imglist-item:not(.b-list__row--sticky)")
         return newsList.map {
             val href = it.selectFirst("a[href^=\"C.php?bsn=\"]").attr("href")
-            val threadUrl = url.toHttpUrl().newBuilder()
+            val threadUrl = req.url.newBuilder()
                 .replaceAfterHost("/$href")
                 .removeAllQueryParameters("tnum")
                 .build()
-            newsParser.parse(it, threadUrl.toString())
+            newsParser.parse(it, requestBuilder.url(threadUrl).build())
         }
     }
 

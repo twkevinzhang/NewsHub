@@ -21,11 +21,10 @@ class GetAllPost(
     private val client: OkHttpClient,
 ) {
     suspend fun invoke(req: Request): List<GPost> = withContext(Dispatchers.IO) {
-        val urlParser = GetUrlParser().invoke()
         val response = client.newCall(req).await()
-        parse(response, urlParser.parseThreadUrl(req.url))
+        parse(response, req)
     }
 
-    private fun parse(response: Response, url: String) =
-        ThreadParser(PostParser(UrlParserImpl()), UrlParserImpl()).parse(Jsoup.parse(response.body?.string()), url)
+    private fun parse(response: Response, req: Request) =
+        ThreadParser(PostParser(UrlParserImpl()), UrlParserImpl(), RequestBuilderImpl()).parse(Jsoup.parse(response.body?.string()), req)
 }

@@ -22,6 +22,6 @@ class GetAllNews(
     suspend fun invoke(req: Request): List<GNews> = withContext(Dispatchers.IO) {
         val board = GetBoard().invoke(req.url.toString())
         val response = client.newCall(req).await()
-        BoardParser(NewsParser()).parse(Jsoup.parse(response.body?.string()), board.url)
+        BoardParser(NewsParser(), RequestBuilderImpl()).parse(Jsoup.parse(response.body?.string()), req)
     }
 }

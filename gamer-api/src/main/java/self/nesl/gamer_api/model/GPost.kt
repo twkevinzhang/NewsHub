@@ -11,6 +11,7 @@ data class GPost (
     val unlike: Int,
     var replies: Int,
     val readAt: Int,
+    val page: Int,
     val content: List<GParagraph>,
 )
 
@@ -26,7 +27,7 @@ class GPostBuilder {
     private var replies: Int= 0
     private var readAt: Int= 0
     private var content: List<GParagraph> = emptyList()
-    private var pageSize: Int= 0
+    private var page: Int= 0
 
     fun setTitle(title: String): GPostBuilder {
         this.title = title
@@ -55,6 +56,10 @@ class GPostBuilder {
 
     fun setLike(number: Int) {
         this.like = number
+    }
+
+    fun setPage(number: Int) {
+        this.page = number
     }
 
     fun setUnlike(number: Int) {
@@ -88,6 +93,7 @@ class GPostBuilder {
             unlike,
             replies,
             readAt,
+            page,
             content,
         )
 }

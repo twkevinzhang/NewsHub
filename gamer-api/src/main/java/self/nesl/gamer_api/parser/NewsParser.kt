@@ -1,6 +1,7 @@
 package self.nesl.gamer_api.parser
 
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.Request
 import org.jsoup.nodes.Element
 import self.nesl.gamer_api.expandInt
 import self.nesl.gamer_api.model.GNews
@@ -18,7 +19,7 @@ class NewsParser: Parser<GNews> {
         createdAt = "",
     )
 
-    override fun parse(source: Element, url: String): GNews {
+    override fun parse(source: Element, req: Request): GNews {
         setTitle(source)
         setGp(source)
         setPreview(source)
@@ -27,7 +28,7 @@ class NewsParser: Parser<GNews> {
         setPopularity(source)
         setPosterName(source)
         setCreatedAt(source)
-        news = news.copy(url = url)
+        news = news.copy(url = req.url.toString())
         return news
     }
 

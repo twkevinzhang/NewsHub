@@ -12,6 +12,11 @@ class RequestBuilderImpl: RequestBuilder {
         return this
     }
 
+    override fun url(url: HttpUrl): RequestBuilder {
+        this._httpUrl = url
+        return this
+    }
+
     override fun setPageReq(page: Int?): RequestBuilder {
         return if(page == null) removePageReq()
         else addPageReq(page)
