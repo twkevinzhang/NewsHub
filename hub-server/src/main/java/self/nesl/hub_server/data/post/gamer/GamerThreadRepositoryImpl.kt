@@ -21,9 +21,11 @@ class GamerThreadRepositoryImpl @Inject constructor(
 ): ThreadRepository<GamerPost> {
 
     override suspend fun getPostThread(threadUrl: String, page: Int, board: Board) = withContext(ioDispatcher) {
+        class InconsistentPageEx: Exception("The page has reached the end, because the page of the response is not the same as the request")
+
         val news = newsDao.readNews(threadUrl) as? News
         if (news != null) {
-            val thread = postDao.readAllByThreadUrl(news.threadUrl)
+            val thread = postDao.readPostThread(news.threadUrl, page)
             val isEmpty = thread.size <= 1
             if (!isEmpty) {
                 return@withContext thread
@@ -34,13 +36,18 @@ class GamerThreadRepositoryImpl @Inject constructor(
                 .url(threadUrl)
                 .setPageReq(page)
                 .build()
-            val remote = api.getAllPost(req).map { it.toGamerPost(page, threadUrl) }
+            val remote = api.getAllPost(req).map { it.toGamerPost(threadUrl) }
+            if (remote.first().page != page){
+                throw InconsistentPageEx()
+            }
             transactionProvider.invoke {
                 postDao.upsertAll(remote)
             }
             remote
+        } catch (e: InconsistentPageEx) {
+            emptyList()
         } catch (e: Exception) {
-            Log.e("GamerPostRepo", e.stackTraceToString())
+            Log.e("GamerThreadRepo", e.stackTraceToString())
             emptyList()
         }
     }
@@ -50,12 +57,12 @@ class GamerThreadRepositoryImpl @Inject constructor(
         rePostId: String,
         page: Int,
     ): List<GamerPost> = withContext(ioDispatcher) {
-        val head = postDao.readByRePostId(threadUrl, rePostId)
-        val sub = postDao.readAllByRePostId(threadUrl, rePostId, page)
+        val head = postDao.readRePost(threadUrl, rePostId)
+        val sub = postDao.readRePostThread(threadUrl, rePostId, page)
         listOf(head).plus(sub)
     }
 
     override suspend fun removePostThread(threadUrl: String) = withContext(ioDispatcher) {
-        postDao.clearAllByThreadUrl(threadUrl)
+        postDao.clearPostThread(threadUrl)
     }
 }

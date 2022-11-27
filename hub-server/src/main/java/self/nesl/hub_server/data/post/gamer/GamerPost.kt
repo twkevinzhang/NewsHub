@@ -22,7 +22,7 @@ data class GamerPost (
     val page: Int,
 ): Post
 
-fun GPost.toGamerPost(page: Int, threadUrl: String) =
+fun GPost.toGamerPost(threadUrl: String) =
     GamerPost(
         threadUrl = threadUrl,
         url = url,
