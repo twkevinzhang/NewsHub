@@ -79,8 +79,8 @@ fun CardHeadTextBlock(
 }
 
 @Composable
-fun OriginalLinkParagraph(news: News, onClick: (Paragraph.Link) -> Unit = { }) {
-    val original = Paragraph.Link(news.threadUrl)
+fun OriginalLinkParagraph(link: String, onClick: (Paragraph.Link) -> Unit = { }) {
+    val original = Paragraph.Link(link)
     TextParagraph(paragraph = Paragraph.Text("原文連結："))
     LinkParagraph(
         paragraph = original,

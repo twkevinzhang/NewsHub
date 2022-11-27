@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import self.nesl.hub_server.data.Paragraph
+import self.nesl.hub_server.data.news.komica.KomicaNews
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.mockKomicaPost
 import self.nesl.newshub.R
@@ -17,10 +18,55 @@ import self.nesl.newshub.ui.component.TextParagraph
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
 import self.nesl.newshub.ui.theme.PreviewTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun KomicaNewsCard(
+    news: KomicaNews,
+    boardName: String,
+    onParagraphClick: (Paragraph) -> Unit,
+    onClick: (() -> Unit)? = null,
+) {
+    KomicaPostCardContent(
+        threadUrl = news.threadUrl,
+        poster = news.poster,
+        createdAt = news.createdAt,
+        replies = news.replies,
+        title = news.title,
+        content = news.content,
+        boardName = boardName,
+        onParagraphClick = onParagraphClick,
+        onClick = onClick,
+    )
+}
+
 @Composable
 fun KomicaPostCard(
     news: KomicaPost,
+    boardName: String,
+    onParagraphClick: (Paragraph) -> Unit,
+    onClick: (() -> Unit)? = null,
+) {
+    KomicaPostCardContent(
+        threadUrl = news.threadUrl,
+        poster = news.poster,
+        createdAt = news.createdAt,
+        replies = news.replies,
+        title = news.title,
+        content = news.content,
+        boardName = boardName,
+        onParagraphClick = onParagraphClick,
+        onClick = onClick,
+    )
+}
+
+@Composable
+private fun KomicaPostCardContent(
+    threadUrl: String,
+    poster: String? = null,
+    createdAt: Long? = null,
+    id: String? = null,
+    replies: Int? = null,
+    title: String,
+    content: List<Paragraph>,
     boardName: String,
     onParagraphClick: (Paragraph) -> Unit,
     onClick: (() -> Unit)? = null,
@@ -31,18 +77,24 @@ fun KomicaPostCard(
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
         ) {
-            KomicaPostCardHeader(news, boardName)
+            KomicaPostCardHeader(
+                poster = poster,
+                createdAt = createdAt,
+                id = id,
+                replies = replies,
+                boardName = boardName,
+            )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
-            if (news.title.isEmpty().not()) {
-                KomicaNewsCardTitle(news.title)
+            if (title.isEmpty().not()) {
+                KomicaNewsCardTitle(title)
             }
             ParagraphBlock(
-                news.content,
+                content,
                 100,
                 onParagraphClick = onParagraphClick,
                 onPreviewReplyTo = { "" },
             )
-            OriginalLinkParagraph(news, onParagraphClick)
+            OriginalLinkParagraph(threadUrl, onParagraphClick)
         }
     }
 
@@ -100,18 +152,24 @@ fun PreviewKomicaRePostCard() {
 }
 
 @Composable
-private fun KomicaPostCardHeader(news: KomicaPost, boardName: String) {
+fun KomicaPostCardHeader(
+    poster: String? = null,
+    createdAt: Long? = null,
+    id: String? = null,
+    replies: Int?,
+    boardName: String,
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row {
-            CardHeadPosterBlock(news.poster)
-            CardHeadTimeBlock(news.createdAt)
-            CardHeadTextBlock("${news.id}@Komica/$boardName")
+            CardHeadPosterBlock(poster)
+            CardHeadTimeBlock(createdAt)
+            CardHeadTextBlock("${id}@Komica/$boardName")
         }
         Row {
-            CardHeadRepliesBlock(news.replies)
+            CardHeadRepliesBlock(replies)
         }
     }
 }
@@ -134,7 +192,7 @@ private fun KomicaRePostCardHeader(rePost: KomicaPost) {
 }
 
 @Composable
-private fun KomicaNewsCardTitle(text: String) {
+fun KomicaNewsCardTitle(text: String) {
     when (text) {
         "無題", "無念" ->
             Text(

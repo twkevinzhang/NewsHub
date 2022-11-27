@@ -38,6 +38,8 @@ import self.nesl.hub_server.data.Host
 import self.nesl.hub_server.data.board.Board
 import self.nesl.hub_server.data.news.News
 import self.nesl.hub_server.data.news.gamer.GamerNews
+import self.nesl.hub_server.data.news.komica.KomicaNews
+import self.nesl.hub_server.data.news.komica.mockKomicaNews
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.mockKomicaPost
 import self.nesl.hub_server.data.topic.Topic
@@ -46,6 +48,7 @@ import self.nesl.newshub.encode
 import self.nesl.newshub.ui.component.*
 import self.nesl.newshub.ui.navigation.bottomNavItems
 import self.nesl.newshub.ui.news.GamerNewsCard
+import self.nesl.newshub.ui.news.KomicaNewsCard
 import self.nesl.newshub.ui.news.KomicaPostCard
 import self.nesl.newshub.ui.thread.ThreadRoute
 import self.nesl.newshub.ui.thread.ThreadViewModel
@@ -177,7 +180,7 @@ fun NewsListRoute(
                 news?.let { boardName = newsListViewModel.readBoardName(it.boardUrl) }
             }
             when (news) {
-                is KomicaPost -> KomicaPostCard(
+                is KomicaNews -> KomicaNewsCard(
                     news = news,
                     boardName = boardName,
                     onParagraphClick = {
@@ -285,7 +288,7 @@ fun TopicScreen(
 @Preview
 @Composable
 fun PreviewTopicScreen() {
-    val mockNewsfeed = flowOf(PagingData.from(listOf<News>(mockKomicaPost()))).collectAsLazyPagingItems()
+    val mockNewsfeed = flowOf(PagingData.from(listOf<News>(mockKomicaNews()))).collectAsLazyPagingItems()
 
     PreviewTheme {
         TopicScreen(
