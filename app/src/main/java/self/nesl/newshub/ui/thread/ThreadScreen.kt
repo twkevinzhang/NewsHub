@@ -32,6 +32,7 @@ import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.component.gallery.AsyncGallery
 import self.nesl.newshub.ui.news.GamerPostCard
+import self.nesl.newshub.ui.news.GamerRePostCard
 import self.nesl.newshub.ui.news.KomicaRePostCard
 import self.nesl.newshub.ui.news.KomicaPostCard
 
@@ -246,7 +247,7 @@ fun RePostCard(
             onPreviewReplyTo = onPreviewReplyTo,
             onParagraphClick = onParagraphClick,
         )
-        is GamerPost -> GamerPostCard(
+        is GamerPost -> GamerRePostCard(
             post = post,
             onParagraphClick = onParagraphClick,
             onClick = navigateToRePostThread.takeIf { post.replies.isZeroOrNull().not() },

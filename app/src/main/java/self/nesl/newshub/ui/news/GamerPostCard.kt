@@ -34,9 +34,7 @@ fun GamerNewsCard(
         ) {
             GamerNewsCardHeader(news, boardName)
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
-            if (news.title.isEmpty().not()) {
-                GamerNewsCardTitle(news.title)
-            }
+            GamerNewsCardTitle(news.title)
             ParagraphBlock(
                 article = news.content,
                 textLengthMax = 100,
@@ -76,9 +74,32 @@ fun GamerPostCard(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
         ) {
             GamerPostCardHeader(post)
-            if (post.title.isNotEmpty()) {
-                GamerNewsCardTitle(post.title)
-            }
+            ParagraphBlock(
+                post.content,
+                100,
+                onParagraphClick = onParagraphClick,
+                onPreviewReplyTo = { "" },
+            )
+            OriginalLinkParagraph(post.threadUrl, onParagraphClick)
+        }
+    }
+
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
+}
+
+@Composable
+fun GamerRePostCard(
+    post: GamerPost,
+    onParagraphClick: (Paragraph) -> Unit = { },
+    onClick: (() -> Unit)? = null,
+) {
+    AppCard(
+        onClick = onClick,
+    ) {
+        Column(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
+        ) {
+            GamerPostCardHeader(post)
             ParagraphBlock(
                 post.content,
                 100,
