@@ -20,7 +20,7 @@ class PreferenceStore @Inject constructor(
     @ApplicationContext appContext: Context
 ) {
     private object Keys {
-        val KEY_OF_DEFAULT_HOST = stringPreferencesKey("default_host")
+        val KEY_OF_DEFAULT_TOPIC = stringPreferencesKey("default_topic")
     }
 
     private val dataStore = appContext.dataStore
@@ -39,11 +39,11 @@ class PreferenceStore @Inject constructor(
 
     private fun mapPreference(preferences: Preferences): Preference {
         return Preference(
-            preferences[Keys.KEY_OF_DEFAULT_HOST] ?: "",
+            preferences[Keys.KEY_OF_DEFAULT_TOPIC] ?: "",
         )
     }
 
     data class Preference(
-        val defaultHost: String,
+        val defaultTopic: String,
     )
 }

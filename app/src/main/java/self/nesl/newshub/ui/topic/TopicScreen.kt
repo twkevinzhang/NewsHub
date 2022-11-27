@@ -5,6 +5,8 @@ import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.paging.compose.items
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -37,11 +40,10 @@ import self.nesl.hub_server.data.news.News
 import self.nesl.hub_server.data.news.gamer.GamerNews
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.mockKomicaPost
+import self.nesl.hub_server.data.topic.Topic
 import self.nesl.newshub.R
 import self.nesl.newshub.encode
-import self.nesl.newshub.interactor.Topic
-import self.nesl.newshub.ui.component.AppBottomBar
-import self.nesl.newshub.ui.component.NewsHubTopBar
+import self.nesl.newshub.ui.component.*
 import self.nesl.newshub.ui.navigation.bottomNavItems
 import self.nesl.newshub.ui.news.GamerNewsCard
 import self.nesl.newshub.ui.news.KomicaPostCard
@@ -108,9 +110,11 @@ fun NewsListRoute(
     val topic by newsListViewModel.topic.collectAsState(null)
     val pagingNews = newsListViewModel.pagingNews.collectAsLazyPagingItems()
     val allBoards by newsListViewModel.allBoards.collectAsState(emptyList())
-    val enableBoards by newsListViewModel.enableBoards.collectAsState(emptyList())
+    val subscribedBoards by newsListViewModel.subscribedBoards.collectAsState(emptyList())
+    val selectedBoards by newsListViewModel.selectedBoards.collectAsState(emptyList())
     var loading by remember { mutableStateOf(false) }
     val refreshState = rememberSwipeRefreshState(loading)
+    var showBoardPicker by remember { mutableStateOf(false) }
     val navigateToNews = { news: News -> navController.navigate("thread/${news.threadUrl.encode()}") }
     val context = LocalContext.current
 
@@ -127,18 +131,21 @@ fun NewsListRoute(
         lazyColumnState = pagingNews.rememberLazyListState(),
         topic = topic,
         pagingNews = pagingNews,
-        allBoards = allBoards,
-        enableBoards = enableBoards,
+        subscribedBoards = subscribedBoards,
+        selectedBoards = selectedBoards,
         openDrawer = openDrawer,
         onRefresh = {
             newsListViewModel.clearAllNews()
             pagingNews.refresh()
         },
         onActiveBoardClick = {
-            newsListViewModel.disableBoard(it)
+            newsListViewModel.unselectBoard(it)
         },
         onInactiveBoardClick = {
-            newsListViewModel.enableBoard(it)
+            newsListViewModel.selectBoard(it)
+        },
+        onAddBoardClick = {
+            showBoardPicker = true
         },
         onLoadStateChange = { loadState ->
             loadState.apply {
@@ -197,6 +204,21 @@ fun NewsListRoute(
             }
         },
     )
+
+    if (showBoardPicker) {
+        AddBoardDialog(
+            onDismissRequest = { showBoardPicker = false },
+            allBoards = allBoards,
+            checked = subscribedBoards,
+            onBoardClick = {
+                if (subscribedBoards.contains(it)) {
+                    newsListViewModel.unsubscribeBoard(it)
+                } else {
+                    newsListViewModel.subscribeBoard(it)
+                }
+            },
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -206,10 +228,11 @@ fun TopicScreen(
     refreshState: SwipeRefreshState,
     lazyColumnState: LazyListState,
     pagingNews: LazyPagingItems<News>,
-    allBoards: List<Board>,
-    enableBoards: List<Board>,
+    subscribedBoards: List<Board>,
+    selectedBoards: List<Board>,
     onActiveBoardClick: (Board) -> Unit,
     onInactiveBoardClick: (Board) -> Unit,
+    onAddBoardClick: () -> Unit,
     openDrawer: () -> Unit,
     onRefresh: () -> Unit,
     onLoadStateChange: (CombinedLoadStates) -> Unit = { },
@@ -238,10 +261,11 @@ fun TopicScreen(
                 ) {
                     item {
                         BoardFilter(
-                            boards = allBoards,
-                            selected = enableBoards,
+                            boards = subscribedBoards,
+                            selected = selectedBoards,
                             onActiveClick = { onActiveBoardClick(it) },
                             onInactiveClick = { onInactiveBoardClick(it) },
+                            onAddBoardClick = onAddBoardClick,
                         )
                     }
                     pagingNews.apply {
@@ -265,16 +289,17 @@ fun PreviewTopicScreen() {
 
     PreviewTheme {
         TopicScreen(
-            topic = Topic("Square", "Square"),
+            topic = Topic("Square", "Square", 0),
             refreshState = rememberSwipeRefreshState(isRefreshing = false),
             pagingNews = mockNewsfeed,
             lazyColumnState = mockNewsfeed.rememberLazyListState(),
-            allBoards = emptyList(),
-            enableBoards = emptyList(),
+            subscribedBoards = emptyList(),
+            selectedBoards = emptyList(),
             openDrawer = { },
             onRefresh = { },
             onActiveBoardClick = { },
             onInactiveBoardClick = { },
+            onAddBoardClick = { },
             news = { news ->
                 KomicaPostCard(
                     news = news as KomicaPost,
@@ -288,26 +313,60 @@ fun PreviewTopicScreen() {
 }
 
 @Composable
+fun AddBoardDialog(
+    onDismissRequest: () -> Unit,
+    allBoards: List<Board>,
+    checked: List<Board>,
+    onBoardClick: (Board) -> Unit,
+) {
+    AppDialog(onDismissRequest = onDismissRequest) {
+        AppList(list = allBoards) { item ->
+            AppMaxWidthItem(
+                title = item.name,
+                onClick = { onBoardClick(item) },
+                icon = {
+                    if (checked.contains(item)) {
+                        Icon(
+                            imageVector = Icons.Outlined.Check,
+                            contentDescription = "check",
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    } else {
+                        BlankIcon()
+                    }
+                },
+            )
+        }
+    }
+}
+
+@Composable
 fun BoardFilter(
     boards: List<Board> = emptyList(),
     selected: List<Board> = emptyList(),
     onActiveClick: (Board) -> Unit = { },
     onInactiveClick: (Board) -> Unit = { },
+    onAddBoardClick: () -> Unit = { },
 ) {
     Column(
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.space_16)),
     ) {
-        boards.chunked(4).forEach { boards ->
+        val mockBoard = Board("", "", Host.KOMICA)
+        boards.plus(mockBoard).chunked(4).forEach { boards ->
             Row {
-                boards.forEach {
+                boards.forEachIndexed { index, it ->
                     val active = selected.contains(it)
-                    BoardIcon(it, active) {
-                        if (active) {
-                            onActiveClick(it)
-                        } else {
-                            onInactiveClick(it)
+                    if (index != boards.lastIndex) {
+                        BoardIcon(it, active) {
+                            if (active) {
+                                onActiveClick(it)
+                            } else {
+                                onInactiveClick(it)
+                            }
                         }
+                    } else {
+                        AddBoardIcon(onClick = onAddBoardClick)
                     }
                 }
             }
@@ -347,11 +406,31 @@ fun BoardIcon(
     )
 }
 
+@Composable
+fun AddBoardIcon(
+    onClick: () -> Unit = { },
+) {
+    NavigationRailItem(
+        label = { Text(stringResource(id = R.string.add_board)) },
+        icon = { Icon(painterResource(R.drawable.ic_outline_add_24), contentDescription = "") },
+        selected = false,
+        onClick = onClick,
+    )
+}
+
 @Preview
 @Composable
 fun PreviewBoardIcon() {
     PreviewTheme {
         BoardIcon(Board(name = "A", url = "a.com", host = Host.KOMICA))
+    }
+}
+
+@Preview
+@Composable
+fun PreviewAddBoardIcon() {
+    PreviewTheme {
+        AddBoardIcon()
     }
 }
 

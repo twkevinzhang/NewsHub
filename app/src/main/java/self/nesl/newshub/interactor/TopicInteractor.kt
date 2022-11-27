@@ -1,5 +1,7 @@
 package self.nesl.newshub.interactor
 
+import self.nesl.hub_server.data.topic.Topic
+import self.nesl.hub_server.interactor.TopicUseCase
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.navigation.NavItems
 import javax.inject.Inject
@@ -7,30 +9,20 @@ import javax.inject.Singleton
 
 @Singleton
 class TopicInteractor @Inject constructor(
+    private val topicUseCase: TopicUseCase,
 ) {
-    suspend fun get(topicId: String): Topic {
-        return when (topicId) {
-            "Square" -> Square()
-            else -> throw NotImplementedError()
-        }
-    }
+    suspend fun get(topicId: String) =
+        topicUseCase.get(topicId)
 
-    suspend fun getAll(): List<Topic> {
-        return listOf(Square())
-    }
+    fun getAll() =
+        topicUseCase.getAll()
 }
 
-open class Topic (
-    val id: String,
-    val name: String,
-)
-
-class Square: Topic("Square", "Square")
-
 fun Topic.toNavItem(): NavItems {
+    val newIcon = if (icon == 0) R.drawable.ic_outline_globe_24 else icon
     return NavItems(
         title = name,
         route = "topic/${id}",
-        icon = R.drawable.ic_outline_globe_24,
+        icon = newIcon,
     )
 }

@@ -23,21 +23,19 @@ class NewsListViewModel @Inject constructor(
     }
 
     private val _topicId = MutableStateFlow(defaultTopicId)
-    private val _allBoards = MutableStateFlow(emptyList<Board>())
-    private val _enableBoards = MutableStateFlow(emptyList<Board>())
+    private val _selectedBoards = MutableStateFlow(emptyList<Board>())
 
+    val allBoards = boardInteractor.getAll()
     val topic = _topicId.mapLatest {
-        topicInteractor.get(it).apply {
-            val boards = boardInteractor.getAll(it)
-            _allBoards.update { boards }
-            _enableBoards.update { boards }
-        }
+        topicInteractor.get(it)
     }
-
-    val allBoards = _allBoards.asStateFlow()
-    val enableBoards = _enableBoards.asStateFlow()
-
-    val pagingNews = _enableBoards.map {
+    val subscribedBoards = topic.flatMapLatest {
+        val boards = boardInteractor.getSubscribed(it.id)
+        _selectedBoards.update { boards.first() }
+        boards
+    }
+    val selectedBoards = _selectedBoards.asStateFlow()
+    val pagingNews = _selectedBoards.map {
         newsInteractor.getAll(it.toSet())
     }
         .flatMapLatest { it }
@@ -47,17 +45,29 @@ class NewsListViewModel @Inject constructor(
         this._topicId.update { topicId }
     }
 
-    fun disableBoard(board: Board) {
-        this._enableBoards.update { it.minus(board).toSet().toList() }
+    fun unselectBoard(board: Board) {
+        this._selectedBoards.update { it.minus(board).toSet().toList() }
     }
 
-    fun enableBoard(board: Board) {
-        this._enableBoards.update { it.plus(board).toSet().toList() }
+    fun selectBoard(board: Board) {
+        this._selectedBoards.update { it.plus(board).toSet().toList() }
+    }
+
+    fun unsubscribeBoard(board: Board) {
+        viewModelScope.launch {
+            boardInteractor.unsubscribe(board, _topicId.value)
+        }
+    }
+
+    fun subscribeBoard(board: Board) {
+        viewModelScope.launch {
+            boardInteractor.subscribe(board, _topicId.value)
+        }
     }
 
     fun clearAllNews() {
         viewModelScope.launch {
-            newsInteractor.clearAll(_enableBoards.value.toSet())
+            newsInteractor.clearAll(_selectedBoards.value.toSet())
         }
     }
 
