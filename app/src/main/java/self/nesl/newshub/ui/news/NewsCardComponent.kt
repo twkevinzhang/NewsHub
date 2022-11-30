@@ -19,11 +19,6 @@ import self.nesl.newshub.ui.theme.AppDisabledAlpha
 import self.nesl.newshub.ui.theme.AppLink
 
 @Composable
-fun CardHeadPosterBlock(poster: String?) {
-    CardHeadTextBlock(poster?.takeIf { it.isNotBlank() }.toString())
-}
-
-@Composable
 fun CardHeadTimeBlock(timestamp: Long?) {
     CardHeadTextBlock(timestamp?.toHumanTime() ?: "time")
 }

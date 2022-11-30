@@ -12,9 +12,7 @@ import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.komica.mockKomicaPost
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.component.AppCard
-import self.nesl.newshub.ui.component.LinkParagraph
 import self.nesl.newshub.ui.component.ParagraphBlock
-import self.nesl.newshub.ui.component.TextParagraph
 import self.nesl.newshub.ui.theme.AppDisabledAlpha
 import self.nesl.newshub.ui.theme.NewshubTheme
 
@@ -32,6 +30,7 @@ fun KomicaNewsCard(
         createdAt = news.createdAt,
         replies = news.replies,
         title = news.title,
+        id = news.id,
         content = news.content,
         boardName = boardName,
         onParagraphClick = onParagraphClick,
@@ -41,18 +40,19 @@ fun KomicaNewsCard(
 
 @Composable
 fun KomicaPostCard(
-    news: KomicaPost,
+    post: KomicaPost,
     boardName: String,
     onParagraphClick: (Paragraph) -> Unit,
     onClick: (() -> Unit)? = null,
 ) {
     KomicaPostCardContent(
-        threadUrl = news.threadUrl,
-        poster = news.poster,
-        createdAt = news.createdAt,
-        replies = news.replies,
-        title = news.title,
-        content = news.content,
+        threadUrl = post.threadUrl,
+        poster = post.poster,
+        createdAt = post.createdAt,
+        replies = post.replies,
+        title = post.title,
+        id = post.id,
+        content = post.content,
         boardName = boardName,
         onParagraphClick = onParagraphClick,
         onClick = onClick,
@@ -107,7 +107,7 @@ private fun KomicaPostCardContent(
 private fun PreviewKomicaPostCard() {
     NewshubTheme {
         KomicaPostCard(
-            news = mockKomicaPost(),
+            post = mockKomicaPost(),
             boardName = "Board",
             onParagraphClick = { },
             onClick = { },
@@ -165,9 +165,9 @@ private fun KomicaPostCardHeader(
         modifier = Modifier.fillMaxWidth()
     ) {
         Row {
-            CardHeadPosterBlock(poster)
             CardHeadTimeBlock(createdAt)
-            CardHeadTextBlock("${id}@Komica/$boardName")
+            val posterStr = if (poster.isNullOrBlank().not()) "($poster)" else ""
+            CardHeadTextBlock("$id$posterStr@Komica/$boardName")
         }
         Row {
             CardHeadRepliesBlock(replies)

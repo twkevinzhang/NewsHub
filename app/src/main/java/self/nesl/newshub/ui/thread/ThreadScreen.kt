@@ -2,7 +2,6 @@ package self.nesl.newshub.ui.thread
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
@@ -222,7 +221,7 @@ fun PostCard(
 ) {
     when (post) {
         is KomicaPost -> KomicaPostCard(
-            news = post,
+            post = post,
             boardName = boardName,
             onParagraphClick = onParagraphClick,
         )

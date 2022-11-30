@@ -41,7 +41,6 @@ import self.nesl.hub_server.data.news.gamer.GamerNews
 import self.nesl.hub_server.data.news.komica.KomicaNews
 import self.nesl.hub_server.data.news.komica.mockKomicaNews
 import self.nesl.hub_server.data.post.komica.KomicaPost
-import self.nesl.hub_server.data.post.komica.mockKomicaPost
 import self.nesl.hub_server.data.topic.Topic
 import self.nesl.newshub.R
 import self.nesl.newshub.encode
@@ -306,7 +305,7 @@ fun PreviewTopicScreen() {
             onAddBoardClick = { },
             news = { news ->
                 KomicaPostCard(
-                    news = news as KomicaPost,
+                    post = news as KomicaPost,
                     boardName = "Board",
                     onParagraphClick = { },
                     onClick = { }
