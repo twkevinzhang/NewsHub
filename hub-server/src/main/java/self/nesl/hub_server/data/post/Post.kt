@@ -6,6 +6,9 @@ import self.nesl.hub_server.trySubstring
 
 interface Post {
 
+    /**
+     * Which thread url the post belongs to
+     */
     val threadUrl: String
 
     /**

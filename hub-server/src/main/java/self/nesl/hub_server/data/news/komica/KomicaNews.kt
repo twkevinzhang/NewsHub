@@ -15,6 +15,7 @@ data class KomicaNews (
     override val threadUrl: String,
     override val boardUrl: String,
     val title: String,
+    val id: String,
     override val content: List<Paragraph>,
     val createdAt: Long?,
     val poster: String?,
@@ -37,6 +38,7 @@ fun KPost.toKomicaNews(page: Int, boardUrl: String, threadUrl: String) =
         readAt = readAt,
         content = content.map { it.toParagraph() },
         page = page,
+        id = id
     )
 
 fun mockKomicaNews() =
@@ -59,4 +61,5 @@ fun mockKomicaNews() =
             Paragraph.Text("This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique."),
         ),
         page = 1,
+        id = "mockId"
     )
