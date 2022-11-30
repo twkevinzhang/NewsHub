@@ -3,6 +3,7 @@ package self.nesl.newshub.di
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import coil.ImageLoader
+import coil.decode.VideoFrameDecoder
 import coil.request.CachePolicy
 import coil.util.DebugLogger
 import dagger.Binds
@@ -25,5 +26,8 @@ object AppModule {
         ImageLoader.Builder(context)
             .logger(DebugLogger())
             .crossfade(true)
+            .components {
+                add(VideoFrameDecoder.Factory())
+            }
             .build()
 }
