@@ -4,11 +4,17 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import androidx.paging.filter
+import androidx.paging.flatMap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import self.nesl.hub_server.data.Paragraph
+import self.nesl.hub_server.data.ParagraphType
 import self.nesl.newshub.interactor.BoardInteractor
 import self.nesl.newshub.interactor.ThreadInteractor
+import self.nesl.newshub.model.Thumbnail
+import self.nesl.newshub.model.toThumbnail
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,6 +44,19 @@ class ThreadViewModel @Inject constructor(
         }
         .catch { Log.e("ThreadViewModel", it.stackTraceToString()) }
         .cachedIn(viewModelScope)
+
+    val gallery = pagingPosts.map { _pagingPosts ->
+        _pagingPosts.flatMap { p ->
+            p.content.mapNotNull {
+                when (it) {
+                    is Paragraph.ImageInfo -> it.toThumbnail()
+                    is Paragraph.VideoInfo -> it.toThumbnail()
+                    else -> null
+
+               }
+            }
+        }
+    }
 
     fun thread(threadUrl: String) {
         this._threadUrl.update { threadUrl }

@@ -36,6 +36,7 @@ fun ParagraphBlock(
             when (it) {
                 is Paragraph.Text -> TextParagraph(it)
                 is Paragraph.ImageInfo -> ImageParagraph(it) { onParagraphClick(it) }
+                is Paragraph.VideoInfo -> VideoParagraph(it) { onParagraphClick(it) }
                 is Paragraph.Link -> LinkParagraph(it) { onParagraphClick(it) }
                 is Paragraph.ReplyTo -> ReplyToParagraph(it, onPreviewReplyTo) { onParagraphClick(it) }
                 is Paragraph.Quote -> QuoteParagraph(it)
@@ -126,4 +127,18 @@ fun QuoteParagraph(paragraph: Paragraph.Quote) {
         color = AppQuote,
     )
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
+}
+
+@Composable
+fun VideoParagraph(paragraph: Paragraph.VideoInfo, onClick: () -> Unit = { }) {
+    SubcomposeAsyncImage(
+        model = paragraph.url,
+        modifier = Modifier
+            .size(80.dp, 80.dp)
+            .clickable(onClick = onClick),
+        contentDescription = null,
+        loading = {
+            CircularProgressIndicator()
+        },
+    )
 }

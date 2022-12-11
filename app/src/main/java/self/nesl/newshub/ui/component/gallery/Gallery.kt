@@ -13,8 +13,8 @@ import com.google.accompanist.pager.rememberPagerState
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun <T> Gallery(
-    items: List<T>,
+fun Gallery(
+    size: Int,
     startIndex: Int = 0,
     onDismissRequest: () -> Unit = { },
     item: @Composable (Int) -> Unit,
@@ -31,7 +31,7 @@ fun <T> Gallery(
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
             HorizontalPager(
-                count = items.size,
+                count = size,
                 state = pagerState,
             ) { page ->
                 item(page)

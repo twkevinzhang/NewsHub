@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import androidx.paging.CombinedLoadStates
@@ -20,17 +21,19 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import self.nesl.hub_server.data.Paragraph
+import self.nesl.hub_server.data.ParagraphType
 import self.nesl.hub_server.data.post.Post
 import self.nesl.hub_server.data.post.gamer.GamerPost
 import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.post.parentIs
 import self.nesl.hub_server.data.post.toText
-import self.nesl.hub_server.data.rawImages
 import self.nesl.newshub.encode
 import self.nesl.newshub.isZeroOrNull
+import self.nesl.newshub.model.Thumbnail
 import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
 import self.nesl.newshub.ui.component.gallery.Gallery
+import self.nesl.newshub.ui.component.gallery.VideoThumbnail
 import self.nesl.newshub.ui.component.gallery.ZoomableBox
 import self.nesl.newshub.ui.news.GamerPostCard
 import self.nesl.newshub.ui.news.GamerRePostCard
@@ -47,8 +50,8 @@ fun ThreadRoute(
     val boardName by threadViewModel.boardName.collectAsState("")
     val refreshState = rememberSwipeRefreshState(loading)
     val replyStack = remember { mutableStateListOf<Post>() }
-    val galleryStack = remember { mutableStateListOf<String>() }
-    var galleryIndex by remember { mutableStateOf(-1) }
+    val gallery = threadViewModel.gallery.collectAsLazyPagingItems()
+    var galleryStart by remember { mutableStateOf(-1) }
     val context = LocalContext.current
 
     fun onReplyToClick(replyTo: Paragraph.ReplyTo) {
@@ -62,10 +65,16 @@ fun ThreadRoute(
     }
 
     fun onImageClick(image: Paragraph.ImageInfo) {
-        val images = pagingPosts.itemSnapshotList.flatMap { it?.content?.rawImages() ?: emptyList() }
-        galleryStack.clear()
-        galleryStack.addAll(images)
-        galleryIndex = images.indexOf(image.raw)
+        galleryStart = gallery.itemSnapshotList.map { it?.raw }.indexOf(image.raw)
+    }
+
+    fun onVideoThumbClick(video: Paragraph.VideoInfo) {
+        galleryStart = gallery.itemSnapshotList.map { it?.raw }.indexOf(video.url)
+    }
+
+    fun onVideoPlayClick(thumbnail: Thumbnail) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(thumbnail.raw))
+        ContextCompat.startActivity(context, intent, null)
     }
 
     fun onParagraphClick(p: Paragraph) {
@@ -73,6 +82,7 @@ fun ThreadRoute(
             is Paragraph.Link -> onLinkClick(p)
             is Paragraph.ReplyTo -> onReplyToClick(p)
             is Paragraph.ImageInfo -> onImageClick(p)
+            is Paragraph.VideoInfo -> onVideoThumbClick(p)
             else -> { }
         }
     }
@@ -141,22 +151,29 @@ fun ThreadRoute(
         }
     }
 
-    if (galleryIndex >= 0) {
+    if (galleryStart >= 0) {
         Gallery(
-            items = galleryStack,
-            startIndex = galleryIndex,
-            onDismissRequest = { galleryIndex = -1 }
+            size = gallery.itemCount,
+            startIndex = galleryStart,
+            onDismissRequest = { galleryStart = -1 }
         ) { page ->
-            var loaded by remember { mutableStateOf(false) }
-            ZoomableBox(
-                loaded = loaded,
-            ) {
-                SubcomposeAsyncImage(
-                    model = galleryStack[page],
-                    contentDescription = null,
-                    loading = { CircularProgressIndicator() },
-                    onSuccess = { loaded = true }
-                )
+            val thumbnail = gallery.itemSnapshotList.items[page]
+            if (thumbnail.mediaType == ParagraphType.IMAGE) {
+                var loaded by remember { mutableStateOf(false) }
+                ZoomableBox(
+                    loaded = loaded,
+                ) {
+                    SubcomposeAsyncImage(
+                        model = thumbnail.url,
+                        contentDescription = null,
+                        loading = { CircularProgressIndicator() },
+                        onSuccess = { loaded = true }
+                    )
+                }
+            } else {
+                VideoThumbnail(video = thumbnail) {
+                    onVideoPlayClick(thumbnail)
+                }
             }
         }
     }
