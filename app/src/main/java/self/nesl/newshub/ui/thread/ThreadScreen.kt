@@ -15,6 +15,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
+import coil.compose.SubcomposeAsyncImage
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -29,7 +30,8 @@ import self.nesl.newshub.encode
 import self.nesl.newshub.isZeroOrNull
 import self.nesl.newshub.ui.component.AppDialog
 import self.nesl.newshub.ui.component.NewsHubTopBar
-import self.nesl.newshub.ui.component.gallery.AsyncGallery
+import self.nesl.newshub.ui.component.gallery.Gallery
+import self.nesl.newshub.ui.component.gallery.ZoomableBox
 import self.nesl.newshub.ui.news.GamerPostCard
 import self.nesl.newshub.ui.news.GamerRePostCard
 import self.nesl.newshub.ui.news.KomicaRePostCard
@@ -140,11 +142,23 @@ fun ThreadRoute(
     }
 
     if (galleryIndex >= 0) {
-        AsyncGallery(
-            urls = galleryStack,
+        Gallery(
+            items = galleryStack,
             startIndex = galleryIndex,
             onDismissRequest = { galleryIndex = -1 }
-        )
+        ) { page ->
+            var loaded by remember { mutableStateOf(false) }
+            ZoomableBox(
+                loaded = loaded,
+            ) {
+                SubcomposeAsyncImage(
+                    model = galleryStack[page],
+                    contentDescription = null,
+                    loading = { CircularProgressIndicator() },
+                    onSuccess = { loaded = true }
+                )
+            }
+        }
     }
 }
 

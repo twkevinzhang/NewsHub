@@ -3,15 +3,14 @@ package self.nesl.newshub.ui.component.gallery
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.onSizeChanged
@@ -20,62 +19,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import coil.compose.SubcomposeAsyncImage
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.theme.NewshubTheme
-
-import java.lang.Float.min
 import kotlin.math.absoluteValue
+import kotlin.math.max
+import kotlin.math.min
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalComposeUiApi::class)
-@Composable
-fun AsyncGallery(
-    urls: List<String>,
-    startIndex: Int = 0,
-    onDismissRequest: () -> Unit = { }
-) {
-    val pagerState = rememberPagerState(initialPage = startIndex)
-
-    Dialog(
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            dismissOnBackPress = true,
-            dismissOnClickOutside = false
-        )
-    ) {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            HorizontalPager(
-                count = urls.size,
-                state = pagerState,
-            ) { page ->
-                var loaded by remember { mutableStateOf(false) }
-                ZoomableBox(
-                    loaded = loaded,
-                ) {
-                    SubcomposeAsyncImage(
-                        model = urls[page],
-                        contentDescription = null,
-                        loading = { CircularProgressIndicator() },
-                        onSuccess = { loaded = true }
-                    )
-                }
-            }
-        }
-    }
-
-}
 
 @Composable
 fun ZoomableBox(
     loaded: Boolean = false,
-    minScale: Float? = null,
-    maxScale: Float = 5f,
+    allowMinScale: Float? = null,
+    allowMaxScale: Float = 5f,
     contentCompose: @Composable () -> Unit
 ) {
     var screen by remember { mutableStateOf(IntSize.Zero) }
@@ -107,13 +62,14 @@ fun ZoomableBox(
         .background(MaterialTheme.colorScheme.background)
         .pointerInput(Unit) {
             detectTransformGesturesWithUnconsumed { event ->
-                val _minScale = minScale ?: initScale
+                val minScale = allowMinScale ?: initScale
+                val maxScale = max(allowMaxScale, minScale)
                 val centroid = event.calculateCentroid()
                 val pan = event.calculatePan()
                 val gestureZoom = event.calculateZoom()
                 val rotation = event.calculateRotation()
 
-                scale = (scale * gestureZoom).coerceIn(_minScale, maxScale)
+                scale = (scale * gestureZoom).coerceIn(minScale, maxScale)
                 val zoomedX = content.width * scale
                 offsetX = if (zoomedX < size.width) {
                     0f
@@ -128,7 +84,7 @@ fun ZoomableBox(
                     val (negative, positive) = unAbs(zoomedY.limitIn(size.height))
                     (offsetY + pan.y).coerceIn(negative, positive)
                 }
-                if (scale > _minScale) {
+                if (scale > minScale) {
                     event.changes.consumeAll()
                 }
             }
