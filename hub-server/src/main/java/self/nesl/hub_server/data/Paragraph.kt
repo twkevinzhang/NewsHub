@@ -12,6 +12,10 @@ sealed class Paragraph(
         val raw: String,
     ): Paragraph(ParagraphType.IMAGE)
 
+    class VideoInfo(
+        val url: String,
+    ): Paragraph(ParagraphType.VIDEO)
+
     class Text(
         val content: String,
     ): Paragraph(ParagraphType.TEXT)
@@ -30,7 +34,7 @@ sealed class Paragraph(
 }
 
 enum class ParagraphType {
-    QUOTE, REPLY_TO, TEXT, IMAGE, LINK
+    QUOTE, REPLY_TO, TEXT, IMAGE, LINK, VIDEO
 }
 
 fun List<Paragraph>.rawImages() =
@@ -42,6 +46,7 @@ fun KParagraph.toParagraph(): Paragraph {
         is KReplyTo -> Paragraph.ReplyTo(content)
         is KText -> Paragraph.Text(content)
         is KImageInfo -> Paragraph.ImageInfo(thumb, raw)
+        is KVideoInfo -> Paragraph.VideoInfo(url)
         is KLink -> Paragraph.Link(content)
         else -> {
             throw IllegalArgumentException("Unknown paragraph type")

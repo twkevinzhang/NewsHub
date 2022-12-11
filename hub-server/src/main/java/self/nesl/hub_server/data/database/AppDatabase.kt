@@ -83,10 +83,13 @@ abstract class AppDatabase: RoomDatabase() {
                             thumb = it.getString("thumb"),
                             raw = it.getString("raw"),
                         )
+                        ParagraphType.VIDEO.toString() -> Paragraph.VideoInfo(
+                            url = it.getString("url"),
+                        )
                         ParagraphType.LINK.toString() -> Paragraph.Link(
                             content = it.getString("content")
                         )
-                        else -> throw IllegalArgumentException()
+                        else -> throw IllegalArgumentException("Unknown type ${it.getString("type")}")
                     }
                 }
             } ?: emptyList()
