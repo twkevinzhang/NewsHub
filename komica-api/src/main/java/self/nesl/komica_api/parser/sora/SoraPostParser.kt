@@ -10,8 +10,10 @@ import self.nesl.komica_api.model.*
 import self.nesl.komica_api.parser.PostHeadParser
 import self.nesl.komica_api.parser.Parser
 import self.nesl.komica_api.parser.UrlParser
+import self.nesl.komica_api.parser._2cat._2catPostParser
 import self.nesl.komica_api.withHttps
 import java.util.*
+import java.util.regex.Pattern
 
 /**
  * 可以解析以下 komica.org 的 Post
@@ -80,15 +82,25 @@ class SoraPostParser(
             val rawUrl = thumbImg.parent().attr("href")
             val thumbUrl = thumbImg.attr("src")
 
-            try {
-                builder.addContent(
-                    KImageInfo(thumbUrl.withHttps(), rawUrl.withHttps())
-                )
+            val (thumb, raw) = try {
+                Pair(thumbUrl.withHttps(), rawUrl.withHttps())
             } catch (e: ParseException) {
-                builder.addContent(
-                    KImageInfo(thumbUrl.withHttps(host), rawUrl.withHttps(host))
-                )
+                Pair(thumbUrl.withHttps(host), rawUrl.withHttps(host))
             }
+            if (raw.match(IMAGE_URL_PATTERN)) {
+                builder.addContent(KImageInfo(thumb, raw))
+            } else if (raw.match(VIDEO_URL_PATTERN)) {
+                builder.addContent(KVideoInfo(raw))
+            } else { }
         }
+    }
+
+    private fun String.match(p: Pattern): Boolean {
+        return p.matcher(this).find()
+    }
+
+    companion object {
+        private val IMAGE_URL_PATTERN = Pattern.compile("(http(s?):/)(/[^/]+)+\\.(?:jpg|gif|png)")
+        private val VIDEO_URL_PATTERN = Pattern.compile("(http(s?):/)(/[^/]+)+\\.(?:webm|mp4)")
     }
 }

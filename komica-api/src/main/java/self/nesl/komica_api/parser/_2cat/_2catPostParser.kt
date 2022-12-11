@@ -39,8 +39,10 @@ class _2catPostParser(
             .filterIsInstance<TextNode>()
             .flatMap {
                 resolveLink(it.text()) { link ->
-                    if (IMAGE_URL_PATTERN.matcher(link).find()) {
+                    if (link.match(IMAGE_URL_PATTERN)) {
                         KImageInfo(link, link)
+                    } else if (link.match(VIDEO_URL_PATTERN)) {
+                        KVideoInfo(link)
                     } else {
                         KLink(link)
                     }
@@ -82,8 +84,13 @@ class _2catPostParser(
         return list
     }
 
+    private fun String.match(p: Pattern): Boolean {
+        return p.matcher(this).find()
+    }
+
     companion object {
         private val WEB_URL_PATTERN = Pattern.compile("((http?|https|ftp|file)://)?((W|w){3}.)?[a-zA-Z0-9]+\\.[a-zA-Z]+")
-        private val IMAGE_URL_PATTERN = Pattern.compile("(http(s?):/)(/[^/]+)+\\.(?:jpg|gif|png|webm)")
+        private val IMAGE_URL_PATTERN = Pattern.compile("(http(s?):/)(/[^/]+)+\\.(?:jpg|gif|png)")
+        private val VIDEO_URL_PATTERN = Pattern.compile("(http(s?):/)(/[^/]+)+\\.(?:webm|mp4)")
     }
 }

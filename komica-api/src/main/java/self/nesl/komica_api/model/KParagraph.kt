@@ -2,6 +2,10 @@ package self.nesl.komica_api.model
 
 interface KParagraph
 
+class KVideoInfo(
+    val url: String,
+): KParagraph
+
 class KImageInfo(
     val thumb: String? = null,
     val raw: String,
