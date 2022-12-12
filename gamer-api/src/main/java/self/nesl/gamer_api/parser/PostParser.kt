@@ -4,6 +4,9 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
+import okhttp3.Response
+import okhttp3.ResponseBody
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
@@ -17,7 +20,8 @@ class PostParser(
 ): Parser<GPost> {
     private var builder = GPostBuilder()
 
-    override fun parse(source: Element, req: Request): GPost {
+    override fun parse(body: ResponseBody, req: Request): GPost {
+        val source = Jsoup.parse(body.string())
         setTitle(source)
         setCreatedAt(source)
         setPosterName(source)

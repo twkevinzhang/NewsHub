@@ -1,5 +1,6 @@
 package self.nesl.gamer_api.parser
 
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.jsoup.Jsoup
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -12,7 +13,7 @@ internal class ThreadParserTest {
     fun `Test ThreadParser expect successful`() {
         val parser = ThreadParser(PostParser(UrlParserImpl()), UrlParserImpl(), RequestBuilderImpl())
         val list = parser.parse(
-            Jsoup.parse(loadFile("./src/test/html/ThreadPage.html")),
+            loadFile("./src/test/html/ThreadPage.html")!!.toResponseBody(),
             RequestBuilderImpl().url("https://forum.gamer.com.tw/C.php?bsn=60076&snA=4166175").build(),
         )
         assertEquals(

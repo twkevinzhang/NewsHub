@@ -25,6 +25,6 @@ class GetAllPost(
         parse(response, req)
     }
 
-    private fun parse(response: Response, req: Request) =
-        ThreadParser(PostParser(UrlParserImpl()), UrlParserImpl(), RequestBuilderImpl()).parse(Jsoup.parse(response.body?.string()), req)
+    private fun parse(res: Response, req: Request) =
+        ThreadParser(PostParser(UrlParserImpl()), UrlParserImpl(), RequestBuilderImpl()).parse(res.body!!, req)
 }

@@ -1,5 +1,12 @@
 package self.nesl.gamer_api
 
+import okhttp3.Protocol
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.jsoup.nodes.Element
+
 /**
  * returns 49000 if the string is "49k"
  */
@@ -9,3 +16,7 @@ fun String.expandInt() =
     } else {
         this.toInt()
     }
+
+fun Element.toResponseBody(): ResponseBody {
+    return this.toString().toResponseBody()
+}

@@ -1,17 +1,21 @@
 package self.nesl.gamer_api.parser
 
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
+import okhttp3.Response
+import okhttp3.ResponseBody
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import self.nesl.gamer_api.model.GPost
 import self.nesl.gamer_api.request.RequestBuilder
+import self.nesl.gamer_api.toResponseBody
 
 class ThreadParser(
     private val postParser: Parser<GPost>,
     private val urlParser: UrlParser,
     private val requestBuilder: RequestBuilder,
 ): Parser<List<GPost>> {
-    override fun parse(source: Element, req: Request): List<GPost> {
+    override fun parse(body: ResponseBody, req: Request): List<GPost> {
+        val source = Jsoup.parse(body.string())
         val currentPage = currentPage(source)
         return listOf(parseHead(source, req, currentPage)).plus(parseReplies(source, req, currentPage))
     }
@@ -28,7 +32,7 @@ class ThreadParser(
             .url(req.url.toString().plus("&sn=$postId"))
             .setPageReq(responsePage)
             .build()
-        return postParser.parse(section, postReq)
+        return postParser.parse(section.toResponseBody(), postReq)
     }
 
     private fun parseReplies(source: Element, req: Request, responsePage: Int): List<GPost> {
