@@ -1,10 +1,6 @@
 package self.nesl.gamer_api.parser
 
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
-import okhttp3.Response
 import okhttp3.ResponseBody
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -22,15 +18,19 @@ class PostParser(
 
     override fun parse(body: ResponseBody, req: Request): GPost {
         val source = Jsoup.parse(body.string())
+        val postId = urlParser.parseSn(req.url)!!
+        val bsn = urlParser.parseBsn(req.url)!!
         setTitle(source)
         setCreatedAt(source)
         setPosterName(source)
         setPosterId(source)
         setLike(source)
         setUnlike(source)
+        setComments(source, postId)
+        setCommentsUrl(bsn, postId)
         setContent(source)
         builder.setUrl(req.url.toString())
-        builder.setPostId(urlParser.parsePostId(req.url)!!)
+        builder.setPostId(postId)
         builder.setPage(urlParser.parsePage(req.url))
         val post = builder.build()
         builder = GPostBuilder()
@@ -89,6 +89,15 @@ class PostParser(
     private fun setUnlike(source: Element) {
         val string = source.selectFirst("div.bp a.count.tippy-gpbp-list").ownText()
         builder.setUnlike(string.toIntOrNull() ?: 0)
+    }
+
+    private fun setComments(source: Element, postId: String) {
+        val string = source.selectFirst("a#showoldCommend_$postId")?.text()?.filter { it.isDigit() }
+        builder.setComments(string?.toIntOrNull() ?: 0)
+    }
+
+    private fun setCommentsUrl(bsn: String, postId: String) {
+        builder.setCommentsUrl("https://forum.gamer.com.tw/ajax/moreCommend.php?bsn=$bsn&snB=$postId")
     }
 
     private fun List<Node>.flatDiv(): List<Node> {

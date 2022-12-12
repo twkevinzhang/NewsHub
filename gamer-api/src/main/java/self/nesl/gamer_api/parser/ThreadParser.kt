@@ -15,6 +15,7 @@ class ThreadParser(
     private val requestBuilder: RequestBuilder,
 ): Parser<List<GPost>> {
     override fun parse(body: ResponseBody, req: Request): List<GPost> {
+        println(req.url)
         val source = Jsoup.parse(body.string())
         val currentPage = currentPage(source)
         return listOf(parseHead(source, req, currentPage)).plus(parseReplies(source, req, currentPage))
@@ -27,7 +28,7 @@ class ThreadParser(
 
     private fun parseHead(source: Element, req: Request, responsePage: Int): GPost {
         val section = source.selectFirst("section.c-section[id^=\"post_\"]")
-        val postId = section.id()
+        val postId = section.id().replace("post_", "")
         val postReq = requestBuilder
             .url(req.url.toString().plus("&sn=$postId"))
             .setPageReq(responsePage)

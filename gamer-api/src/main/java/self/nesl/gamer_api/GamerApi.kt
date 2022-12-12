@@ -3,6 +3,7 @@ package self.nesl.gamer_api
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import self.nesl.gamer_api.interactor.*
+import self.nesl.gamer_api.model.GComment
 import self.nesl.gamer_api.model.GNews
 import self.nesl.gamer_api.model.GPost
 
@@ -21,5 +22,9 @@ class GamerApi (
 
     suspend fun getAllPost(req: Request): List<GPost> {
         return GetAllPost(client).invoke(req)
+    }
+
+    suspend fun getAllComment(req: Request): List<GComment> {
+        return GetAllComment(client).invoke(req)
     }
 }

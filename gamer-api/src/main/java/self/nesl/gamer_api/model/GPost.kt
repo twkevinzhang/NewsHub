@@ -10,6 +10,8 @@ data class GPost (
     val like: Int,
     val unlike: Int,
     var replies: Int,
+    val comments: Int,
+    val commentsUrl: String,
     val readAt: Int,
     val page: Int,
     val content: List<GParagraph>,
@@ -26,6 +28,8 @@ class GPostBuilder {
     private var unlike: Int= 0
     private var replies: Int= 0
     private var readAt: Int= 0
+    private var comments: Int= 0
+    private var commentsUrl: String= ""
     private var content: List<GParagraph> = emptyList()
     private var page: Int= 0
 
@@ -56,6 +60,14 @@ class GPostBuilder {
 
     fun setLike(number: Int) {
         this.like = number
+    }
+
+    fun setComments(number: Int) {
+        this.comments = number
+    }
+
+    fun setCommentsUrl(string: String) {
+        this.commentsUrl = string
     }
 
     fun setPage(number: Int) {
@@ -92,6 +104,8 @@ class GPostBuilder {
             like,
             unlike,
             replies,
+            comments,
+            commentsUrl,
             readAt,
             page,
             content,

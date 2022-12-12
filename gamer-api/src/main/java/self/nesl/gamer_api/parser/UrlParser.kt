@@ -3,13 +3,13 @@ package self.nesl.gamer_api.parser
 import okhttp3.HttpUrl
 
 interface UrlParser {
-    fun parseBoardId(url: HttpUrl): String?
-    fun parseThreadId(url: HttpUrl): String?
+    fun parseBsn(url: HttpUrl): String?
+    fun parseSna(url: HttpUrl): String?
     fun parseThreadUrl(url: HttpUrl): String
-    fun parsePostId(url: HttpUrl): String?
+    fun parseSn(url: HttpUrl): String?
     fun parsePage(url: HttpUrl): Int
-    fun hasBoardId(url: HttpUrl): Boolean
-    fun hasThreadId(url: HttpUrl): Boolean
-    fun hasPostId(url: HttpUrl): Boolean
+    fun hasBsn(url: HttpUrl): Boolean
+    fun hasSna(url: HttpUrl): Boolean
+    fun hasSn(url: HttpUrl): Boolean
     fun hasPage(url: HttpUrl): Boolean
 }

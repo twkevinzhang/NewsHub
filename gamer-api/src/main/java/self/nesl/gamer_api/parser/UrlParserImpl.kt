@@ -1,20 +1,17 @@
 package self.nesl.gamer_api.parser
 
 import okhttp3.HttpUrl
-import org.jsoup.nodes.Element
-import self.nesl.gamer_api.model.GBoard
-import self.nesl.gamer_api.model.GPost
 
 class UrlParserImpl: UrlParser {
-    override fun parseBoardId(url: HttpUrl): String? {
+    override fun parseBsn(url: HttpUrl): String? {
         return url.queryParameter("bsn")
     }
 
-    override fun parseThreadId(url: HttpUrl): String? {
+    override fun parseSna(url: HttpUrl): String? {
         return url.queryParameter("snA")
     }
 
-    override fun parsePostId(url: HttpUrl): String? {
+    override fun parseSn(url: HttpUrl): String? {
         return url.queryParameter("sn")
     }
 
@@ -22,16 +19,16 @@ class UrlParserImpl: UrlParser {
         return url.queryParameter("page")?.toInt() ?: 1
     }
 
-    override fun hasBoardId(url: HttpUrl): Boolean {
-        return parseBoardId(url) != null
+    override fun hasBsn(url: HttpUrl): Boolean {
+        return parseBsn(url) != null
     }
 
-    override fun hasThreadId(url: HttpUrl): Boolean {
-        return parseThreadId(url) != null
+    override fun hasSna(url: HttpUrl): Boolean {
+        return parseSna(url) != null
     }
 
-    override fun hasPostId(url: HttpUrl): Boolean {
-        return parsePostId(url) != null
+    override fun hasSn(url: HttpUrl): Boolean {
+        return parseSn(url) != null
     }
 
     override fun hasPage(url: HttpUrl): Boolean {
@@ -40,8 +37,8 @@ class UrlParserImpl: UrlParser {
 
     override fun parseThreadUrl(url: HttpUrl): String {
         if (
-            !hasBoardId(url) ||
-            !hasThreadId(url)
+            !hasBsn(url) ||
+            !hasSna(url)
         ) throw IllegalArgumentException()
 
         val builder = url.newBuilder()
