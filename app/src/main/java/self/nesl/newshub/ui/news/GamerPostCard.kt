@@ -1,14 +1,16 @@
 package self.nesl.newshub.ui.news
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import self.nesl.hub_server.data.Paragraph
 import self.nesl.hub_server.data.news.gamer.GamerNews
 import self.nesl.hub_server.data.news.gamer.mockGamerNews
@@ -16,9 +18,39 @@ import self.nesl.hub_server.data.post.gamer.GamerPost
 import self.nesl.hub_server.data.post.gamer.mockGamerPost
 import self.nesl.newshub.R
 import self.nesl.newshub.ui.component.AppCard
+import self.nesl.newshub.ui.component.ButtonInCard
+import self.nesl.newshub.ui.component.LinkParagraph
 import self.nesl.newshub.ui.component.ParagraphBlock
 import self.nesl.newshub.ui.theme.NewshubTheme
 
+
+@Composable
+private fun GamerCard(
+    onClick: (() -> Unit)? = null,
+    header: @Composable () -> Unit,
+    content: @Composable () -> Unit,
+    footer: @Composable () -> Unit,
+) {
+    AppCard(
+        onClick = onClick,
+    ) {
+        Column {
+            Column(
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
+            ) {
+                header()
+                content()
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(dimensionResource(id = R.dimen.space_8)),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                footer()
+            }
+        }
+    }
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
+}
 
 @Composable
 fun GamerNewsCard(
@@ -27,13 +59,12 @@ fun GamerNewsCard(
     onParagraphClick: (Paragraph) -> Unit,
     onClick: (() -> Unit)? = null,
 ) {
-    AppCard(
+    GamerCard(
         onClick = onClick,
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
-        ) {
+        header = {
             GamerNewsCardHeader(news, boardName)
+        },
+        content = {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_4)))
             GamerNewsCardTitle(news.title)
             ParagraphBlock(
@@ -42,11 +73,19 @@ fun GamerNewsCard(
                 onParagraphClick = onParagraphClick,
                 onPreviewReplyTo = { "" },
             )
-            OriginalLinkParagraph(news.threadUrl, onParagraphClick)
+        },
+        footer = {
+            Row {
+                ButtonInCard(
+                    onClick = {
+                        onParagraphClick(Paragraph.Link(news.threadUrl))
+                    },
+                    resource = R.drawable.ic_outline_globe_24,
+                )
+            }
+            Row { }
         }
-    }
-
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
+    )
 }
 
 @Preview
@@ -67,50 +106,38 @@ fun GamerPostCard(
     post: GamerPost,
     onParagraphClick: (Paragraph) -> Unit = { },
     onClick: (() -> Unit)? = null,
+    onMoreCommentsClick: (() -> Unit)? = null,
 ) {
-    AppCard(
+    GamerCard(
         onClick = onClick,
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
-        ) {
+        header = {
             GamerPostCardHeader(post)
+        },
+        content = {
             ParagraphBlock(
                 post.content,
                 100,
                 onParagraphClick = onParagraphClick,
                 onPreviewReplyTo = { "" },
             )
-            OriginalLinkParagraph(post.threadUrl, onParagraphClick)
+        },
+        footer = {
+            Row {
+                ButtonInCard(
+                    onClick = {
+                        onParagraphClick(Paragraph.Link(post.threadUrl))
+                    },
+                    resource = R.drawable.ic_outline_globe_24,
+                )
+            }
+            Row {
+                ButtonInCard(
+                    onClick = onMoreCommentsClick,
+                    resource = R.drawable.ic_outline_comment_24,
+                )
+            }
         }
-    }
-
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
-}
-
-@Composable
-fun GamerRePostCard(
-    post: GamerPost,
-    onParagraphClick: (Paragraph) -> Unit = { },
-    onClick: (() -> Unit)? = null,
-) {
-    AppCard(
-        onClick = onClick,
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.space_8))
-        ) {
-            GamerPostCardHeader(post)
-            ParagraphBlock(
-                post.content,
-                100,
-                onParagraphClick = onParagraphClick,
-                onPreviewReplyTo = { "" },
-            )
-        }
-    }
-
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.space_8)))
+    )
 }
 
 @Preview
@@ -120,6 +147,51 @@ private fun PreviewGamerPostCard() {
         GamerPostCard(
             post = mockGamerPost(),
             onParagraphClick = { },
+            onMoreCommentsClick = { },
+        )
+    }
+}
+
+@Composable
+fun GamerRePostCard(
+    post: GamerPost,
+    onParagraphClick: (Paragraph) -> Unit = { },
+    onClick: (() -> Unit)? = null,
+    onMoreCommentsClick: (() -> Unit)? = null,
+) {
+    GamerCard(
+        onClick = onClick,
+        header = {
+            GamerPostCardHeader(post)
+        },
+        content = {
+            ParagraphBlock(
+                post.content,
+                100,
+                onParagraphClick = onParagraphClick,
+                onPreviewReplyTo = { "" },
+            )
+        },
+        footer = {
+            Row { }
+            Row {
+                ButtonInCard(
+                    onClick = onMoreCommentsClick,
+                    resource = R.drawable.ic_outline_comment_24,
+                )
+            }
+        }
+    )
+}
+
+@Preview
+@Composable
+private fun PreviewGamerRePostCard() {
+    NewshubTheme {
+        GamerRePostCard(
+            post = mockGamerPost(),
+            onParagraphClick = { },
+            onMoreCommentsClick = { },
         )
     }
 }

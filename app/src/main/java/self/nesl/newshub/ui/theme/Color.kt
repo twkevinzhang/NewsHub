@@ -19,8 +19,10 @@ val AppYellow = Color(0xFF937B00)
 val AppPink = Color(0xffe04aff)
 val AppRed = Color(0xfff8536f)
 val AppProgressBarLight = Color(0x33e04aff)
-val AppQuote = Color(0xff34497e)
-val AppLink = Color(0xFF937B00)
+val AppComment = Color(0xFF937B00)
+val AppReplyTo = Color(0xFF4CAF50)
+val AppQuote = Color(0xFF00BCD4)
+val AppLink = Color(0xFF3F51B5)
 val AppDisabledAlpha = 0.38f
 
 val ColorPalette = darkColorScheme()

@@ -2,6 +2,7 @@ package self.nesl.newshub.ui.thread
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
@@ -100,6 +101,10 @@ fun ThreadRoute(
         }
     }
 
+    fun navigateToCommentList(post: Post) {
+        navController.navigate("comments/${post.commentsUrl.encode()}")
+    }
+
     ThreadScreen(
         refreshState = refreshState,
         pagingPosts = pagingPosts,
@@ -127,6 +132,7 @@ fun ThreadRoute(
             }
         },
         navigateToRePostThread = ::navigateToRePostThread,
+        navigateToCommentList = ::navigateToCommentList,
     )
 
     if (replyStack.isNotEmpty()) {
@@ -140,6 +146,7 @@ fun ThreadRoute(
                 navigateToRePostThread = { navigateToRePostThread(replyStack.last()) },
                 onParagraphClick = ::onParagraphClick,
                 onPreviewReplyTo = ::onPreviewReplyTo,
+                onMoreCommentsClick = { navigateToCommentList(replyStack.last()) }
             )
             Row {
                 if (replyStack.size > 1) {
@@ -191,6 +198,7 @@ fun ThreadScreen(
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
     onLoadStateChange: (CombinedLoadStates) -> Unit = { },
     navigateToRePostThread: (Post) -> Unit,
+    navigateToCommentList: (Post) -> Unit,
 ){
     Scaffold(
         topBar = {
@@ -222,11 +230,12 @@ fun ThreadScreen(
                             onLoadStateChange(loadState)
                         }
                         itemsIndexed(this) { index, post ->
-                            if (index == 0) {
+                            if (index == 0 && post != null) {
                                 PostCard(
                                     post = post,
                                     boardName = boardName,
                                     onParagraphClick = onParagraphClick,
+                                    onMoreCommentsClick = { navigateToCommentList(post) }
                                 )
                             } else if (post != null) {
                                 RePostCard(
@@ -234,6 +243,7 @@ fun ThreadScreen(
                                     navigateToRePostThread = { navigateToRePostThread(post) },
                                     onParagraphClick = onParagraphClick,
                                     onPreviewReplyTo = onPreviewReplyTo,
+                                    onMoreCommentsClick = { navigateToCommentList(post) }
                                 )
                             }
                         }
@@ -249,6 +259,7 @@ fun PostCard(
     post: Post?,
     boardName: String,
     onParagraphClick: (Paragraph) -> Unit = {},
+    onMoreCommentsClick: () -> Unit = {},
 ) {
     when (post) {
         is KomicaPost -> KomicaPostCard(
@@ -259,6 +270,7 @@ fun PostCard(
         is GamerPost -> GamerPostCard(
             post = post,
             onParagraphClick = onParagraphClick,
+            onMoreCommentsClick = onMoreCommentsClick.takeIf { post.comments != 0 }
         )
     }
 }
@@ -269,6 +281,7 @@ fun RePostCard(
     navigateToRePostThread: (() -> Unit)? = null,
     onParagraphClick: (Paragraph) -> Unit = {},
     onPreviewReplyTo: (Paragraph.ReplyTo) -> String,
+    onMoreCommentsClick: () -> Unit = {},
 ) {
     when (post) {
         is KomicaPost -> KomicaRePostCard(
@@ -281,6 +294,7 @@ fun RePostCard(
             post = post,
             onParagraphClick = onParagraphClick,
             onClick = navigateToRePostThread.takeIf { post.replies.isZeroOrNull().not() },
+            onMoreCommentsClick = onMoreCommentsClick.takeIf { post.comments != 0 }
         )
     }
 }

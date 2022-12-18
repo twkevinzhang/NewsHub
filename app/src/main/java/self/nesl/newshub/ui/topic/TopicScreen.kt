@@ -44,6 +44,8 @@ import self.nesl.hub_server.data.post.komica.KomicaPost
 import self.nesl.hub_server.data.topic.Topic
 import self.nesl.newshub.R
 import self.nesl.newshub.encode
+import self.nesl.newshub.ui.comment.CommentListRoute
+import self.nesl.newshub.ui.comment.CommentListViewModel
 import self.nesl.newshub.ui.component.*
 import self.nesl.newshub.ui.navigation.bottomNavItems
 import self.nesl.newshub.ui.news.GamerNewsCard
@@ -98,6 +100,18 @@ fun TopicRoute(
             }
             ThreadRoute(
                 threadViewModel = threadViewModel,
+                navController = navController,
+            )
+        }
+
+        swipeable("comments/{commentsUrl}") {
+            val factory = HiltViewModelFactory(LocalContext.current, it)
+            val commentListViewModel = viewModel<CommentListViewModel>(factory = factory)
+            it.arguments?.getString("commentsUrl")?.let { commentsUrl ->
+                commentListViewModel.thread(commentsUrl)
+            }
+            CommentListRoute(
+                commentListViewModel = commentListViewModel,
                 navController = navController,
             )
         }
