@@ -12,6 +12,9 @@ import kotlinx.coroutines.SupervisorJob
 import self.nesl.hub_server.data.database.AppDatabase
 import self.nesl.hub_server.data.board.BoardRepository
 import self.nesl.hub_server.data.board.BoardRepositoryImpl
+import self.nesl.hub_server.data.comment.CommentRepository
+import self.nesl.hub_server.data.comment.gamer.GamerComment
+import self.nesl.hub_server.data.comment.gamer.GamerCommentRepositoryImpl
 import self.nesl.hub_server.data.database.PrePopulateCallBack
 import self.nesl.hub_server.data.news.gamer.GamerNewsRepositoryImpl
 import self.nesl.hub_server.data.news.NewsRepository
@@ -95,6 +98,9 @@ object DataModule {
 
         @Binds
         abstract fun bindGamerPostRepository(impl: GamerThreadRepositoryImpl): ThreadRepository<GamerPost>
+
+        @Binds
+        abstract fun bindGamerCommentRepository(impl: GamerCommentRepositoryImpl): CommentRepository<GamerComment>
     }
 
     @DataScope

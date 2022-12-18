@@ -7,9 +7,14 @@ import self.nesl.hub_server.trySubstring
 interface Post {
 
     /**
-     * Which thread url the post belongs to
+     * Which thread url the post belongs to.
      */
     val threadUrl: String
+
+    /**
+     * For request comment list.
+     */
+    val commentsUrl: String
 
     /**
      * Returns the id in the discussion thread.
@@ -17,7 +22,7 @@ interface Post {
     val id: String
 
     /**
-     * Returns the content and it's contain the reply target [Paragraph.ReplyTo]
+     * Returns the content and it's contain the reply target [Paragraph.ReplyTo].
      */
     val content: List<Paragraph>
 

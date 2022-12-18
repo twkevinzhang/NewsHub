@@ -14,9 +14,11 @@ data class GamerPost (
     override val threadUrl: String,
     override val id: String,
     override val title: String,
+    override val commentsUrl: String,
     val createdAt: Long?,
     val posterName: String,
     val replies: Int?,
+    val comments: Int?,
     val readAt: Int?,
     override val content: List<Paragraph>,
     val page: Int,
@@ -34,6 +36,8 @@ fun GPost.toGamerPost(threadUrl: String) =
         page = page,
         id = id,
         posterName = posterName,
+        commentsUrl = commentsUrl,
+        comments = comments,
     )
 
 fun mockGamerPost() =
@@ -55,4 +59,6 @@ fun mockGamerPost() =
             Paragraph.Text("This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique."),
         ),
         page = 1,
+        commentsUrl = "https://forum.gamer.com.tw/ajax/moreCommend.php?bsn=60076&snB=89090465",
+        comments = 0,
     )
