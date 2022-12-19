@@ -90,10 +90,26 @@ internal class ExtensionsTest {
 
     @Test
     fun `Test HttpUrl Builder addFilename extension expect successful`() =
-        assertEquals("https://gaia.komica.org/00/index.htm", "https://gaia.komica.org/00".toHttpUrl().newBuilder().addFilename("index.htm").build().toString())
+        assertEquals("https://gaia.komica.org/00/index.htm", "https://gaia.komica.org/00".toHttpUrl().newBuilder().addFilename("index", "htm").build().toString())
 
     @Test
     fun `Test HttpUrl Builder removeFilename extension expect successful`() =
         assertEquals("https://gaia.komica.org/00", "https://gaia.komica.org/00/index.htm".toHttpUrl().newBuilder().removeFilename("htm").build().toString())
+
+    @Test
+    fun `Test HttpUrl Builder isFile extension with url and param file name and file extension expect successful`() =
+        assertEquals(true, "https://gaia.komica.org/00/index.htm".toHttpUrl().isFile("index", "htm"))
+
+    @Test
+    fun `Test HttpUrl Builder isFile extension expect successful`() =
+        assertEquals(true, "https://gaia.komica.org/00/index.htm".toHttpUrl().isFile())
+
+    @Test
+    fun `Test Int isZeroOrNull extension with 0 expect successful`() =
+        assertEquals(true, 0.isZeroOrNull())
+
+    @Test
+    fun `Test Int isZeroOrNull extension with null expect successful`() =
+        assertEquals(true, null.isZeroOrNull())
 }
 

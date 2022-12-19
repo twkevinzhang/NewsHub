@@ -5,24 +5,35 @@ import dev.zlong.komica_api.installThreadTag
 import dev.zlong.komica_api.model.KPost
 import dev.zlong.komica_api.model.filterReplyToIs
 import dev.zlong.komica_api.parser.Parser
+import dev.zlong.komica_api.request.sora.SoraRequestBuilder
+import dev.zlong.komica_api.toResponseBody
+import okhttp3.HttpUrl
+import okhttp3.Request
+import okhttp3.ResponseBody
+import org.jsoup.Jsoup
 
 class SoraThreadParser(
     private val postParser: Parser<KPost>,
+    private val postRequestBuilder: SoraRequestBuilder,
 ): Parser<List<KPost>> {
-    override fun parse(source: Element, url: String): List<KPost> {
-        return listOf(parseHead(source, url)).plus(parseReplies(source, url))
+    override fun parse(res: ResponseBody, req: Request): List<KPost> {
+        val source = Jsoup.parse(res.string())
+        val url = req.url
+        return listOf(parseHeadPost(source, url)).plus(parseReplies(source, url))
     }
 
-    private fun parseHead(source: Element, url: String): KPost {
-        return postParser.parse(source.selectFirst("div.threadpost"), url)
+    private fun parseHeadPost(source: Element, url: HttpUrl): KPost {
+        val req = postRequestBuilder.setUrl(url).build()
+        return postParser.parse(source.selectFirst("div.threadpost").toResponseBody(), req)
     }
 
-    private fun parseReplies(source: Element, url: String): List<KPost> {
+    private fun parseReplies(source: Element, url: HttpUrl): List<KPost> {
         val threads = source.selectFirst("#threads").installThreadTag().select("div.thread")
         val posts = threads.select("div.reply").map { reply_ele ->
-            val postId = reply_ele.attr("id").substring(1) // #r12345678
-            val postUrl = "$url#r$postId"
-            postParser.parse(reply_ele, postUrl)
+            val fragment = reply_ele.attr("id") // r12345678
+            val postId = fragment.substring(1)
+            val req = postRequestBuilder.setUrl(url).setFragment("r$postId").build()
+            postParser.parse(reply_ele.toResponseBody(), req)
         }
         setRepliesCount(posts)
         return posts

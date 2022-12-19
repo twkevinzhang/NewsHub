@@ -13,6 +13,8 @@ import dev.zlong.komica_api.parser._2cat._2catPostParser
 import dev.zlong.komica_api.parser._2cat._2catThreadParser
 import dev.zlong.komica_api.parser._2cat._2catUrlParser
 import dev.zlong.komica_api.parser.sora.*
+import dev.zlong.komica_api.request._2cat._2catRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraRequestBuilder
 import dev.zlong.komica_api.toKBoard
 
 class GetAllPost(
@@ -25,14 +27,14 @@ class GetAllPost(
 
         when (board) {
             is KBoard.Sora, KBoard.人外, KBoard.格鬥遊戲, KBoard.Idolmaster, KBoard.`3D-STG`, KBoard.魔物獵人, KBoard.`TYPE-MOON` ->
-                SoraThreadParser(SoraPostParser(urlParser, SoraPostHeadParser()))
+                SoraThreadParser(SoraPostParser(urlParser, SoraPostHeadParser()), SoraRequestBuilder())
             is KBoard._2catKomica ->
-                SoraThreadParser(SoraPostParser(urlParser, _2catSoraPostHeadParser(SoraUrlParser())))
+                SoraThreadParser(SoraPostParser(urlParser, _2catSoraPostHeadParser(SoraUrlParser())), SoraRequestBuilder())
             is KBoard._2cat ->
-                _2catThreadParser(_2catPostParser(urlParser, _2catPostHeadParser(_2catUrlParser())))
+                _2catThreadParser(_2catPostParser(urlParser, _2catPostHeadParser(_2catUrlParser())), _2catRequestBuilder())
             else ->
                 throw NotImplementedError("ThreadParser of ${req.url} not implemented yet")
-        }.parse(Jsoup.parse(response.body?.string()), req.url.toString())
+        }.parse(response.body!!, req)
     }
 
     suspend fun withFillReplyTo(req: Request): List<KPost> = withContext(Dispatchers.IO) {

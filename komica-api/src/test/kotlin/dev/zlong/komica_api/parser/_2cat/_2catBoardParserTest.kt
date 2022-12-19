@@ -4,15 +4,20 @@ import org.jsoup.Jsoup
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import dev.zlong.komica_api.loadFile
+import dev.zlong.komica_api.request._2cat._2catRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraRequestBuilder
+import dev.zlong.komica_api.toResponseBody
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 internal class _2catBoardParserTest {
 
     @Test
     fun `Test _2catBoardParser expect successful`() {
-        val parser = _2catBoardParser(_2catPostParser(_2catUrlParser(), _2catPostHeadParser(_2catUrlParser())))
+        val builder = SoraRequestBuilder()
+        val parser = _2catBoardParser(_2catPostParser(_2catUrlParser(), _2catPostHeadParser(_2catUrlParser())), _2catRequestBuilder())
         val posts = parser.parse(
-            Jsoup.parse(loadFile("./src/test/html/org/2cat/BoardPage.html")),
-            "https://2cat.org/granblue",
+            Jsoup.parse(loadFile("./src/test/html/org/2cat/BoardPage.html")).toResponseBody(),
+            builder.setUrl("https://2cat.org/granblue".toHttpUrl()).build(),
         )
         assertEquals(8, posts.size)
     }

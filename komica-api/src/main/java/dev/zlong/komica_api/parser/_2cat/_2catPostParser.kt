@@ -9,6 +9,9 @@ import dev.zlong.komica_api.model.*
 import dev.zlong.komica_api.parser.Parser
 import dev.zlong.komica_api.parser.PostHeadParser
 import dev.zlong.komica_api.parser.UrlParser
+import okhttp3.Request
+import okhttp3.ResponseBody
+import org.jsoup.Jsoup
 import java.util.*
 import java.util.regex.Pattern
 
@@ -18,12 +21,13 @@ class _2catPostParser(
 ): Parser<KPost> {
     private val builder = KPostBuilder()
 
-    override fun parse(source: Element, url: String): KPost {
-        val httpUrl = url.toHttpUrl()
+    override fun parse(res: ResponseBody, req: Request): KPost {
+        val source = Jsoup.parse(res.string())
+        val httpUrl = req.url
         setDetail(source, httpUrl)
         setContent(source)
         setPicture(source, httpUrl)
-        builder.setUrl(url)
+        builder.setUrl(httpUrl.toString())
         builder.setPostId(urlParser.parsePostId(httpUrl)!!)
         return builder.build()
     }

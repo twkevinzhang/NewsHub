@@ -5,6 +5,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
 import dev.zlong.komica_api.model.boards
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -136,28 +138,45 @@ fun String.toMillTimestamp(): Long {
 fun HttpUrl.toKBoard() =
     boards().first { toString().contains(it.url) }
 
-fun HttpUrl.Builder.setFilename(name: String?): HttpUrl.Builder {
+fun HttpUrl.Builder.setFilename(nameWithExtension: String?): HttpUrl.Builder {
     val lastIndex = build().pathSegments.lastIndex
-    if (name != null) {
-        setPathSegment(lastIndex, name)
+    if (nameWithExtension != null) {
+        setPathSegment(lastIndex, nameWithExtension)
     } else {
         removePathSegment(lastIndex)
     }
     return this
 }
 
-fun HttpUrl.Builder.addFilename(name: String): HttpUrl.Builder {
-    addPathSegment(name)
+fun HttpUrl.Builder.addFilename(name: String, extension: String): HttpUrl.Builder {
+    addPathSegment("$name.$extension")
     return this
 }
 
 fun HttpUrl.Builder.removeFilename(extension: String): HttpUrl.Builder {
     val pathSegments = build().pathSegments
     val last = pathSegments.last()
-    if (last.contains(extension)) {
+    if (last.endsWith(".$extension")) {
         removePathSegment(pathSegments.lastIndex)
     }
     return this
 }
 
+fun HttpUrl.isFile(name: String, extension: String): Boolean {
+    if (!isFile()) return false
+    val pathSegments = pathSegments
+    val last = pathSegments.last()
+    return last == "$name.$extension"
+}
+
+fun HttpUrl.isFile(): Boolean {
+    val pathSegments = pathSegments
+    val last = pathSegments.last()
+    return last.contains(".")
+}
+
 fun Int?.isZeroOrNull() = this == 0 || this == null
+
+fun Element.toResponseBody(): ResponseBody {
+    return this.toString().toResponseBody()
+}

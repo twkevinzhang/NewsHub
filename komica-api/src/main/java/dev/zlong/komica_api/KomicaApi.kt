@@ -1,6 +1,5 @@
 package dev.zlong.komica_api
 
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import dev.zlong.komica_api.interactor.*

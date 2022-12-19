@@ -1,7 +1,8 @@
 package dev.zlong.komica_api.parser
 
-import org.jsoup.nodes.Element
+import okhttp3.Request
+import okhttp3.ResponseBody
 
 interface Parser<T> {
-    fun parse(source: Element, url: String): T
+    fun parse(res: ResponseBody, req: Request): T
 }
