@@ -5,10 +5,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import dev.zlong.gamer_api.GamerApi
 import dev.zlong.hub_server.data.board.Board
-import dev.zlong.hub_server.data.board.toGBoard
 import dev.zlong.hub_server.data.news.NewsRepository
 import dev.zlong.newshub.di.IoDispatcher
 import dev.zlong.hub_server.di.TransactionProvider
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import javax.inject.Inject
 
 class GamerNewsRepositoryImpl @Inject constructor(
@@ -23,8 +23,8 @@ class GamerNewsRepositoryImpl @Inject constructor(
         news.ifEmpty {
             try {
                 val req = api.getRequestBuilder()
-                    .url(board.url)
-                    .setPageReq(page.takeIf { it != 0 })
+                    .setUrl(board.url.toHttpUrl())
+                    .setPage(page.takeIf { it != 0 })
                     .build()
                 val remote = api.getAllNews(req)
                     .map { it.toGamerPost(page, board.url) }

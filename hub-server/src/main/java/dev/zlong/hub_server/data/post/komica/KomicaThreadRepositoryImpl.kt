@@ -11,6 +11,7 @@ import dev.zlong.hub_server.data.post.ThreadRepository
 import dev.zlong.hub_server.di.TransactionProvider
 import dev.zlong.komica_api.KomicaApi
 import dev.zlong.newshub.di.IoDispatcher
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import javax.inject.Inject
 
 class KomicaThreadRepositoryImpl @Inject constructor(
@@ -33,7 +34,7 @@ class KomicaThreadRepositoryImpl @Inject constructor(
         }
         try {
             val req = api.getRequestBuilder(board.toKBoard())
-                .url(threadUrl)
+                .setUrl(threadUrl.toHttpUrl())
                 .build()
             val remote = api.getAllPost(req).map { it.toKomicaPost(page, board.url, threadUrl) }
             transactionProvider.invoke {

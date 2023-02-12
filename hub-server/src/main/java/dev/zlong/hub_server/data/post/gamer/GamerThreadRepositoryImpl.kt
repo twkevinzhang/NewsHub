@@ -10,6 +10,7 @@ import dev.zlong.hub_server.data.news.gamer.GamerNewsDao
 import dev.zlong.hub_server.data.post.ThreadRepository
 import dev.zlong.hub_server.di.TransactionProvider
 import dev.zlong.newshub.di.IoDispatcher
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import javax.inject.Inject
 
 class GamerThreadRepositoryImpl @Inject constructor(
@@ -33,8 +34,8 @@ class GamerThreadRepositoryImpl @Inject constructor(
         }
         try {
             val req = api.getRequestBuilder()
-                .url(threadUrl)
-                .setPageReq(page)
+                .setUrl(threadUrl.toHttpUrl())
+                .setPage(page)
                 .build()
             val remote = api.getAllPost(req).map { it.toGamerPost(threadUrl) }
             if (remote.first().page != page){

@@ -11,8 +11,8 @@ internal class PostExtensionsTest {
     fun `Test PostList filterReplyToIs extensions with correct target expect successful`() {
         val post1 = object: Post {
             override val id = "D"
-            override val threadUrl = "https://gaia.komica.org/00"
-            override val boardUrl = "https://gaia.komica.org/00/pixmicat.php?res=29683783"
+            override val threadUrl = "https://gaia.komica.org/00/pixmicat.php?res=D"
+            override val commentsUrl = "https://gaia.komica.org/00/pixmicat.php?res=D?morecomment=true"
             override val title = "title"
             override val content = listOf(
                 Paragraph.ReplyTo("A"),
@@ -23,8 +23,8 @@ internal class PostExtensionsTest {
 
         val post2 = object: Post {
             override val id = "C"
-            override val threadUrl = "https://gaia.komica.org/00"
-            override val boardUrl = "https://gaia.komica.org/00/pixmicat.php?res=29683783"
+            override val threadUrl = "https://gaia.komica.org/00/pixmicat.php?res=C"
+            override val commentsUrl = "https://gaia.komica.org/00/pixmicat.php?res=C?morecomment=true"
             override val title = "title"
             override val content = listOf(
                 Paragraph.ReplyTo("A"),
@@ -34,8 +34,8 @@ internal class PostExtensionsTest {
 
         val post3 = object: Post {
             override val id = "B"
-            override val threadUrl = "https://gaia.komica.org/00"
-            override val boardUrl = "https://gaia.komica.org/00/pixmicat.php?res=29683783"
+            override val threadUrl = "https://gaia.komica.org/00/pixmicat.php?res=B"
+            override val commentsUrl = "https://gaia.komica.org/00/pixmicat.php?res=B?morecomment=true"
             override val title = "title"
             override val content = listOf(
                 Paragraph.ReplyTo("A"),

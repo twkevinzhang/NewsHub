@@ -7,6 +7,7 @@ import dev.zlong.gamer_api.GamerApi
 import dev.zlong.hub_server.data.board.Board
 import dev.zlong.hub_server.data.comment.CommentRepository
 import dev.zlong.newshub.di.IoDispatcher
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import javax.inject.Inject
 
 class GamerCommentRepositoryImpl @Inject constructor(
@@ -21,7 +22,7 @@ class GamerCommentRepositoryImpl @Inject constructor(
     ) = withContext(ioDispatcher) {
         try {
             val req = api.getRequestBuilder()
-                .url(commentsUrl)
+                .setUrl(commentsUrl.toHttpUrl())
                 .build()
             val remote = api.getAllComment(req).map { it.toGamerComment(page) }
             remote

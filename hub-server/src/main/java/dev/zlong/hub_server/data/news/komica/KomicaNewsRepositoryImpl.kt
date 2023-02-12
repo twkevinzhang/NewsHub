@@ -6,7 +6,6 @@ import kotlinx.coroutines.withContext
 import dev.zlong.hub_server.data.board.Board
 import dev.zlong.hub_server.data.board.toKBoard
 import dev.zlong.hub_server.data.news.NewsRepository
-import dev.zlong.hub_server.data.post.komica.toKomicaPost
 import dev.zlong.komica_api.KomicaApi
 import dev.zlong.newshub.di.IoDispatcher
 import dev.zlong.hub_server.di.TransactionProvider
@@ -23,11 +22,10 @@ class KomicaNewsRepositoryImpl @Inject constructor(
         val news = dao.readAll(board.url, page)
         news.ifEmpty {
             try {
-                val request = api.getRequestBuilder(board.toKBoard())
-                    .url(board.url)
-                    .setPageReq(page)
+                val req = api.getRequestBuilder(board.toKBoard())
+                    .setPage(page)
                     .build()
-                val remote = api.getAllPost(request)
+                val remote = api.getAllPost(req)
                     .map { it.toKomicaNews(page, board.url, it.url) }
                 transactionProvider.invoke {
                     dao.upsertAll(remote)
