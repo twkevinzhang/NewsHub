@@ -41,7 +41,7 @@ class PrePopulateCallBack @Inject constructor(
             }
 
             dao.upsertAll(listOf(
-                Board("https://gaia.komica.org/00", "綜合", Host.KOMICA, listOf("Square")),
+                Board("https://gaia.komica.org/00b", "綜合", Host.KOMICA, listOf("Square")),
                 Board("https://luna.komica.org/23", "GIF", Host.KOMICA, listOf("Square")),
                 Board("https://forum.gamer.com.tw/B.php?bsn=60076", "場外休息區", Host.GAMER, listOf("Square")),
             ))
