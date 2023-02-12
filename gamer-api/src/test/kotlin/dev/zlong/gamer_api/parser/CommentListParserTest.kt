@@ -1,11 +1,11 @@
 package dev.zlong.gamer_api.parser
 
 import okhttp3.ResponseBody.Companion.toResponseBody
-import org.jsoup.Jsoup
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import dev.zlong.gamer_api.loadFile
 import dev.zlong.gamer_api.request.RequestBuilderImpl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 internal class CommentListParserTest {
 
@@ -14,7 +14,7 @@ internal class CommentListParserTest {
         val parser = CommentListParser(RequestBuilderImpl())
         val list = parser.parse(
             loadFile("./src/test/json/CommentList.json")!!.toResponseBody(),
-            RequestBuilderImpl().url("https://forum.gamer.com.tw/ajax/moreCommend.php?bsn=60076&snB=89090465").build(),
+            RequestBuilderImpl().setUrl("https://forum.gamer.com.tw/ajax/moreCommend.php?bsn=60076&snB=89090465".toHttpUrl()).build(),
         )
         assertEquals(
             listOf("3307356", "3307326"),

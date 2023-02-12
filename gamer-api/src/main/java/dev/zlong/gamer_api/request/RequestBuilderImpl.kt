@@ -7,102 +7,46 @@ import okhttp3.Request
 class RequestBuilderImpl: RequestBuilder {
     private lateinit var builder: HttpUrl.Builder
 
-    override fun url(url: String): RequestBuilder {
-        this.builder = url.toHttpUrl().newBuilder()
-        return this
-    }
-
-    override fun url(url: HttpUrl): RequestBuilder {
+    override fun setUrl(url: HttpUrl): RequestBuilder {
         this.builder = url.newBuilder()
         return this
     }
 
     override fun setBsn(bsn: String?): RequestBuilder {
-        return if(bsn == null) removeBsnReq()
-        else addBsnReq(bsn)
+        return if(bsn == null) removeReq("bsn")
+        else addReq("bsn", bsn)
     }
 
-    private fun addBsnReq(bsn: String): RequestBuilder {
-        if (hasBsnReq())
-            removeBsnReq()
-        builder = builder.addQueryParameter("bsn", bsn)
+    private fun addReq(key: String, bsn: String): RequestBuilder {
+        if (hasReq(key))
+            removeReq(key)
+        builder = builder.addQueryParameter(key, bsn)
         return this
     }
 
-    private fun removeBsnReq(): RequestBuilder {
-        if(hasBsnReq())
-            builder = builder.removeAllQueryParameters("bsn")
+    private fun removeReq(key: String): RequestBuilder {
+        if(hasReq(key))
+            builder = builder.removeAllQueryParameters(key)
         return this
     }
 
-    private fun hasBsnReq(): Boolean {
-        return builder.build().queryParameter("bsn").isNullOrBlank().not()
+    private fun hasReq(key: String): Boolean {
+        return builder.build().queryParameter(key).isNullOrBlank().not()
     }
 
     override fun setSna(sna: String?): RequestBuilder {
-        return if(sna == null) removeSnaReq()
-        else addSnaReq(sna)
-    }
-
-    private fun addSnaReq(bsn: String): RequestBuilder {
-        if (hasSnaReq())
-            removeBsnReq()
-        builder = builder.addQueryParameter("sna", bsn)
-        return this
-    }
-
-    private fun removeSnaReq(): RequestBuilder {
-        if(hasSnaReq())
-            builder = builder.removeAllQueryParameters("sna")
-        return this
-    }
-
-    private fun hasSnaReq(): Boolean {
-        return builder.build().queryParameter("sna").isNullOrBlank().not()
+        return if(sna == null) removeReq("sna")
+        else addReq("sna", sna)
     }
 
     override fun setSnb(snb: String?): RequestBuilder {
-        return if(snb == null) removeSnbReq()
-        else addSnbReq(snb)
+        return if(snb == null) removeReq("snb")
+        else addReq("snb", snb)
     }
 
-    private fun addSnbReq(bsn: String): RequestBuilder {
-        if (hasSnbReq())
-            removeSnbReq()
-        builder = builder.addQueryParameter("snb", bsn)
-        return this
-    }
-
-    private fun removeSnbReq(): RequestBuilder {
-        if(hasSnbReq())
-            builder = builder.removeAllQueryParameters("snb")
-        return this
-    }
-
-    private fun hasSnbReq(): Boolean {
-        return builder.build().queryParameter("snb").isNullOrBlank().not()
-    }
-
-    override fun setPageReq(page: Int?): RequestBuilder {
-        return if(page == null) removePageReq()
-        else addPageReq(page)
-    }
-
-    private fun addPageReq(page: Int): RequestBuilder {
-        if (hasPageReq())
-            removePageReq()
-        builder = builder.addQueryParameter("page", page.toString())
-        return this
-    }
-
-    private fun removePageReq(): RequestBuilder {
-        if(hasPageReq())
-            builder = builder.removeAllQueryParameters("page")
-        return this
-    }
-
-    private fun hasPageReq(): Boolean {
-        return builder.build().queryParameter("page").isNullOrBlank().not()
+    override fun setPage(page: Int?): RequestBuilder {
+        return if(page == null) removeReq("page")
+        else addReq("page", page.toString())
     }
 
     override fun build(): Request {

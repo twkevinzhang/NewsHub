@@ -1,13 +1,13 @@
 package dev.zlong.gamer_api.parser
 
 import okhttp3.Request
-import okhttp3.Response
 import okhttp3.ResponseBody
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import dev.zlong.gamer_api.model.GPost
 import dev.zlong.gamer_api.request.RequestBuilder
 import dev.zlong.gamer_api.toResponseBody
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 class ThreadParser(
     private val postParser: Parser<GPost>,
@@ -30,8 +30,8 @@ class ThreadParser(
         val section = source.selectFirst("section.c-section[id^=\"post_\"]")
         val postId = section.id().replace("post_", "")
         val postReq = requestBuilder
-            .url(req.url.toString().plus("&sn=$postId"))
-            .setPageReq(responsePage)
+            .setUrl(req.url.toString().plus("&sn=$postId").toHttpUrl())
+            .setPage(responsePage)
             .build()
         return postParser.parse(section.toResponseBody(), postReq)
     }

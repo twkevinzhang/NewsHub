@@ -3,7 +3,6 @@ package dev.zlong.gamer_api.parser
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
-import okhttp3.Response
 import okhttp3.ResponseBody
 import org.jsoup.Jsoup
 import dev.zlong.gamer_api.model.GNews
@@ -23,7 +22,7 @@ class BoardParser(
                 .replaceAfterHost("/$href")
                 .removeAllQueryParameters("tnum")
                 .build()
-            newsParser.parse(it.toResponseBody(), requestBuilder.url(threadUrl).build())
+            newsParser.parse(it.toResponseBody(), requestBuilder.setUrl(threadUrl).build())
         }
     }
 
