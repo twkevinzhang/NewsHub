@@ -171,7 +171,7 @@ fun ThreadRoute(
                     loaded = loaded,
                 ) {
                     SubcomposeAsyncImage(
-                        model = thumbnail.url,
+                        model = thumbnail.raw,
                         contentDescription = null,
                         loading = { CircularProgressIndicator() },
                         onSuccess = { loaded = true }
