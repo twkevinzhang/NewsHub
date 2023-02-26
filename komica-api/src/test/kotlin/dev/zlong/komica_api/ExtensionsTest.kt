@@ -98,7 +98,7 @@ internal class ExtensionsTest {
 
     @Test
     fun `Test HttpUrl Builder isFile extension with url and param file name and file extension expect successful`() =
-        assertEquals(true, "https://gaia.komica.org/00/index.htm".toHttpUrl().isFile("index", "htm"))
+        assertEquals(true, "https://gaia.komica.org/00/index.htm".toHttpUrl().isFile("htm"))
 
     @Test
     fun `Test HttpUrl Builder isFile extension expect successful`() =

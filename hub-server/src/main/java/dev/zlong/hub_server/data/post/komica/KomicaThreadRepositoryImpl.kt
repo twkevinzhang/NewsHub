@@ -33,7 +33,7 @@ class KomicaThreadRepositoryImpl @Inject constructor(
             }
         }
         try {
-            val req = api.getRequestBuilder(board.toKBoard())
+            val req = api.getThreadRequestBuilder(board.toKBoard())
                 .setUrl(threadUrl.toHttpUrl())
                 .build()
             val remote = api.getAllPost(req).map { it.toKomicaPost(page, board.url, threadUrl) }

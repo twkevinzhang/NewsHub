@@ -5,7 +5,9 @@ import dev.zlong.komica_api.installThreadTag
 import dev.zlong.komica_api.model.KPost
 import dev.zlong.komica_api.model.filterReplyToIs
 import dev.zlong.komica_api.parser.Parser
-import dev.zlong.komica_api.request.sora.SoraRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraBoardRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraThreadRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraThreadRequestParser
 import dev.zlong.komica_api.toResponseBody
 import okhttp3.HttpUrl
 import okhttp3.Request
@@ -14,7 +16,8 @@ import org.jsoup.Jsoup
 
 class SoraThreadParser(
     private val postParser: Parser<KPost>,
-    private val postRequestBuilder: SoraRequestBuilder,
+    private val threadReqParser: SoraThreadRequestParser,
+    private val threadReqBuilder: SoraThreadRequestBuilder,
 ): Parser<List<KPost>> {
     override fun parse(res: ResponseBody, req: Request): List<KPost> {
         val source = Jsoup.parse(res.string())
@@ -23,7 +26,7 @@ class SoraThreadParser(
     }
 
     private fun parseHeadPost(source: Element, url: HttpUrl): KPost {
-        val req = postRequestBuilder.setUrl(url).build()
+        val req = threadReqBuilder.setUrl(url).build()
         return postParser.parse(source.selectFirst("div.threadpost").toResponseBody(), req)
     }
 
@@ -32,7 +35,7 @@ class SoraThreadParser(
         val posts = threads.select("div.reply").map { reply_ele ->
             val fragment = reply_ele.attr("id") // r12345678
             val postId = fragment.substring(1)
-            val req = postRequestBuilder.setUrl(url).setFragment("r$postId").build()
+            val req = threadReqBuilder.setUrl(url).setFragment("r$postId").build()
             postParser.parse(reply_ele.toResponseBody(), req)
         }
         setRepliesCount(posts)

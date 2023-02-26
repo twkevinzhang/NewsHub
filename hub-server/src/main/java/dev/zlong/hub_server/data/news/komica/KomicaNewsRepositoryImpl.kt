@@ -22,7 +22,7 @@ class KomicaNewsRepositoryImpl @Inject constructor(
         val news = dao.readAll(board.url, page)
         news.ifEmpty {
             try {
-                val req = api.getRequestBuilder(board.toKBoard())
+                val req = api.getBoardRequestBuilder(board.toKBoard())
                     .setPage(page)
                     .build()
                 val remote = api.getAllPost(req)

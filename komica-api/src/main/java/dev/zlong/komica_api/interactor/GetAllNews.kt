@@ -13,7 +13,9 @@ import dev.zlong.komica_api.parser._2cat._2catPostParser
 import dev.zlong.komica_api.parser._2cat._2catUrlParser
 import dev.zlong.komica_api.parser.sora.*
 import dev.zlong.komica_api.request._2cat._2catRequestBuilder
-import dev.zlong.komica_api.request.sora.SoraRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraBoardRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraBoardRequestParser
+import dev.zlong.komica_api.request.sora.SoraThreadRequestBuilder
 import dev.zlong.komica_api.toKBoard
 
 class GetAllNews(
@@ -26,9 +28,9 @@ class GetAllNews(
 
         when (board) {
             is KBoard.Sora, KBoard.人外, KBoard.格鬥遊戲, KBoard.Idolmaster, KBoard.`3D-STG`, KBoard.魔物獵人, KBoard.`TYPE-MOON` ->
-                SoraBoardParser(SoraPostParser(urlParser, SoraPostHeadParser()), SoraRequestBuilder())
+                SoraBoardParser(SoraPostParser(urlParser, SoraPostHeadParser()), SoraBoardRequestParser(), SoraThreadRequestBuilder())
             is KBoard._2catKomica ->
-                SoraBoardParser(SoraPostParser(urlParser, _2catSoraPostHeadParser(SoraUrlParser())), SoraRequestBuilder())
+                SoraBoardParser(SoraPostParser(urlParser, _2catSoraPostHeadParser(SoraUrlParser())),  SoraBoardRequestParser(), SoraThreadRequestBuilder())
             is KBoard._2cat ->
                 _2catBoardParser(_2catPostParser(urlParser, _2catPostHeadParser(_2catUrlParser())), _2catRequestBuilder())
             else ->

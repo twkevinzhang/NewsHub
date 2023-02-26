@@ -4,11 +4,11 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-internal class SoraRequestBuilderTest {
+internal class SoraBoardRequestBuilderTest {
 
     @Test
     fun `Test setPageReq with url expect successful`() {
-        val req = SoraRequestBuilder()
+        val req = SoraBoardRequestBuilder()
             .setUrl("https://gaia.komica.org/00".toHttpUrl())
             .setPage(1)
             .build()
@@ -20,7 +20,7 @@ internal class SoraRequestBuilderTest {
 
     @Test
     fun `Test setPageReq with url with page_num expect successful`() {
-        val req = SoraRequestBuilder()
+        val req = SoraBoardRequestBuilder()
             .setUrl("https://gaia.komica.org/00/2.htm".toHttpUrl())
             .setPage(1)
             .build()
@@ -32,7 +32,7 @@ internal class SoraRequestBuilderTest {
 
     @Test
     fun `Test setFragment expect successful`() {
-        val req = SoraRequestBuilder()
+        val req = SoraBoardRequestBuilder()
             .setUrl("https://sora.komica.org/00/pixmicat.php?res=25214959".toHttpUrl())
             .setFragment("r23588")
             .build()
@@ -41,7 +41,7 @@ internal class SoraRequestBuilderTest {
 
     @Test
     fun `Test setRes expect successful`() {
-        val req = SoraRequestBuilder()
+        val req = SoraBoardRequestBuilder()
             .setUrl("https://sora.komica.org/00/pixmicat.php?res=25214959".toHttpUrl())
             .setRes("25214960")
             .build()

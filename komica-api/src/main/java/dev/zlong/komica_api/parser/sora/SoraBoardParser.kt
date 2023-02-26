@@ -4,7 +4,8 @@ import org.jsoup.nodes.Element
 import dev.zlong.komica_api.installThreadTag
 import dev.zlong.komica_api.model.KPost
 import dev.zlong.komica_api.parser.Parser
-import dev.zlong.komica_api.request.sora.SoraRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraBoardRequestParser
+import dev.zlong.komica_api.request.sora.SoraThreadRequestBuilder
 import dev.zlong.komica_api.toResponseBody
 import okhttp3.Request
 import okhttp3.ResponseBody
@@ -13,11 +14,12 @@ import java.lang.NullPointerException
 
 class SoraBoardParser(
     private val postParser: Parser<KPost>,
-    private val threadRequestBuilder: SoraRequestBuilder,
+    private val boardReqParser: SoraBoardRequestParser,
+    private val threadReqBuilder: SoraThreadRequestBuilder,
 ): Parser<List<KPost>> {
     override fun parse(res: ResponseBody, req: Request): List<KPost> {
         val source = Jsoup.parse(res.string())
-        val url = req.url
+        val boardUrl = boardReqParser.req(req).baseUrl()
         // get post secret name
 //        String fsub = getElement().selectFirst("#fsub").attr("name");
 //        String fcom = getElement().selectFirst("#fcom").attr("name");
@@ -27,7 +29,7 @@ class SoraBoardParser(
             val postId = threadpost.attr("id").substring(1)
             val post = postParser.parse(
                 threadpost.toResponseBody(),
-                threadRequestBuilder.setUrl(url).setRes(postId).build(),
+                threadReqBuilder.setUrl(boardUrl).setRes(postId).build(),
             )
             post.copy(replies = parseReplyCount(thread))
         }

@@ -2,10 +2,8 @@ package dev.zlong.komica_api.interactor
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.jsoup.Jsoup
 import ru.gildor.coroutines.okhttp.await
 import dev.zlong.komica_api.model.*
 import dev.zlong.komica_api.parser._2cat._2catPostHeadParser
@@ -14,7 +12,9 @@ import dev.zlong.komica_api.parser._2cat._2catThreadParser
 import dev.zlong.komica_api.parser._2cat._2catUrlParser
 import dev.zlong.komica_api.parser.sora.*
 import dev.zlong.komica_api.request._2cat._2catRequestBuilder
-import dev.zlong.komica_api.request.sora.SoraRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraBoardRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraThreadRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraThreadRequestParser
 import dev.zlong.komica_api.toKBoard
 
 class GetAllPost(
@@ -27,9 +27,9 @@ class GetAllPost(
 
         when (board) {
             is KBoard.Sora, KBoard.人外, KBoard.格鬥遊戲, KBoard.Idolmaster, KBoard.`3D-STG`, KBoard.魔物獵人, KBoard.`TYPE-MOON` ->
-                SoraThreadParser(SoraPostParser(urlParser, SoraPostHeadParser()), SoraRequestBuilder())
+                SoraThreadParser(SoraPostParser(urlParser, SoraPostHeadParser()), SoraThreadRequestParser(), SoraThreadRequestBuilder())
             is KBoard._2catKomica ->
-                SoraThreadParser(SoraPostParser(urlParser, _2catSoraPostHeadParser(SoraUrlParser())), SoraRequestBuilder())
+                SoraThreadParser(SoraPostParser(urlParser, _2catSoraPostHeadParser(SoraUrlParser())), SoraThreadRequestParser(), SoraThreadRequestBuilder())
             is KBoard._2cat ->
                 _2catThreadParser(_2catPostParser(urlParser, _2catPostHeadParser(_2catUrlParser())), _2catRequestBuilder())
             else ->

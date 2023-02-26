@@ -1,17 +1,19 @@
 package dev.zlong.komica_api.request.sora
 
+import dev.zlong.komica_api.addFilename
+import dev.zlong.komica_api.isFile
+import dev.zlong.komica_api.model.KBoard
+import dev.zlong.komica_api.request.RequestBuilder
+import dev.zlong.komica_api.request.ThreadRequestBuilder
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
-import dev.zlong.komica_api.*
-import dev.zlong.komica_api.model.KBoard
-import dev.zlong.komica_api.request.RequestBuilder
 
-class SoraRequestBuilder: RequestBuilder {
+class SoraThreadRequestBuilder: ThreadRequestBuilder {
     private lateinit var builder: HttpUrl.Builder
 
-    override fun setUrl(url: HttpUrl): RequestBuilder {
-        this.builder = if (!url.isFile("pixmicat", "php")) {
+    override fun setUrl(url: HttpUrl): SoraThreadRequestBuilder {
+        this.builder = if (!url.isFile("php")) {
             url.newBuilder().addFilename("pixmicat", "php")
         } else {
             url.newBuilder()
@@ -19,17 +21,17 @@ class SoraRequestBuilder: RequestBuilder {
         return this
     }
 
-    override fun setBoard(board: KBoard): RequestBuilder {
+    fun setBoard(board: KBoard): SoraThreadRequestBuilder {
         setUrl(board.url.toHttpUrl())
         return this
     }
 
-    override fun setRes(res: String?): RequestBuilder {
+    fun setRes(res: String?): SoraThreadRequestBuilder {
         return if(res == null) removeQuery("res")
         else addQuery("res", res)
     }
 
-    private fun addQuery(queryName: String, value: String): RequestBuilder {
+    private fun addQuery(queryName: String, value: String): SoraThreadRequestBuilder {
         if (hasQuery(queryName))
             removeQuery(queryName)
         builder = builder.addQueryParameter(queryName, value)
@@ -40,18 +42,18 @@ class SoraRequestBuilder: RequestBuilder {
         return builder.build().queryParameter(queryName).isNullOrBlank().not()
     }
 
-    private fun removeQuery(queryName: String): RequestBuilder {
+    private fun removeQuery(queryName: String): SoraThreadRequestBuilder {
         if(hasQuery(queryName))
             builder = builder.removeAllQueryParameters(queryName)
         return this
     }
 
-    override fun setFragment(reply: String?): RequestBuilder {
+    fun setFragment(reply: String?): SoraThreadRequestBuilder {
         return if(reply == null) removeFragment()
         else addFragment(reply)
     }
 
-    private fun addFragment(value: String): RequestBuilder {
+    private fun addFragment(value: String): SoraThreadRequestBuilder {
         if (hasFragment())
             removeFragment()
         builder = builder.fragment(value)
@@ -62,27 +64,9 @@ class SoraRequestBuilder: RequestBuilder {
         return builder.build().fragment.isNullOrBlank().not()
     }
 
-    private fun removeFragment(): RequestBuilder {
+    private fun removeFragment(): SoraThreadRequestBuilder {
         if(hasFragment())
             builder = builder.fragment(null)
-        return this
-    }
-
-    override fun setPage(page: Int?): SoraRequestBuilder {
-        builder = builder
-            .apply {
-                if (page.isZeroOrNull()) {
-                    removeFilename("htm")
-                } else {
-                    val _httpUrl = builder.build()
-                    val extra = _httpUrl.pathSegments - _httpUrl.toKBoard().url.toHttpUrl().pathSegments
-                    if (extra.isEmpty()) {
-                        addFilename("$page", "htm")
-                    } else {
-                        setFilename("${page}.htm")
-                    }
-                }
-            }
         return this
     }
 

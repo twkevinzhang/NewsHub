@@ -4,7 +4,7 @@ import org.jsoup.Jsoup
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import dev.zlong.komica_api.loadFile
-import dev.zlong.komica_api.request.sora.SoraRequestBuilder
+import dev.zlong.komica_api.request.sora.SoraBoardRequestBuilder
 import dev.zlong.komica_api.toResponseBody
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
@@ -12,7 +12,7 @@ internal class SoraPostParserTest {
 
     @Test
     fun `Test parse post with 綜合 ReplyPost html expect successful`() {
-        val builder = SoraRequestBuilder()
+        val builder = SoraBoardRequestBuilder()
         val parser = SoraPostParser(SoraUrlParser(), SoraPostHeadParser())
         val post = parser.parse(
             Jsoup.parse(loadFile("./src/test/html/org/komica/sora/ReplyPost.html")).toResponseBody(),
@@ -23,7 +23,7 @@ internal class SoraPostParserTest {
 
     @Test
     fun `Test parse post with 2cat ReplyPost html expect successful`() {
-        val builder = SoraRequestBuilder()
+        val builder = SoraBoardRequestBuilder()
         val parser = SoraPostParser(SoraUrlParser(), SoraPostHeadParser())
         val post = parser.parse(
             Jsoup.parse(loadFile("./src/test/html/org/komica/2cat/ReplyPost.html")).toResponseBody(),

@@ -5,13 +5,19 @@ import okhttp3.Request
 import dev.zlong.komica_api.interactor.*
 import dev.zlong.komica_api.model.KBoard
 import dev.zlong.komica_api.model.KPost
+import dev.zlong.komica_api.request.BoardRequestBuilder
 import dev.zlong.komica_api.request.RequestBuilder
+import dev.zlong.komica_api.request.ThreadRequestBuilder
 
 class KomicaApi (
     private val client: OkHttpClient,
 ) {
-    fun getRequestBuilder(board: KBoard): RequestBuilder {
-        return GetRequestBuilder().invoke(board)
+    fun getBoardRequestBuilder(board: KBoard): BoardRequestBuilder {
+        return GetRequestBuilder().forBoard(board)
+    }
+
+    fun getThreadRequestBuilder(board: KBoard): ThreadRequestBuilder {
+        return GetRequestBuilder().forThread(board)
     }
 
     suspend fun getAllBoard() =

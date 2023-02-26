@@ -153,20 +153,25 @@ fun HttpUrl.Builder.addFilename(name: String, extension: String): HttpUrl.Builde
     return this
 }
 
-fun HttpUrl.Builder.removeFilename(extension: String): HttpUrl.Builder {
-    val pathSegments = build().pathSegments
-    val last = pathSegments.last()
-    if (last.endsWith(".$extension")) {
-        removePathSegment(pathSegments.lastIndex)
+fun HttpUrl.Builder.removeFilename(): HttpUrl.Builder {
+    if (this.build().isFile()) {
+        removePathSegment(build().pathSegments.lastIndex)
     }
     return this
 }
 
-fun HttpUrl.isFile(name: String, extension: String): Boolean {
+fun HttpUrl.Builder.removeFilename(extension: String): HttpUrl.Builder {
+    if (this.build().isFile(extension)) {
+        removePathSegment(build().pathSegments.lastIndex)
+    }
+    return this
+}
+
+fun HttpUrl.isFile(extension: String): Boolean {
     if (!isFile()) return false
     val pathSegments = pathSegments
     val last = pathSegments.last()
-    return last == "$name.$extension"
+    return last.endsWith(".$extension")
 }
 
 fun HttpUrl.isFile(): Boolean {

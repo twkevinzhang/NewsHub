@@ -4,6 +4,6 @@ import dev.zlong.komica_api.model.KBoard
 import okhttp3.HttpUrl
 import okhttp3.Request
 
-interface RequestBuilder {
-    fun build(): Request
+interface ThreadRequestBuilder: RequestBuilder {
+    fun setUrl(url: HttpUrl): ThreadRequestBuilder
 }
